@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   gsap.fromTo(
     ".exclusive-badge",
-    { opacity: 0, y: -15 },
+    { opacity: 0, y: -20 },
     { opacity: 1, y: 0, duration: 1, ease: "power2.out", delay: 0.5 }
   );
 

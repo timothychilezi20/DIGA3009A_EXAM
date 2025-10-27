@@ -15,9 +15,9 @@ body {
   padding: 10px 30px;
   border-bottom: 1px solid #ccc;
   height: 80px;
-  position: sticky;
+  position: relative;
   top: 0;
-  z-index: 1000;
+  z-index: 5;
 }
 
 .logo-section {
@@ -55,6 +55,9 @@ body {
   background-color: #111;
   text-align: center;
   padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .main-nav ul {
@@ -129,64 +132,112 @@ body {
   object-fit: cover;
   border-radius: 10px;
   display: block;
+  z-index: 1;
+  position: relative;
 }
 
 .exclusive {
   position: relative;
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  border-radius: 8px;
+  display: block;
   overflow: hidden;
 }
 
-.exclusive-image {
+.hero-feature,
+.exclusive {
   position: relative;
+}
+
+.exclusive-container {
+  border: 4px solid #000;
+  display: inline-block;
+  max-width: 800px;
+  margin: 20px auto;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .exclusive-image img {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 8px;
+  transition: filter 0.3s ease;
 }
 
-.exclusive-badge {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  background: red;
-  color: white;
+/* Exclusive label box */
+.exclusive-label {
+  display: inline-block;
+  background-color: #e60000;  /* Rolling Stone red */
+  color: #fff;
   font-weight: bold;
-  font-size: 14px;
-  padding: 6px 12px;
-  border-radius: 4px;
-  letter-spacing: 0.5px;
-  z-index: 2;
   text-transform: uppercase;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  padding: 5px 15px;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 14px;
+  border-radius: 2px;
+  margin-top: 10px;
 }
+
+/* Text block */
+.exclusive-text {
+  background-color: #000;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.exclusive-text h1 {
+  font-size: 32px;
+  font-weight: 800;
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+}
+
+.exclusive-text p {
+  font-size: 18px;
+  margin: 0;
+}
+
+/* Hover effect */
+.exclusive-container:hover .exclusive-text {
+  background-color: #fff;
+  color: #000;
+}
+
+.exclusive-container:hover .exclusive-label {
+  background-color: #000;
+  color: #fff;
+}
+
+.exclusive-container:hover .exclusive-image img {
+  filter: invert(1);
+}
+
 
 .exclusive-overlay {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
   color: white;
   padding: 20px;
   box-sizing: border-box;
+  text-align: center;
 }
 
 .exclusive-overlay h1 {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 800;
-  margin-bottom: 10px;
+  margin: 0;
+  text-transform: uppercase;
 }
 
 .exclusive-overlay p {
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 18px;
+  margin-top: 10px;
 }
 
 .hero-text {
