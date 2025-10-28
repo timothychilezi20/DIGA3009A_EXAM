@@ -139,8 +139,8 @@ body {
 .exclusive {
   position: relative;
   width: 100%;
-  display: block;
-  overflow: hidden;
+  max-width: 1200px;
+  margin: 40px auto;
 }
 
 .hero-feature,
@@ -153,68 +153,77 @@ body {
   display: inline-block;
   max-width: 800px;
   margin: 20px auto;
-  transition: all 0.3s ease;
   cursor: pointer;
+}
+
+/* Image and top-left label */
+.exclusive-image {
+  position: relative;
 }
 
 .exclusive-image img {
   width: 100%;
   height: auto;
   display: block;
-  transition: filter 0.3s ease;
 }
 
-/* Exclusive label box */
 .exclusive-label {
-  display: inline-block;
-  background-color: #e60000;  /* Rolling Stone red */
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: #e63946; /* red accent */
   color: #fff;
-  font-weight: bold;
-  text-transform: uppercase;
-  padding: 5px 15px;
-  margin: 0 auto;
-  text-align: center;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
   font-size: 14px;
-  border-radius: 2px;
-  margin-top: 10px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  z-index: 5;
+  letter-spacing: 1px;
 }
 
-/* Text block */
+.navbar {
+  position: relative;
+  z-index: 10;
+}
+
 .exclusive-text {
-  background-color: #000;
-  color: #fff;
-  padding: 20px;
-  text-align: center;
-  transition: all 0.3s ease;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  color: #000;
+  padding: 25px 40px;
+  box-sizing: border-box;
+  border-radius: 0 0 10px 10px;
 }
 
 .exclusive-text h1 {
-  font-size: 32px;
+  font-family: "Montserrat", sans-serif;
   font-weight: 800;
-  margin: 0 0 10px 0;
+  font-size: 32px;
+  margin-bottom: 10px;
   text-transform: uppercase;
-}
-
-.exclusive-text p {
-  font-size: 18px;
-  margin: 0;
-}
-
-/* Hover effect */
-.exclusive-container:hover .exclusive-text {
-  background-color: #fff;
   color: #000;
 }
 
-.exclusive-container:hover .exclusive-label {
+.exclusive-text p {
+  font-family: "Open Sans", sans-serif;
+  font-size: 18px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.exclusive-container:hover .exclusive-text {
   background-color: #000;
   color: #fff;
 }
 
-.exclusive-container:hover .exclusive-image img {
-  filter: invert(1);
+.exclusive-container:hover .exclusive-text h1 {
+  background-color: #000;
+  color: #fff;
 }
-
 
 .exclusive-overlay {
   position: absolute;
@@ -233,6 +242,7 @@ body {
   font-weight: 800;
   margin: 0;
   text-transform: uppercase;
+  color: white;
 }
 
 .exclusive-overlay p {
