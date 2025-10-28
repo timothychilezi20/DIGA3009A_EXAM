@@ -137,10 +137,11 @@ body {
 }
 
 .exclusive {
-  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2px auto;
   width: 100%;
-  max-width: 1200px;
-  margin: 40px auto;
 }
 
 .hero-feature,
@@ -206,6 +207,7 @@ body {
   margin-bottom: 10px;
   text-transform: uppercase;
   color: #000;
+  text-align: center;
 }
 
 .exclusive-text p {
@@ -213,6 +215,7 @@ body {
   font-size: 18px;
   margin: 0;
   line-height: 1.4;
+  text-align: center;
 }
 
 .exclusive-container:hover .exclusive-text {
