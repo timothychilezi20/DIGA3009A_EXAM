@@ -3,49 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The Beat Report</title>
+    <title>Music | The Beat Report</title>
     <meta name="author" content="Timothy Chilezi" />
     <meta
       name="description"
       content="This is a website dedicated to giving updates about the music industry in South Africa, as well as being the official archive for classic South African music."
     />
-    <link rel="stylesheet" href="../Main/Normalize.css" />
-    <link rel="stylesheet" href="../Main/main.css" />
     <link rel="stylesheet" href="music.css" />
-    <script src="music.js"></script>
-    <script
-      src="https://kit.fontawesome.com/dddfa338de.js"
-      crossorigin="anonymous"
-    ></script>
-    <script src="../Main/main.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <style></style>
+    <link rel="stylesheet" href="../main/main.css" />
+    <link rel="stylesheet" href="../main/Normalize.css" />
   </head>
   <body>
     <!-- HEADER -->
     <header class="navbar">
       <div class="logo">
-        <div class="logo-section">
-          <img
-            src="../images/Logo.png"
-            alt="The Beat Report Logo"
-            class="logo-img"
-          />
-        </div>
+        <img
+          src="../images/Logo.png"
+          alt="The Beat Report Logo"
+          class="logo-img"
+        />
       </div>
-
-      <nav class="nav-links">
-        <a href="../index.html">Home</a>
-        <a href="../News/news.html">News</a>
-        <a href="../Reviews/reviews.html">Reviews</a>
-        <a href="#" class="active">Music</a>
-      </nav>
 
       <div class="icons">
         <img src="../images/SearchIcon.png" alt="Search" class="icon" />
         <img src="../images/UserIcon.png" alt="User Profile" class="icon" />
       </div>
     </header>
+
+    <nav class="main-nav">
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../news/news.html">News</a></li>
+        <li><a href="../reviews/reviews.html">Reviews</a></li>
+        <li><a href="#">Music</a></li>
+      </ul>
+    </nav>
 
     <main class="music-container">
       <h1 class="page-title">MUSIC</h1>
@@ -90,6 +82,6 @@
       </section>
     </main>
 
-    <script src="../Music/music.js"></script>
+    <script src="../music/music.js"></script>
   </body>
 </html>
