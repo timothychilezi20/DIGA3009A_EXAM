@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Beat Report</title>
+    <meta name="author" content="Timothy Chilezi" />
+    <meta
+      name="description"
+      content="This is a website dedicated to giving updates about the music industry in South Africa, as well as being the official archive for classic South African music."
+    />
+    <link rel="stylesheet" href="../Main/Normalize.css" />
+    <link rel="stylesheet" href="../Main/main.css" />
+    <link rel="stylesheet" href="music.css" />
+    <script src="music.js"></script>
+    <script
+      src="https://kit.fontawesome.com/dddfa338de.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="../Main/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style></style>
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header class="navbar">
+      <div class="logo">
+        <div class="logo-section">
+          <img
+            src="../images/Logo.png"
+            alt="The Beat Report Logo"
+            class="logo-img"
+          />
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="../News/news.html">News</a>
+        <a href="../Reviews/reviews.html">Reviews</a>
+        <a href="#" class="active">Music</a>
+      </nav>
+
+      <div class="icons">
+        <img src="../images/SearchIcon.png" alt="Search" class="icon" />
+        <img src="../images/UserIcon.png" alt="User Profile" class="icon" />
+      </div>
+    </header>
+
+    <main class="music-container">
+      <h1 class="page-title">MUSIC</h1>
+
+      <!-- TABS -->
+      <div class="music-tabs">
+        <button class="tab active" data-tab="new">New</button>
+        <button class="tab" data-tab="reviews">Reviews</button>
+        <button class="tab" data-tab="classics">Curated Classics</button>
+        <button class="tab" data-tab="videos">Music Videos</button>
+      </div>
+
+      <!-- MAIN CONTENT GRID -->
+      <section class="music-grid" id="new">
+        <!-- Featured story -->
+        <article class="featured-article">
+          <div class="img-container">
+            <img src="../images/HughMasekela.jpg" alt="Hugh Masekela" />
+            <span class="exclusive-badge">EXCLUSIVE</span>
+          </div>
+          <h2 class="headline">THE LEGEND OF HUGH MASEKELA</h2>
+          <p class="subtext">
+            Nasty C releases his new album and he is finally free
+          </p>
+        </article>
+
+        <!-- Sidebar stories -->
+        <aside class="side-stories">
+          <article>
+            <h4>NASTY C IS FREE</h4>
+            <p>Nasty C releases his new album and he is finally free</p>
+          </article>
+          <article>
+            <h4>THATOHATSI: SOUTH AFRICA’S RISING STAR</h4>
+            <p>Nasty C releases his new album and he is finally free</p>
+          </article>
+          <article>
+            <h4>THE HIP HOP AWARDS: WHAT TO EXPECT?</h4>
+            <p>Nasty C releases his new album and he is finally free</p>
+          </article>
+        </aside>
+      </section>
+    </main>
+
+    <script src="../Music/music.js"></script>
+  </body>
+</html>
