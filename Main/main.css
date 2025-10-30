@@ -1,3 +1,4 @@
+/* ===== GENERAL ===== */
 body {
   font-family: "Helvetica Neue", Arial, sans-serif;
   background-color: #fff;
@@ -6,7 +7,8 @@ body {
   padding: 0;
 }
 
-.navbar {
+/* ===== HEADER ===== */
+.main-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -24,12 +26,13 @@ body {
   height: auto;
 }
 
-.icons {
+.header-icons {
   display: flex;
   gap: 20px;
   align-items: center;
 }
 
+/* ===== ICONS ===== */
 .icon {
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -51,6 +54,63 @@ body {
   display: block;
 }
 
+/* ===== SEARCH BAR ===== */
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+#searchIcon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+#searchBar {
+  display: none;
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #111;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  width: 220px;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+#searchBar.active {
+  display: block;
+}
+
+/* ===== LOGIN ===== */
+.login-text {
+  cursor: pointer;
+  font-weight: 600;
+  color: #111;
+  font-family: "Montserrat", sans-serif;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.login-text:hover {
+  color: #de3831;
+}
+
+#userIcon {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: none; /* hidden until user logs in */
+}
+
+/* ===== NAVIGATION ===== */
 .main-nav {
   background-color: #111;
   text-align: center;
@@ -77,40 +137,8 @@ body {
   transition: color 0.2s ease;
 }
 
-.search-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-#searchIcon {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-}
-
-#searchBar {
-  display: none;
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: #111;
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  width: 220px;
-  transition: all 0.3s ease;
-  z-index: 10;
-}
-
-#searchBar.active {
-  display: block;
-  opacity: 1;
+.main-nav ul li a:hover {
+  color: #de3831;
 }
 
 /* ===== LOGIN MODAL ===== */
@@ -134,11 +162,6 @@ body {
   width: 350px;
   text-align: center;
   position: relative;
-}
-
-.modal-content h2 {
-  margin-bottom: 20px;
-  font-family: "Montserrat", sans-serif;
 }
 
 .modal-content input {
@@ -172,8 +195,7 @@ body {
   color: #333;
 }
 
-/* ===== FEEDBACK BAR ===== */
-/* Floating feedback button */
+/* ===== FEEDBACK BUTTON ===== */
 .feedback-button {
   position: fixed;
   bottom: 20px;
@@ -198,9 +220,9 @@ body {
   transform: scale(1.05);
 }
 
-/* Feedback modal */
+/* ===== FEEDBACK MODAL ===== */
 .feedback-modal {
-  display: none; /* hidden by default */
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -248,67 +270,4 @@ body {
   font-size: 22px;
   cursor: pointer;
   color: #333;
-}
-
-/* Hidden feedback form */
-.feedback-form {
-  max-height: 0;
-  opacity: 0;
-  padding: 0 20px;
-  transition: all 0.4s ease;
-  text-align: center;
-}
-
-.feedback-bar.expanded .feedback-form {
-  max-height: 250px;
-  opacity: 1;
-  padding: 20px;
-}
-
-.feedback-form textarea {
-  width: 80%;
-  height: 80px;
-  border-radius: 6px;
-  border: none;
-  padding: 10px;
-  resize: none;
-  margin-bottom: 10px;
-}
-
-.feedback-form button {
-  background: #de3831;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.feedback-form button:hover {
-  background: #ff6666;
-}
-
-.feedback-form p {
-  margin-top: 10px;
-  font-size: 14px;
-}
-
-.login-text {
-  cursor: pointer;
-  font-weight: 600;
-  color: #111;
-  font-family: "Montserrat", sans-serif;
-  text-transform: uppercase;
-  transition: color 0.3s ease;
-}
-
-.login-text:hover {
-  color: #de3831;
-}
-
-#userIcon {
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
 }

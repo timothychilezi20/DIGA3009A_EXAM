@@ -7,22 +7,42 @@
     <link rel="stylesheet" href="../main/Normalize.css" />
     <link rel="stylesheet" href="../main/main.css" />
     <link rel="stylesheet" href="reviews.css" />
+    <script
+      src="https://kit.fontawesome.com/dddfa338de.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="../Main/main.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   </head>
 
   <body>
-    <!-- HEADER -->
-    <header class="navbar">
-      <div class="logo">
+    <!-- Header -->
+    <header class="main-header">
+      <div class="logo-section">
         <img
           src="../images/Logo.png"
           alt="The Beat Report Logo"
           class="logo-img"
         />
       </div>
+      <div class="header-icons">
+        <div class="search-wrapper">
+          <button id="searchIcon" class="icon">
+            <img src="../images/SearchIcon.png" alt="Search" />
+          </button>
+          <input type="text" id="searchBar" placeholder="Search..." />
+        </div>
 
-      <div class="icons">
-        <img src="../images/SearchIcon.png" alt="Search" class="icon" />
-        <img src="../images/UserIcon.png" alt="User Profile" class="icon" />
+        <div id="userLoginContainer">
+          <span id="loginText" class="login-text">Login</span>
+          <img
+            id="userIcon"
+            src="../images/UserIcon.png"
+            alt="User Profile"
+            class="icon"
+            style="display: none"
+          />
+        </div>
       </div>
     </header>
 
@@ -89,7 +109,6 @@
       </div>
     </main>
 
-    <!-- LOGIN MODAL -->
     <div id="loginModal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
