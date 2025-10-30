@@ -89,6 +89,44 @@
       </div>
     </main>
 
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Login</h2>
+        <form id="loginForm">
+          <input type="text" id="username" placeholder="Username" required />
+          <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            required
+          />
+          <button type="submit">Login</button>
+        </form>
+        <p class="login-message"></p>
+      </div>
+    </div>
+
+    <!-- Floating Feedback Button -->
+    <button id="feedbackButton" class="feedback-button">
+      <i class="fas fa-comment-alt"></i> Feedback
+    </button>
+
+    <!-- Feedback Form Modal -->
+    <div id="feedbackModal" class="feedback-modal">
+      <div class="feedback-modal-content">
+        <span id="closeFeedback" class="close">&times;</span>
+        <h3>Send us your feedback</h3>
+        <textarea
+          id="feedbackText"
+          placeholder="Tell us what you think..."
+        ></textarea>
+        <button id="sendFeedback">Send</button>
+        <p id="feedbackMessage"></p>
+      </div>
+    </div>
+
     <!-- FOOTER -->
     <footer class="site-footer">
       <img

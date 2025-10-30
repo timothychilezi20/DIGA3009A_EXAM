@@ -1,0 +1,8 @@
+.main-nav ul li a:hover {
+  color: #ffb915;
+}
+
+/* Active state for current page */
+.main-nav ul li a[href="#"] {
+  color: #ffb915;
+}

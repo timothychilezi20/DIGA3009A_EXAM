@@ -17,6 +17,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="Homepage.js" defer></script>
+    <script src="Main/main.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   </head>
 
@@ -32,16 +33,22 @@
       </div>
       <div class="header-icons">
         <div class="search-wrapper">
-          <img
-            src="images/SearchIcon.png"
-            class="icon"
-            id="searchIcon"
-            alt="Search Icon"
-          />
+          <button id="searchIcon" class="icon">
+            <img src="images/SearchIcon.png" alt="Search" />
+          </button>
           <input type="text" id="searchBar" placeholder="Search..." />
         </div>
 
-        <img src="images/UserIcon.png" alt="User Profile" class="icon" />
+        <div id="userLoginContainer">
+          <span id="loginText" class="login-text">Login</span>
+          <img
+            id="userIcon"
+            src="images/UserIcon.png"
+            alt="User Profile"
+            class="icon"
+            style="display: none"
+          />
+        </div>
       </div>
     </header>
 
@@ -220,13 +227,16 @@
       </div>
     </div>
 
-    <!-- FEEDBACK BAR -->
-    <div class="feedback-bar" id="feedbackBar">
-      <div class="feedback-header">
-        <p>Have feedback?</p>
-        <button id="expandFeedback"><i class="fas fa-chevron-up"></i></button>
-      </div>
-      <div class="feedback-form">
+    <!-- Floating Feedback Button -->
+    <button id="feedbackButton" class="feedback-button">
+      <i class="fas fa-comment-alt"></i> Feedback
+    </button>
+
+    <!-- Feedback Form Modal -->
+    <div id="feedbackModal" class="feedback-modal">
+      <div class="feedback-modal-content">
+        <span id="closeFeedback" class="close">&times;</span>
+        <h3>Send us your feedback</h3>
         <textarea
           id="feedbackText"
           placeholder="Tell us what you think..."

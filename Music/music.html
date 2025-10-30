@@ -10,8 +10,11 @@
       content="This is a website dedicated to giving updates about the music industry in South Africa, as well as being the official archive for classic South African music."
     />
     <link rel="stylesheet" href="music.css" />
-    <link rel="stylesheet" href="../main/main.css" />
-    <link rel="stylesheet" href="../main/Normalize.css" />
+    <link rel="stylesheet" href="../Main/main.css" />
+    <link rel="stylesheet" href="../Main/main.js" />
+    <script src="music.js" defer></script>
+    <script src="../Main/main.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   </head>
   <body>
     <!-- HEADER -->
@@ -81,6 +84,44 @@
         </aside>
       </section>
     </main>
+
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Login</h2>
+        <form id="loginForm">
+          <input type="text" id="username" placeholder="Username" required />
+          <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            required
+          />
+          <button type="submit">Login</button>
+        </form>
+        <p class="login-message"></p>
+      </div>
+    </div>
+
+    <!-- Floating Feedback Button -->
+    <button id="feedbackButton" class="feedback-button">
+      <i class="fas fa-comment-alt"></i> Feedback
+    </button>
+
+    <!-- Feedback Form Modal -->
+    <div id="feedbackModal" class="feedback-modal">
+      <div class="feedback-modal-content">
+        <span id="closeFeedback" class="close">&times;</span>
+        <h3>Send us your feedback</h3>
+        <textarea
+          id="feedbackText"
+          placeholder="Tell us what you think..."
+        ></textarea>
+        <button id="sendFeedback">Send</button>
+        <p id="feedbackMessage"></p>
+      </div>
+    </div>
 
     <script src="../music/music.js"></script>
   </body>
