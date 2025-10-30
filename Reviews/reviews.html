@@ -1,11 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reviews</title>
-</head>
-<body>
-    
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reviews | The Beat Report</title>
+    <link rel="stylesheet" href="../main/Normalize.css" />
+    <link rel="stylesheet" href="../main/main.css" />
+    <link rel="stylesheet" href="reviews.css" />
+  </head>
+
+  <body>
+    <!-- HEADER -->
+    <header class="navbar">
+      <div class="logo">
+        <img
+          src="../images/Logo.png"
+          alt="The Beat Report Logo"
+          class="logo-img"
+        />
+      </div>
+
+      <div class="icons">
+        <img src="../images/SearchIcon.png" alt="Search" class="icon" />
+        <img src="../images/UserIcon.png" alt="User Profile" class="icon" />
+      </div>
+    </header>
+
+    <!-- NAVIGATION -->
+    <nav class="main-nav">
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../news/news.html">News</a></li>
+        <li><a href="reviews.html" class="active">Reviews</a></li>
+        <li><a href="../music/music.html">Music</a></li>
+      </ul>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="reviews-section">
+      <h2 class="section-title">REVIEWS</h2>
+
+      <div class="tabs">
+        <button class="tab active">New</button>
+        <button class="tab">Reviews</button>
+        <button class="tab">Curated Classics</button>
+        <button class="tab">Music Videos</button>
+      </div>
+
+      <div class="reviews-grid">
+        <article class="review-card">
+          <img src="../images/youmeandthe90s.jpeg" alt="You, Me & The 90s" />
+          <p class="genre">R&B</p>
+          <h3>You, Me & The 90’s</h3>
+          <p class="artist">Lord Kez</p>
+          <p class="author">By Timothy Chilezi</p>
+          <p class="date">September 20, 2025</p>
+        </article>
+
+        <article class="review-card">
+          <img src="../images/babmothalbumcover.jpg" alt="Bab’ Motha" />
+          <p class="genre">AMAPIANO</p>
+          <h3>Bab’ Motha</h3>
+          <p class="artist">Kabza De Small</p>
+          <p class="author">By Amber Cooper</p>
+          <p class="date">September 20, 2025</p>
+        </article>
+
+        <article class="review-card">
+          <img src="../images/freealbumcover.png" alt="Free" />
+          <p class="genre">HIP-HOP/RAP</p>
+          <h3>Free</h3>
+          <p class="artist">Nasty C</p>
+          <p class="author">By Reatile Davhana</p>
+          <p class="date">September 20, 2025</p>
+        </article>
+
+        <article class="review-card">
+          <img
+            src="../images/TwoMostWantedAlbumCover.jpg"
+            alt="The Most Wanted"
+          />
+          <p class="genre">DANCE</p>
+          <h3>The Most Wanted</h3>
+          <p class="artist">JAZZWRLD & Thukuthela</p>
+          <p class="author">By Jessica Jardim</p>
+          <p class="date">September 20, 2025</p>
+        </article>
+      </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <img
+        src="../images/Logo.png"
+        alt="The Beat Report Logo"
+        class="footer-logo"
+      />
+    </footer>
+
+    <script src="../reviews/reviews.js"></script>
+  </body>
 </html>

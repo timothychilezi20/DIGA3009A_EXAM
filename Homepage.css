@@ -659,3 +659,176 @@ blockquote,
     height: 70px;
   }
 }
+
+/* ===== SEARCH TOGGLE ===== */
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#searchBar {
+  display: none;
+  position: absolute;
+  left: 100%; /* position right after the icon */
+  top: 50%; /* vertically center */
+  transform: translateY(-50%); /* center vertically */
+  background-color: #111;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  width: 220px;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+#searchBar.active {
+  display: block;
+}
+
+/* ===== LOGIN MODAL ===== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(17, 17, 17, 0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  width: 350px;
+  text-align: center;
+  position: relative;
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+  font-family: "Montserrat", sans-serif;
+}
+
+.modal-content input {
+  width: 90%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.modal-content button {
+  background: #de3831;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.modal-content button:hover {
+  background: #ff4b3e;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #333;
+}
+
+/* ===== FEEDBACK BAR ===== */
+.feedback-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #111;
+  color: white;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s ease;
+  z-index: 99;
+  overflow: hidden;
+}
+
+.feedback-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  cursor: pointer;
+  border-top: 2px solid #de3831;
+}
+
+.feedback-header p {
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+.feedback-header button {
+  background: none;
+  border: none;
+  color: #fff;
+  margin-left: 10px;
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.feedback-bar.expanded .feedback-header button {
+  transform: rotate(180deg);
+}
+
+/* Hidden feedback form */
+.feedback-form {
+  max-height: 0;
+  opacity: 0;
+  padding: 0 20px;
+  transition: all 0.4s ease;
+  text-align: center;
+}
+
+.feedback-bar.expanded .feedback-form {
+  max-height: 250px;
+  opacity: 1;
+  padding: 20px;
+}
+
+.feedback-form textarea {
+  width: 80%;
+  height: 80px;
+  border-radius: 6px;
+  border: none;
+  padding: 10px;
+  resize: none;
+  margin-bottom: 10px;
+}
+
+.feedback-form button {
+  background: #de3831;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.feedback-form button:hover {
+  background: #ff6666;
+}
+
+.feedback-form p {
+  margin-top: 10px;
+  font-size: 14px;
+}

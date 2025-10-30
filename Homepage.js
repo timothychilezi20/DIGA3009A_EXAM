@@ -103,3 +103,65 @@ document.addEventListener("DOMContentLoaded", function () {
 
   console.log("The Beat Report homepage initialized successfully");
 });
+
+// === Search Toggle ===
+const searchIcon = document.getElementById("searchIcon");
+const searchBar = document.getElementById("searchBar");
+
+searchIcon.addEventListener("click", () => {
+  searchBar.classList.toggle("active");
+  if (searchBar.classList.contains("active")) {
+    searchBar.focus();
+  }
+});
+
+// === Login Modal ===
+const modal = document.getElementById("loginModal");
+const loginBtn = document.querySelector(
+  ".header-icons img[alt='User Profile']"
+);
+const closeBtn = document.querySelector(".close");
+const loginForm = document.getElementById("loginForm");
+const message = document.querySelector(".login-message");
+
+loginBtn.addEventListener("click", () => {
+  modal.style.display = "flex";
+});
+
+closeBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+});
+
+window.addEventListener("click", (e) => {
+  if (e.target === modal) modal.style.display = "none";
+});
+
+loginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const username = document.getElementById("username").value;
+  message.textContent = `Welcome back, ${username}!`;
+  modal.style.display = "none";
+});
+
+// === Feedback Bar ===
+const feedbackBar = document.getElementById("feedbackBar");
+const expandFeedback = document.getElementById("expandFeedback");
+
+expandFeedback.addEventListener("click", () => {
+  feedbackBar.classList.toggle("expanded");
+});
+
+document.getElementById("sendFeedback").addEventListener("click", () => {
+  const feedback = document.getElementById("feedbackText").value.trim();
+  const feedbackMessage = document.getElementById("feedbackMessage");
+
+  if (!feedback) {
+    feedbackMessage.textContent = "Please write some feedback first!";
+    feedbackMessage.style.color = "orange";
+    return;
+  }
+
+  feedbackMessage.textContent = "Thank you for your feedback!";
+  feedbackMessage.style.color = "lightgreen";
+  document.getElementById("feedbackText").value = "";
+});

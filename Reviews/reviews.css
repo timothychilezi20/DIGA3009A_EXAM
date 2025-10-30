@@ -1,0 +1,204 @@
+/* ========== GENERAL LAYOUT ========== */
+body {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  background-color: #fff;
+  color: #111;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  padding: 10px 30px;
+  border-bottom: 1px solid #ccc;
+  height: 80px;
+  position: relative;
+  top: 0;
+  z-index: 5;
+}
+
+.logo-img {
+  width: 180px;
+  height: auto;
+}
+
+.icons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.icon {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.icon:hover {
+  transform: scale(1.1);
+}
+
+.icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.main-nav {
+  background-color: #111;
+  text-align: center;
+  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.main-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.main-nav ul li a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+
+.main-nav a.active,
+.main-nav a:hover {
+  color: #002395;
+}
+
+/* ========== REVIEWS SECTION ========== */
+.reviews-section {
+  padding: 40px 80px;
+}
+
+.section-title {
+  color: #002395;
+  font-size: 2rem;
+  font-weight: 800;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 25px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+}
+
+.tab {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #333;
+  position: relative;
+}
+
+.tab.active {
+  color: #fff;
+  background-color: #002395;
+  border-radius: 20px;
+  padding: 5px 15px;
+}
+
+/* Reviews grid */
+/* Reviews grid */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+.review-card {
+  text-align: left; /* changed from center to left */
+}
+
+.review-card img {
+  width: 100%;
+  border-radius: 5px;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px; /* add spacing below image */
+}
+
+.genre {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.review-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 5px 0;
+  color: #000;
+}
+
+.artist {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #111;
+}
+
+.author,
+.date {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 0;
+}
+
+/* ========== FOOTER ========== */
+.site-footer {
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  padding: 20px 0; /* reduced padding to keep it tight */
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 120px; /* fixed height */
+  overflow: hidden; /* hides any extra logo overflow */
+}
+
+.footer-logo {
+  width: 120px; /* larger but contained */
+  height: auto;
+  flex-shrink: 0;
+}
+
+.footer-icons {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.footer-icons .icon {
+  width: 24px;
+  margin: 0 10px;
+}

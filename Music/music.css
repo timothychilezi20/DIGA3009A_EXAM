@@ -12,13 +12,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 40px;
-  border-bottom: 1px solid #ddd;
-  position: sticky;
-  top: 0;
   background-color: #fff;
-  z-index: 10;
-  height: 60px;
+  padding: 10px 30px;
+  border-bottom: 1px solid #ccc;
+  height: 80px;
+  position: relative;
+  top: 0;
+  z-index: 5;
 }
 
 .logo-img {
@@ -53,15 +53,13 @@ body {
   display: block;
 }
 
-/* === MAIN NAVIGATION === */
 .main-nav {
   background-color: #111;
   text-align: center;
-  padding: 12px 0;
+  padding: 10px 0;
   position: sticky;
-  top: 60px; /* Position below the header */
+  top: 0;
   z-index: 10;
-  width: 100%;
 }
 
 .main-nav ul {
@@ -79,8 +77,6 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   transition: color 0.2s ease;
-  font-size: 0.9rem;
-  letter-spacing: 0.5px;
 }
 
 .main-nav ul li a:hover {
@@ -101,7 +97,7 @@ body {
 }
 
 .page-title {
-  color: #000;
+  color: #007847;
   font-size: 3rem;
   font-weight: 900;
   margin-bottom: 10px;
