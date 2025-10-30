@@ -43,6 +43,11 @@ body {
   height: 24px;
 }
 
+#searchIcon img {
+  width: 32px;
+  height: 32px;
+}
+
 .icon:hover {
   transform: scale(1.1);
 }
@@ -135,10 +140,6 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   transition: color 0.2s ease;
-}
-
-.main-nav ul li a:hover {
-  color: #de3831;
 }
 
 /* ===== LOGIN MODAL ===== */

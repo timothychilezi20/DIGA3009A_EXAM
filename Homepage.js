@@ -50,15 +50,20 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Add click handlers for navigation
+  // FIXED: Navigation links - only prevent default for current page
   const navLinks = document.querySelectorAll(".main-nav a");
 
   navLinks.forEach((link) => {
     link.addEventListener("click", function (e) {
-      // In a real implementation, this would navigate to the page
-      // For now, we'll just prevent default and log
-      e.preventDefault();
-      console.log("Navigating to:", this.getAttribute("href"));
+      // Get the current page URL
+      const currentPage = window.location.pathname.split("/").pop();
+      // Get the link's target page
+      const targetPage = this.getAttribute("href");
+
+      // Only prevent default if we're on the same page
+      if (currentPage === targetPage) {
+        e.preventDefault();
+      }
 
       // Add active state
       navLinks.forEach((l) => l.classList.remove("active"));
@@ -78,6 +83,62 @@ document.addEventListener("DOMContentLoaded", function () {
     item.addEventListener("mouseleave", function () {
       this.style.transform = "translateX(0)";
     });
+  });
+
+  // Modal functionality
+  const loginModal = document.getElementById("loginModal");
+  const loginText = document.getElementById("loginText");
+  const closeModal = document.querySelector(".close");
+  const feedbackButton = document.getElementById("feedbackButton");
+  const feedbackModal = document.getElementById("feedbackModal");
+  const closeFeedback = document.getElementById("closeFeedback");
+  const sendFeedback = document.getElementById("sendFeedback");
+  const feedbackMessage = document.getElementById("feedbackMessage");
+
+  // Show login modal
+  loginText.addEventListener("click", function () {
+    loginModal.style.display = "block";
+  });
+
+  // Close modals
+  closeModal.addEventListener("click", function () {
+    loginModal.style.display = "none";
+  });
+
+  closeFeedback.addEventListener("click", function () {
+    feedbackModal.style.display = "none";
+  });
+
+  // Show feedback modal
+  feedbackButton.addEventListener("click", function () {
+    feedbackModal.style.display = "block";
+  });
+
+  // Send feedback
+  sendFeedback.addEventListener("click", function () {
+    const feedbackText = document.getElementById("feedbackText").value;
+    if (feedbackText.trim() === "") {
+      feedbackMessage.textContent = "Please enter your feedback.";
+      feedbackMessage.style.color = "red";
+    } else {
+      feedbackMessage.textContent = "Thank you for your feedback!";
+      feedbackMessage.style.color = "green";
+      document.getElementById("feedbackText").value = "";
+      setTimeout(function () {
+        feedbackModal.style.display = "none";
+        feedbackMessage.textContent = "";
+      }, 2000);
+    }
+  });
+
+  // Close modals when clicking outside
+  window.addEventListener("click", function (event) {
+    if (event.target === loginModal) {
+      loginModal.style.display = "none";
+    }
+    if (event.target === feedbackModal) {
+      feedbackModal.style.display = "none";
+    }
   });
 
   // Initialize any GSAP animations if available
@@ -103,5 +164,3 @@ document.addEventListener("DOMContentLoaded", function () {
 
   console.log("The Beat Report homepage initialized successfully");
 });
-
-
