@@ -9,8 +9,12 @@
       name="description"
       content="South African music updates and classics archive."
     />
+
+    <!-- STYLES -->
     <link rel="stylesheet" href="music.css" />
     <link rel="stylesheet" href="../Main/main.css" />
+
+    <!-- ICONS & SCRIPTS -->
     <script
       src="https://kit.fontawesome.com/dddfa338de.js"
       crossorigin="anonymous"
@@ -18,6 +22,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="music.js" defer></script>
   </head>
+
   <body>
     <!-- HEADER -->
     <header class="main-header">
@@ -28,13 +33,20 @@
           class="logo-img"
         />
       </div>
+
       <div class="header-icons">
         <div class="search-wrapper">
-          <button id="searchIcon" class="icon">
+          <button id="searchIcon" class="icon" aria-label="Search Music">
             <img src="../images/SearchIcon.png" alt="Search" />
           </button>
-          <input type="text" id="searchBar" placeholder="Search..." />
+          <input
+            type="text"
+            id="searchBar"
+            placeholder="Search..."
+            aria-label="Search Music"
+          />
         </div>
+
         <div id="userLoginContainer">
           <span id="loginText" class="login-text">Login</span>
           <img
@@ -49,12 +61,12 @@
     </header>
 
     <!-- NAVIGATION -->
-    <nav class="main-nav">
+    <nav class="main-nav" role="navigation" aria-label="Main site navigation">
       <ul>
         <li><a href="../index.html">Home</a></li>
         <li><a href="../news/news.html">News</a></li>
         <li><a href="../reviews/reviews.html">Reviews</a></li>
-        <li><a href="#">Music</a></li>
+        <li><a href="#" class="active">Music</a></li>
       </ul>
     </nav>
 
@@ -63,34 +75,73 @@
       <h1 class="page-title">MUSIC</h1>
 
       <!-- TABS -->
-      <div class="music-tabs">
-        <button class="tab active" data-tab="new">New</button>
-        <button class="tab" data-tab="reviews">Reviews</button>
-        <button class="tab" data-tab="classics">Curated Classics</button>
-        <button class="tab" data-tab="videos">Music Videos</button>
+      <div class="music-tabs" role="tablist" aria-label="Music sections">
+        <button
+          class="tab active"
+          data-tab="new"
+          role="tab"
+          aria-selected="true"
+        >
+          New
+        </button>
+        <button class="tab" data-tab="reviews" role="tab" aria-selected="false">
+          Reviews
+        </button>
+        <button
+          class="tab"
+          data-tab="classics"
+          role="tab"
+          aria-selected="false"
+        >
+          Curated Classics
+        </button>
+        <button class="tab" data-tab="videos" role="tab" aria-selected="false">
+          Music Videos
+        </button>
+      </div>
+
+      <!-- LOADING PLACEHOLDER -->
+      <div id="loadingMessage" class="loading" style="display: none">
+        Loading content...
       </div>
 
       <!-- CONTENT SECTIONS -->
-
-      <!-- NEW: Spotify -->
-      <section class="music-grid" id="new">
+      <section class="music-grid active" id="new" aria-label="New Music">
         <div id="spotifyContainer"></div>
       </section>
 
-      <!-- REVIEWS: GNews -->
-      <section class="music-grid" id="reviews" style="display: none">
+      <section class="music-grid" id="reviews" aria-label="Reviews">
         <div id="newsContainer"></div>
       </section>
 
-      <!-- CURATED CLASSICS: Last.fm -->
-      <section class="music-grid" id="classics" style="display: none">
+      <section class="music-grid" id="classics" aria-label="Curated Classics">
         <div id="lastfmContainer"></div>
       </section>
 
-      <!-- MUSIC VIDEOS: YouTube -->
-      <section class="music-grid" id="videos" style="display: none">
+      <section class="music-grid" id="videos" aria-label="Music Videos">
         <div id="youtubeContainer"></div>
       </section>
     </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <img
+        src="../images/Logo.png"
+        alt="The Beat Report Footer Logo"
+        class="footer-logo"
+      />
+      <div class="footer-icons">
+        <a href="https://twitter.com" target="_blank" aria-label="Twitter">
+          <i class="fab fa-twitter icon"></i>
+        </a>
+        <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+          <i class="fab fa-instagram icon"></i>
+        </a>
+        <a href="https://youtube.com" target="_blank" aria-label="YouTube">
+          <i class="fab fa-youtube icon"></i>
+        </a>
+      </div>
+      <p class="footer-text">© 2025 The Beat Report. All rights reserved.</p>
+    </footer>
   </body>
 </html>
