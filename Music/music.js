@@ -675,7 +675,7 @@ document.addEventListener("DOMContentLoaded", () => {
             album.images[0]?.url || "https://via.placeholder.com/300"
           }" 
                alt="${album.name}" class="album-art" />
-          <span class="sa-badge" style="position: absolute; top: 4px; right: 4px;">CLASSIC</span>
+          <span class="sa-badge">CLASSIC</span>
         </div>
         <div class="album-info">
           <div class="genre">CLASSIC</div>
