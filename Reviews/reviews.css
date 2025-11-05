@@ -1,16 +1,135 @@
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f8f9fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header styles */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 80px;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo-img {
+  height: 40px;
+}
+
+.header-icons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+#searchBar {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  width: 200px;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+}
+
+#searchBar:focus {
+  outline: none;
+  border-color: #002395;
+  width: 250px;
+}
+
+.icon {
+  cursor: pointer;
+  color: #555;
+  transition: color 0.3s;
+}
+
+.icon:hover {
+  color: #002395;
+}
+
+#userLoginContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 15px;
+  border-radius: 30px;
+  transition: background-color 0.3s;
+}
+
+#userLoginContainer:hover {
+  background-color: #f0f0f0;
+}
+
+.login-text {
+  font-weight: 600;
+  color: #555;
+}
+
+/* Navigation */
+.main-nav {
+  background-color: #000;
+  padding: 0 80px;
+}
+
+.main-nav ul {
+  display: flex;
+  list-style: none;
+}
+
+.main-nav li {
+  padding: 15px 20px;
+}
+
+.main-nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+  position: relative;
+}
+
 .main-nav a.active,
 .main-nav a:hover {
   color: #002395;
 }
 
+.main-nav a.active::after {
+  content: "";
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #002395;
+}
+
 /* ========== REVIEWS SECTION ========== */
 .reviews-section {
   padding: 40px 80px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .section-title {
   color: #002395;
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 800;
   border-bottom: 2px solid #ccc;
   padding-bottom: 10px;
@@ -34,16 +153,20 @@
   cursor: pointer;
   color: #333;
   position: relative;
+  padding: 8px 20px;
+  border-radius: 20px;
+  transition: all 0.3s;
 }
 
 .tab.active {
   color: #fff;
   background-color: #002395;
-  border-radius: 20px;
-  padding: 5px 15px;
 }
 
-/* Reviews grid */
+.tab:hover:not(.active) {
+  background-color: #e9ecef;
+}
+
 /* Reviews grid */
 .reviews-grid {
   display: grid;
@@ -52,35 +175,63 @@
 }
 
 .review-card {
-  text-align: left; /* changed from center to left */
+  text-align: left;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.review-card img {
+.review-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Square album covers */
+.album-cover-container {
+  position: relative;
   width: 100%;
-  border-radius: 5px;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
-  margin-bottom: 10px; /* add spacing below image */
+  padding-bottom: 100%; /* This creates a square aspect ratio */
+  overflow: hidden;
+}
+
+.album-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px 5px 0 0;
+}
+
+.review-card-content {
+  padding: 20px;
 }
 
 .genre {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: #555;
+  color: #002395;
   text-transform: uppercase;
   margin-bottom: 5px;
+  letter-spacing: 0.5px;
 }
 
 .review-card h3 {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 700;
   margin: 5px 0;
   color: #000;
+  line-height: 1.3;
 }
 
 .artist {
   font-weight: 600;
   font-size: 0.9rem;
   color: #111;
+  margin-bottom: 10px;
 }
 
 .author,
@@ -90,35 +241,175 @@
   margin: 0;
 }
 
+.review-summary {
+  font-size: 0.85rem;
+  color: #444;
+  margin-top: 10px;
+  line-height: 1.5;
+  max-height: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.rating {
+  display: flex;
+  margin: 10px 0;
+}
+
+.star {
+  color: #ffc107;
+  margin-right: 2px;
+}
+
+.loading {
+  text-align: center;
+  padding: 60px;
+  font-size: 1.2rem;
+  color: #666;
+  grid-column: 1 / -1;
+}
+
+.loading i {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 15px;
+  color: #002395;
+}
+
+.error {
+  text-align: center;
+  padding: 60px;
+  font-size: 1.2rem;
+  color: #d32f2f;
+  grid-column: 1 / -1;
+}
+
 /* ========== FOOTER ========== */
 .site-footer {
   background-color: #000;
   color: #fff;
   text-align: center;
-  padding: 20px 0; /* reduced padding to keep it tight */
-  margin-top: 50px;
+  padding: 30px 0;
+  margin-top: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 120px; /* fixed height */
-  overflow: hidden; /* hides any extra logo overflow */
 }
 
 .footer-logo {
-  width: 120px; /* larger but contained */
+  width: 140px;
   height: auto;
-  flex-shrink: 0;
+  margin-bottom: 15px;
+}
+
+.footer-text {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 20px;
 }
 
 .footer-icons {
-  margin-top: 10px;
   display: flex;
-  gap: 10px;
-  justify-content: center;
+  gap: 15px;
 }
 
-.footer-icons .icon {
-  width: 24px;
-  margin: 0 10px;
+.footer-icon {
+  color: #fff;
+  font-size: 1.2rem;
+  transition: color 0.3s;
+}
+
+.footer-icon:hover {
+  color: #002395;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .reviews-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .main-header,
+  .main-nav,
+  .reviews-section {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}
+
+@media (max-width: 900px) {
+  .reviews-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .main-header,
+  .main-nav,
+  .reviews-section {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .reviews-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .main-header {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px 20px;
+  }
+
+  .main-nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+}
+
+.pagination {
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px;
+}
+
+.load-more-btn {
+  background: #002395;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.load-more-btn:hover {
+  background: #001a75;
+  transform: translateY(-2px);
+}
+
+.pagination-info {
+  margin-top: 15px;
+  color: #666;
+  font-size: 0.9rem;
 }

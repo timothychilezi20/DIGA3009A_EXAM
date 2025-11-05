@@ -4,17 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reviews | The Beat Report</title>
-    <link rel="stylesheet" href="../main/Normalize.css" />
-    <link rel="stylesheet" href="../main/main.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <link rel="stylesheet" href="reviews.css" />
-    <script
-      src="https://kit.fontawesome.com/dddfa338de.js"
-      crossorigin="anonymous"
-    ></script>
-    <script src="../Main/main.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="../Main/main.css" />
   </head>
-
   <body>
     <!-- Header -->
     <header class="main-header">
@@ -28,20 +24,22 @@
       <div class="header-icons">
         <div class="search-wrapper">
           <button id="searchIcon" class="icon">
-            <img src="../images/SearchIcon.png" alt="Search" />
+            <i class="fas fa-search"></i>
           </button>
-          <input type="text" id="searchBar" placeholder="Search..." />
+          <input
+            type="text"
+            id="searchBar"
+            placeholder="Search artists, albums..."
+          />
         </div>
 
         <div id="userLoginContainer">
           <span id="loginText" class="login-text">Login</span>
-          <img
+          <i
             id="userIcon"
-            src="../images/UserIcon.png"
-            alt="User Profile"
-            class="icon"
-            style="display: none"
-          />
+            class="fas fa-user-circle icon"
+            style="display: none; font-size: 1.5rem"
+          ></i>
         </div>
       </div>
     </header>
@@ -51,100 +49,38 @@
       <ul>
         <li><a href="../index.html">Home</a></li>
         <li><a href="../news/news.html">News</a></li>
-        <li><a href="reviews.html" class="active">Reviews</a></li>
+        <li><a href="#" class="active">Reviews</a></li>
         <li><a href="../music/music.html">Music</a></li>
       </ul>
     </nav>
 
     <!-- MAIN CONTENT -->
     <main class="reviews-section">
-      <h2 class="section-title">REVIEWS</h2>
+      <h2 class="section-title">SOUTH AFRICAN MUSIC REVIEWS</h2>
 
       <div class="tabs">
-        <button class="tab active">New</button>
-        <button class="tab">Reviews</button>
-        <button class="tab">Curated Classics</button>
-        <button class="tab">Music Videos</button>
+        <button class="tab active" data-category="new">New Releases</button>
+        <button class="tab" data-category="popular">Popular</button>
+        <button class="tab" data-category="classics">Curated Classics</button>
       </div>
 
-      <div class="reviews-grid">
-        <article class="review-card">
-          <img src="../images/youmeandthe90s.jpeg" alt="You, Me & The 90s" />
-          <p class="genre">R&B</p>
-          <h3>You, Me & The 90’s</h3>
-          <p class="artist">Lord Kez</p>
-          <p class="author">By Timothy Chilezi</p>
-          <p class="date">September 20, 2025</p>
-        </article>
+      <div class="reviews-grid" id="reviewsGrid">
+        <div class="loading">
+          <i class="fas fa-spinner fa-spin"></i>
+          Loading South African music reviews...
+        </div>
+      </div>
 
-        <article class="review-card">
-          <img src="../images/babmothalbumcover.jpg" alt="Bab’ Motha" />
-          <p class="genre">AMAPIANO</p>
-          <h3>Bab’ Motha</h3>
-          <p class="artist">Kabza De Small</p>
-          <p class="author">By Amber Cooper</p>
-          <p class="date">September 20, 2025</p>
-        </article>
-
-        <article class="review-card">
-          <img src="../images/freealbumcover.png" alt="Free" />
-          <p class="genre">HIP-HOP/RAP</p>
-          <h3>Free</h3>
-          <p class="artist">Nasty C</p>
-          <p class="author">By Reatile Davhana</p>
-          <p class="date">September 20, 2025</p>
-        </article>
-
-        <article class="review-card">
-          <img
-            src="../images/TwoMostWantedAlbumCover.jpg"
-            alt="The Most Wanted"
-          />
-          <p class="genre">DANCE</p>
-          <h3>The Most Wanted</h3>
-          <p class="artist">JAZZWRLD & Thukuthela</p>
-          <p class="author">By Jessica Jardim</p>
-          <p class="date">September 20, 2025</p>
-        </article>
+      <div class="pagination">
+        <button id="loadMore" class="load-more-btn">
+          <i class="fas fa-plus"></i> Load More Reviews
+        </button>
+        <div class="pagination-info">
+          Showing <span id="showingCount">0</span> of
+          <span id="totalCount">0</span> reviews
+        </div>
       </div>
     </main>
-
-    <div id="loginModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Login</h2>
-        <form id="loginForm">
-          <input type="text" id="username" placeholder="Username" required />
-          <input
-            type="password"
-            id="password"
-            placeholder="Password"
-            required
-          />
-          <button type="submit">Login</button>
-        </form>
-        <p class="login-message"></p>
-      </div>
-    </div>
-
-    <!-- Floating Feedback Button -->
-    <button id="feedbackButton" class="feedback-button">
-      <i class="fas fa-comment-alt"></i> Feedback
-    </button>
-
-    <!-- Feedback Form Modal -->
-    <div id="feedbackModal" class="feedback-modal">
-      <div class="feedback-modal-content">
-        <span id="closeFeedback" class="close">&times;</span>
-        <h3>Send us your feedback</h3>
-        <textarea
-          id="feedbackText"
-          placeholder="Tell us what you think..."
-        ></textarea>
-        <button id="sendFeedback">Send</button>
-        <p id="feedbackMessage"></p>
-      </div>
-    </div>
 
     <!-- FOOTER -->
     <footer class="site-footer">
@@ -153,8 +89,15 @@
         alt="The Beat Report Logo"
         class="footer-logo"
       />
+      <p class="footer-text">Bringing you the best in South African music</p>
+      <div class="footer-icons">
+        <a href="#" class="footer-icon"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="footer-icon"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="footer-icon"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="footer-icon"><i class="fab fa-youtube"></i></a>
+      </div>
     </footer>
 
-    <script src="../reviews/reviews.js"></script>
+    <script src="reviews.js"></script>
   </body>
 </html>
