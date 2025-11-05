@@ -65,3 +65,45 @@
   color: #0073e6;
   font-weight: bold;
 }
+
+.music-container {
+  padding: 40px 80px;
+}
+
+.section-title {
+  color: #ffb915;
+  font-size: 2rem;
+  font-weight: 800;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.news-page {
+  padding: 40px 80px;
+}
+
+.tabs {
+  display: flex;
+  gap: 25px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+}
+
+.tab {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #333;
+  position: relative;
+}
+
+.tab.active {
+  color: #fff;
+  background-color: #ffb915;
+  border-radius: 20px;
+  padding: 5px 15px;
+}
