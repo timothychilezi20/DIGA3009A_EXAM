@@ -45,6 +45,15 @@ body {
   width: 200px;
   font-size: 0.9rem;
   transition: all 0.3s;
+  display: none; /* Hidden by default */
+}
+
+.search-wrapper.active #searchBar {
+  display: block;
+}
+
+.search-wrapper.active #searchIcon {
+  display: none;
 }
 
 #searchBar:focus {
@@ -80,44 +89,6 @@ body {
 .login-text {
   font-weight: 600;
   color: #555;
-}
-
-/* Navigation */
-.main-nav {
-  background-color: #000;
-  padding: 0 80px;
-}
-
-.main-nav ul {
-  display: flex;
-  list-style: none;
-}
-
-.main-nav li {
-  padding: 15px 20px;
-}
-
-.main-nav a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.3s;
-  position: relative;
-}
-
-.main-nav a.active,
-.main-nav a:hover {
-  color: #002395;
-}
-
-.main-nav a.active::after {
-  content: "";
-  position: absolute;
-  bottom: -15px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background-color: #002395;
 }
 
 /* ========== REVIEWS SECTION ========== */
@@ -167,47 +138,84 @@ body {
   background-color: #e9ecef;
 }
 
-/* Reviews grid */
+/* Reviews grid - UPDATED FOR COMPATIBILITY */
 .reviews-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
 }
 
-.review-card {
-  text-align: left;
-  background-color: #fff;
+/* Music card styles - COMPATIBLE WITH MUSIC.JS */
+.music-card {
+  background: #fff;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
-.review-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+.music-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Square album covers */
-.album-cover-container {
+/* Square album art */
+.album-art-container {
   position: relative;
   width: 100%;
-  padding-bottom: 100%; /* This creates a square aspect ratio */
+  aspect-ratio: 1 / 1;
   overflow: hidden;
+  background: #f8f9fa;
 }
 
-.album-cover {
-  position: absolute;
-  top: 0;
-  left: 0;
+.album-art {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 5px 5px 0 0;
+  display: block;
 }
 
-.review-card-content {
-  padding: 20px;
+/* Badge container */
+.badge-container {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.sa-badge,
+.genre-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.sa-badge {
+  background: #002395;
+  color: white;
+}
+
+.genre-badge {
+  background: #1db954;
+  color: white;
+}
+
+/* Card content */
+.info {
+  padding: 16px;
+  text-align: left;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .genre {
@@ -215,61 +223,89 @@ body {
   font-weight: 700;
   color: #002395;
   text-transform: uppercase;
-  margin-bottom: 5px;
   letter-spacing: 0.5px;
+  margin-bottom: 4px;
 }
 
-.review-card h3 {
+.song-title {
   font-size: 1.1rem;
   font-weight: 700;
-  margin: 5px 0;
   color: #000;
+  margin: 0;
   line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .artist {
+  font-size: 0.95rem;
   font-weight: 600;
-  font-size: 0.9rem;
-  color: #111;
-  margin-bottom: 10px;
+  color: #333;
+  margin: 0;
+  line-height: 1.3;
 }
 
-.author,
 .date {
   font-size: 0.8rem;
   color: #666;
   margin: 0;
+  font-style: italic;
 }
 
-.review-summary {
+/* Rating styles */
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.stars {
+  color: #ffc107;
+  font-size: 0.9rem;
+}
+
+.rating-value {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: 600;
+}
+
+/* Summary and author */
+.summary {
   font-size: 0.85rem;
   color: #444;
-  margin-top: 10px;
-  line-height: 1.5;
-  max-height: 80px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.4;
+  margin: 8px 0;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 60px;
 }
 
-.rating {
-  display: flex;
-  margin: 10px 0;
+.author {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 0;
+  font-style: italic;
 }
 
-.star {
-  color: #ffc107;
-  margin-right: 2px;
+/* Loading and error states */
+.loading,
+.error {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 40px;
+  font-size: 1.1rem;
 }
 
 .loading {
-  text-align: center;
-  padding: 60px;
-  font-size: 1.2rem;
   color: #666;
-  grid-column: 1 / -1;
+  background: #f8f9fa;
+  border-radius: 8px;
 }
 
 .loading i {
@@ -280,11 +316,31 @@ body {
 }
 
 .error {
-  text-align: center;
-  padding: 60px;
-  font-size: 1.2rem;
   color: #d32f2f;
-  grid-column: 1 / -1;
+  background: #fff5f5;
+  border-radius: 8px;
+  border: 1px solid #ffebee;
+}
+
+.error p {
+  margin-bottom: 1rem;
+}
+
+.retry-btn {
+  background: #002395;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  margin: 0.5rem;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.retry-btn:hover {
+  background: #001a75;
 }
 
 /* ========== FOOTER ========== */
@@ -327,10 +383,40 @@ body {
   color: #002395;
 }
 
+/* Pagination */
+.pagination {
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px;
+}
+
+.load-more-btn {
+  background: #002395;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.load-more-btn:hover {
+  background: #001a75;
+  transform: translateY(-2px);
+}
+
+.pagination-info {
+  margin-top: 15px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
 /* Responsive design */
 @media (max-width: 1200px) {
   .reviews-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
 
   .main-header,
@@ -361,6 +447,7 @@ body {
 @media (max-width: 600px) {
   .reviews-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .tabs {
@@ -383,33 +470,25 @@ body {
     font-size: 1.8rem;
     text-align: center;
   }
+
+  .info {
+    padding: 12px;
+  }
+
+  .song-title {
+    font-size: 1rem;
+  }
+
+  .artist {
+    font-size: 0.9rem;
+  }
 }
 
-.pagination {
-  grid-column: 1 / -1;
-  text-align: center;
-  margin-top: 40px;
-  padding: 20px;
+/* Search functionality */
+.search-wrapper.active #searchBar {
+  display: block;
 }
 
-.load-more-btn {
-  background: #002395;
-  color: white;
-  border: none;
-  padding: 12px 30px;
-  border-radius: 25px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.load-more-btn:hover {
-  background: #001a75;
-  transform: translateY(-2px);
-}
-
-.pagination-info {
-  margin-top: 15px;
-  color: #666;
-  font-size: 0.9rem;
+.search-wrapper.active #searchIcon {
+  display: none;
 }

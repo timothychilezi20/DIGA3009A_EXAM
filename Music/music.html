@@ -62,9 +62,9 @@
         </div>
 
         <div id="userLoginContainer">
-          <button id="loginText" class="login-text" aria-label="User login">
+          <span id="loginText" class="login-text" aria-label="User login">
             Login
-          </button>
+          </span>
           <img
             id="userIcon"
             src="../images/UserIcon.png"
@@ -91,38 +91,38 @@
       <h1 class="page-title">MUSIC</h1>
 
       <!-- TABS -->
-      <div class="music-tabs" role="tablist" aria-label="Music sections">
-        <button
-          class="tab active"
-          data-tab="new"
-          role="tab"
-          aria-selected="true"
-          aria-controls="new"
-          id="tab-new"
-        >
-          New
-        </button>
+      <div class="music-tabs">
+        <button class="tab active" data-tab="new">New Releases</button>
+        <button class="tab" data-tab="amapiano">Amapiano</button>
+        <button class="tab" data-tab="hiphop">Hip-Hop</button>
+        <button class="tab" data-tab="rnb">R&B</button>
+        <button class="tab" data-tab="afrohouse">Afro House</button>
+        <button class="tab" data-tab="classics">Classics</button>
+        <button class="tab" data-tab="videos">Videos</button>
+      </div>
 
-        <button
-          class="tab"
-          data-tab="classics"
-          role="tab"
-          aria-selected="false"
-          aria-controls="classics"
-          id="tab-classics"
-        >
-          Curated Classics
-        </button>
-        <button
-          class="tab"
-          data-tab="videos"
-          role="tab"
-          aria-selected="false"
-          aria-controls="videos"
-          id="tab-videos"
-        >
-          Music Videos
-        </button>
+      <div class="music-grids">
+        <div id="new" class="music-grid active">
+          <div id="newContainer"></div>
+        </div>
+        <div id="amapiano" class="music-grid">
+          <div id="amapianoContainer"></div>
+        </div>
+        <div id="hiphop" class="music-grid">
+          <div id="hiphopContainer"></div>
+        </div>
+        <div id="rnb" class="music-grid">
+          <div id="rnbContainer"></div>
+        </div>
+        <div id="afrohouse" class="music-grid">
+          <div id="afrohouseContainer"></div>
+        </div>
+        <div id="classics" class="music-grid">
+          <div id="classicsContainer"></div>
+        </div>
+        <div id="videos" class="music-grid">
+          <div id="videosContainer"></div>
+        </div>
       </div>
 
       <!-- LOADING PLACEHOLDER -->
@@ -134,50 +134,6 @@
       >
         Loading content...
       </div>
-
-      <!-- CONTENT SECTIONS -->
-      <section
-        class="music-grid active"
-        id="new"
-        role="tabpanel"
-        aria-labelledby="tab-new"
-        aria-label="New Music"
-      >
-        <div id="spotifyContainer"></div>
-      </section>
-
-      <section
-        class="music-grid"
-        id="reviews"
-        role="tabpanel"
-        aria-labelledby="tab-reviews"
-        aria-label="Reviews"
-        hidden
-      >
-        <div id="newsContainer"></div>
-      </section>
-
-      <section
-        class="music-grid"
-        id="classics"
-        role="tabpanel"
-        aria-labelledby="tab-classics"
-        aria-label="Curated Classics"
-        hidden
-      >
-        <div id="lastfmContainer"></div>
-      </section>
-
-      <section
-        class="music-grid"
-        id="videos"
-        role="tabpanel"
-        aria-labelledby="tab-videos"
-        aria-label="Music Videos"
-        hidden
-      >
-        <div id="youtubeContainer"></div>
-      </section>
     </main>
 
     <!-- FOOTER -->

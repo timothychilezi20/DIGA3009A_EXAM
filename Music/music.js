@@ -5,15 +5,17 @@ document.addEventListener("DOMContentLoaded", () => {
   // API Keys
   const SPOTIFY_CLIENT_ID = "61fb26a49a5c413c9a52aea3a25eda32";
   const SPOTIFY_CLIENT_SECRET = "2d33c647e7a645328c8011a0f190d501";
-  const GNEWS_API_KEY = "8f1c1833dfbacfe906b39011305f84e1";
   const YOUTUBE_API_KEY = "AIzaSyCNiJRNnYjNZvb4kAu_U5uhELzkTWscOTQ";
 
   // Simple cache storage
   const cache = {
-    spotify: null,
-    news: null,
+    new: null,
     classics: null,
     videos: null,
+    amapiano: null,
+    hiphop: null,
+    rnb: null,
+    afrohouse: null,
   };
 
   // Track loaded tabs
@@ -21,18 +23,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Track last refresh times
   const lastRefresh = {
-    spotify: 0,
-    news: 0,
+    new: 0,
     classics: 0,
     videos: 0,
+    amapiano: 0,
+    hiphop: 0,
+    rnb: 0,
+    afrohouse: 0,
   };
 
   // Refresh intervals
   const REFRESH_TIMES = {
-    spotify: 5 * 60 * 1000, // 5 minutes
-    news: 3 * 60 * 1000, // 3 minutes
+    new: 5 * 60 * 1000, // 5 minutes
     classics: 10 * 60 * 1000, // 10 minutes
     videos: 7 * 60 * 1000, // 7 minutes
+    amapiano: 6 * 60 * 1000, // 6 minutes
+    hiphop: 6 * 60 * 1000,
+    rnb: 6 * 60 * 1000,
+    afrohouse: 6 * 60 * 1000,
   };
 
   // Active timers
@@ -41,102 +49,122 @@ document.addEventListener("DOMContentLoaded", () => {
   // Spotify token
   let spotifyToken = null;
 
-  // South African artists and keywords for filtering
-  const southAfricanArtists = [
-    // Amapiano Artists
-    "Kabza De Small",
-    "DJ Maphorisa",
-    "Focalistic",
-    "DBN Gogo",
-    "Major League DJz",
-    "Mellow & Sleazy",
-    "Tyler ICU",
-    "Sir Trill",
-    "Ami Faku",
-    "Sha Sha",
-    "Mörda",
-    "Babalwa M",
-    "Nkosazana Daughter",
-    "TOSS",
-    "Young Stunna",
-    "Semi Tee",
-    "Miano",
-    "Kammu Dee",
-    "Mr JazziQ",
-    "Reece Madlisa",
-    "Zuma",
-    "Busta 929",
-    "Villosoul",
-    "Riky Rick",
-    "K.O",
-    "Nasty C",
-    "A-Reece",
-    "Blxckie",
-    "Sjava",
-    "Emtee",
-    "Cassper Nyovest",
-    "Kwesta",
-    "Aka",
-    "Nadia Nakai",
-    "Focalistic",
-    "Ch'cco",
-    "Pabi Cooper",
-    "Daliwonga",
-    "Musketeers",
+  // South African artists by genre
+  const southAfricanArtists = {
+    amapiano: [
+      "Kabza De Small",
+      "DJ Maphorisa",
+      "Focalistic",
+      "DBN Gogo",
+      "Major League DJz",
+      "Mellow & Sleazy",
+      "Tyler ICU",
+      "Sir Trill",
+      "Mr JazziQ",
+      "Reece Madlisa",
+      "Zuma",
+      "Busta 929",
+      "Musketeers",
+      "Daliwonga",
+      "Mpura",
+      "Soa mattrix",
+      "M.J",
+      "Moscow",
+      "Chley",
+    ],
+    hiphop: [
+      "Nasty C",
+      "A-Reece",
+      "Blxckie",
+      "Cassper Nyovest",
+      "Kwesta",
+      "AKA",
+      "Nadia Nakai",
+      "K.O",
+      "Riky Rick",
+      "25K",
+      "Yanga Chief",
+      "Tellaman",
+      "Lucasraps",
+      "Flvme",
+      "Shane Eagle",
+      "Frank Casino",
+    ],
+    rnb: [
+      "Ami Faku",
+      "Sha Sha",
+      "Elaine",
+      "Amanda Black",
+      "Shekhinah",
+      "Msaki",
+      "Lloyiso",
+      "Manana",
+      "Bongeziwe Mabandla",
+      "Zoë Modiga",
+      "Rowlene",
+      "Una Rams",
+      "Tyson Sybateli",
+      "Aewon Wolf",
+    ],
+    afrohouse: [
+      "Black Coffee",
+      "Mörda",
+      "Babalwa M",
+      "Caiiro",
+      "Enoo Napa",
+      "Da Capo",
+      "Jullian Gomes",
+      "Hyenah",
+      "Atjazz",
+      "Fka Mash",
+      "Citizen Deep",
+      "Dwson",
+      "Kususa",
+      "Zakes Bantwini",
+      "Sun-El Musician",
+    ],
+    classic: [
+      "Miriam Makeba",
+      "Hugh Masekela",
+      "Ladysmith Black Mambazo",
+      "Johnny Clegg",
+      "Brenda Fassie",
+      "Lucky Dube",
+      "Yvonne Chaka Chaka",
+      "Abdullah Ibrahim",
+      "The Soul Brothers",
+      "Mahotella Queens",
+      "Mahlathini",
+      "Stimela",
+      "Bayete",
+      "Sipho Hotstix Mabuse",
+    ],
+    pop: [
+      "Tyla",
+      "Master KG",
+      "Nomcebo Zikode",
+      "Sjava",
+      "Emtee",
+      "Kamo Mphela",
+      "Pabi Cooper",
+      "Nkosazana Daughter",
+      "TOSS",
+      "Young Stunna",
+      "Semi Tee",
+      "Miano",
+      "Kammu Dee",
+    ],
+  };
 
-    // Legendary SA Artists (still releasing music)
-    "Black Coffee",
-    "Master KG",
-    "Nomcebo Zikode",
-    "Brenda Fassie",
-    "Miriam Makeba",
-    "Hugh Masekela",
-    "Ladysmith Black Mambazo",
-    "Johnny Clegg",
-    "Lucky Dube",
-    "Yvonne Chaka Chaka",
-
-    // Rising Stars
-    "Lloyiso",
-    "Tyla",
-    "Elaine",
-    "Amanda Black",
-    "Shekhinah",
-    "Msaki",
-    "Zoë Modiga",
-    "Manana",
-    "Bongeziwe Mabandla",
-  ];
-
-  // SA music keywords for additional filtering
-  const saMusicKeywords = [
-    "amapiano",
-    "gqom",
-    "kwaito",
-    "afrohouse",
-    "south africa",
-    "sa music",
-    "mzansi",
-    "afro tech",
-    "durban house",
-  ];
-
-  // Classic artists (pre-2000s)
-  const classicSAArtists = [
-    "Miriam Makeba",
-    "Hugh Masekela",
-    "Ladysmith Black Mambazo",
-    "Johnny Clegg",
-    "Brenda Fassie",
-    "Lucky Dube",
-    "Yvonne Chaka Chaka",
-    "Abdullah Ibrahim",
-    "The Soul Brothers",
-    "Mahotella Queens",
-    "Mahlathini",
-    "Stimela",
-    "Bayete",
-  ];
+  // Genre-specific search queries
+  const genreQueries = {
+    amapiano: ["amapiano", "piano", "log drum", "villa"],
+    hiphop: ["hip hop", "rap", "drill", "trap"],
+    rnb: ["r&b", "soul", "neo soul", "alternative r&b"],
+    afrohouse: ["afro house", "deep house", "soulful house", "tribal house"],
+    pop: ["pop", "afropop", "dance pop"],
+    classic: ["classic", "traditional", "mbaqanga", "maskandi"],
+  };
 
   // === INITIAL SETUP ===
   sections.forEach((s, i) => {
@@ -144,43 +172,21 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Load initial content
-  fetchSpotifyNewReleases();
+  fetchNewReleases();
   startAllTimers();
 
   // === REFRESH SYSTEM ===
   function startAllTimers() {
     console.log("Starting refresh timers...");
-
-    // Clear any existing timers
     stopAllTimers();
 
-    // Start timer for each content type
-    startTimer("spotify", () => {
-      if (isTabActive("new")) {
-        console.log("Auto-refreshing South African new releases...");
-        fetchSpotifyNewReleases();
-      }
-    });
-
-    startTimer("news", () => {
-      if (isTabActive("reviews")) {
-        console.log("Auto-refreshing news...");
-        fetchGNewsArticles();
-      }
-    });
-
-    startTimer("classics", () => {
-      if (isTabActive("classics")) {
-        console.log("Auto-refreshing classics...");
-        fetchSAClassics();
-      }
-    });
-
-    startTimer("videos", () => {
-      if (isTabActive("videos")) {
-        console.log("Auto-refreshing videos...");
-        fetchYouTubeVideos();
-      }
+    Object.keys(REFRESH_TIMES).forEach((type) => {
+      startTimer(type, () => {
+        if (isTabActive(type)) {
+          console.log(`Auto-refreshing ${type} content...`);
+          loadContentForTab(type);
+        }
+      });
     });
   }
 
@@ -208,49 +214,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return now - lastRefresh[type] > REFRESH_TIMES[type];
   }
 
-  function showRefreshMessage(type) {
-    // Remove any existing message
-    const existingMsg = document.getElementById("refresh-message");
-    if (existingMsg) existingMsg.remove();
-
-    const message = document.createElement("div");
-    message.id = "refresh-message";
-    message.innerHTML = `🔄 Fresh ${getTypeName(type)} content loaded!`;
-    message.style.cssText = `
-      position: fixed;
-      top: 100px;
-      right: 20px;
-      background: #1db954;
-      color: white;
-      padding: 12px 16px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      z-index: 1000;
-      font-size: 14px;
-      font-weight: 600;
-      animation: slideIn 0.3s ease-out;
-    `;
-
-    document.body.appendChild(message);
-
-    // Auto remove after 3 seconds
-    setTimeout(() => {
-      if (message.parentElement) {
-        message.remove();
-      }
-    }, 3000);
-  }
-
-  function getTypeName(type) {
-    const names = {
-      spotify: "South African music",
-      news: "news",
-      classics: "classic music",
-      videos: "videos",
-    };
-    return names[type] || "content";
-  }
-
   // === TAB SWITCHING ===
   tabs.forEach((tab) => {
     tab.addEventListener("click", async () => {
@@ -267,24 +230,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Load content if needed
       if (!loadedTabs.has(target) || needsRefresh(target)) {
-        switch (target) {
-          case "new":
-            await fetchSpotifyNewReleases();
-            break;
-          case "reviews":
-            await fetchGNewsArticles();
-            break;
-          case "classics":
-            await fetchSAClassics();
-            break;
-          case "videos":
-            await fetchYouTubeVideos();
-            break;
-        }
+        await loadContentForTab(target);
         loadedTabs.add(target);
       }
     });
   });
+
+  // === CONTENT LOADING BY TAB ===
+  async function loadContentForTab(tabName) {
+    switch (tabName) {
+      case "new":
+        await fetchNewReleases();
+        break;
+      case "classics":
+        await fetchSAClassics();
+        break;
+      case "videos":
+        await fetchYouTubeVideos();
+        break;
+      case "amapiano":
+        await fetchGenreMusic("amapiano");
+        break;
+      case "hiphop":
+        await fetchGenreMusic("hiphop");
+        break;
+      case "rnb":
+        await fetchGenreMusic("rnb");
+        break;
+      case "afrohouse":
+        await fetchGenreMusic("afrohouse");
+        break;
+    }
+  }
 
   // === SPOTIFY AUTH ===
   async function getSpotifyToken() {
@@ -312,72 +289,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // === SOUTH AFRICAN MUSIC FILTERING ===
-  function isSouthAfricanMusic(album) {
-    if (!album || !album.artists) return false;
-
-    const artistNames = album.artists.map((artist) =>
-      artist.name.toLowerCase()
-    );
-    const albumName = album.name.toLowerCase();
-
-    // Check if any artist is South African
-    const hasSAArist = southAfricanArtists.some((artist) =>
-      artistNames.some(
-        (name) =>
-          name.includes(artist.toLowerCase()) ||
-          artist.toLowerCase().includes(name)
-      )
-    );
-
-    // Check for SA music keywords in album name
-    const hasSAKeywords = saMusicKeywords.some((keyword) =>
-      albumName.includes(keyword.toLowerCase())
-    );
-
-    // Check release date (last 6 months)
-    const isRecent = isWithinLastSixMonths(album.release_date);
-
-    return (hasSAArist || hasSAKeywords) && isRecent;
-  }
-
-  function isWithinLastSixMonths(releaseDate) {
-    if (!releaseDate) return false;
-
-    const release = new Date(releaseDate);
-    const sixMonthsAgo = new Date();
-    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-
-    return release >= sixMonthsAgo;
-  }
-
-  function getDaysAgo(releaseDate) {
-    if (!releaseDate) return "";
-
-    const release = new Date(releaseDate);
-    const now = new Date();
-    const diffTime = Math.abs(now - release);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 1) return "1 day ago";
-    if (diffDays < 30) return `${diffDays} days ago`;
-    if (diffDays < 60) return "1 month ago";
-    return `${Math.floor(diffDays / 30)} months ago`;
-  }
-
-  // === API FUNCTIONS ===
-  async function fetchSpotifyNewReleases() {
-    const container = document.getElementById("spotifyContainer");
+  // === NEW RELEASES (Mixed genres) ===
+  async function fetchNewReleases() {
+    const container = document.getElementById("newContainer");
     if (!container) return;
 
-    // Show refreshing state
     container.innerHTML =
-      '<div class="loading refreshing">Loading new South African music releases...</div>';
+      '<div class="loading refreshing">Loading new South African releases...</div>';
 
     try {
       const token = await getSpotifyToken();
 
-      // Fetch more results to ensure we get enough SA music after filtering
+      // Fetch new releases from South Africa
       const response = await fetch(
         "https://api.spotify.com/v1/browse/new-releases?country=ZA&limit=50",
         { headers: { Authorization: `Bearer ${token}` } }
@@ -387,214 +310,152 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await response.json();
 
-      // Filter for South African music from last 6 months
-      const saAlbums = data.albums?.items?.filter(isSouthAfricanMusic) || [];
+      // Filter for South African artists across all genres
+      const saAlbums =
+        data.albums?.items?.filter((album) => isSouthAfricanMusic(album)) || [];
 
-      console.log(
-        `Found ${saAlbums.length} South African albums from last 6 months`
-      );
-
-      // If we don't have enough SA albums, try searching for specific SA artists
-      let finalAlbums = saAlbums.slice(0, 9);
-
-      if (finalAlbums.length < 9) {
-        console.log(
-          "Not enough SA albums found, searching specific artists..."
+      // If not enough, supplement with genre-specific searches
+      let finalAlbums = saAlbums.slice(0, 12);
+      if (finalAlbums.length < 12) {
+        const supplemental = await searchMultipleGenres(
+          token,
+          ["amapiano", "hiphop", "rnb"],
+          4
         );
-        const additionalAlbums = await searchSAAristNewReleases(token);
-        finalAlbums = [...finalAlbums, ...additionalAlbums]
+        finalAlbums = [...finalAlbums, ...supplemental]
           .filter(
             (album, index, self) =>
               index === self.findIndex((a) => a.id === album.id)
           )
-          .slice(0, 9);
+          .slice(0, 12);
       }
 
-      cache.spotify = { albums: { items: finalAlbums } };
-      lastRefresh.spotify = Date.now();
-
-      if (isTabActive("new") && finalAlbums.length > 0) {
-        showRefreshMessage("spotify");
-      }
-
-      renderSpotifyData(container, { albums: { items: finalAlbums } });
+      cache.new = { albums: { items: finalAlbums } };
+      lastRefresh.new = Date.now();
+      renderSpotifyData(
+        container,
+        { albums: { items: finalAlbums } },
+        "New Release"
+      );
     } catch (error) {
-      console.error("Spotify Error:", error);
-      container.innerHTML = `
-        <div class="error">
-          <p>Failed to load South African music releases</p>
-          <button onclick="fetchSpotifyNewReleases()" class="retry-btn">Try Again</button>
-          ${
-            cache.spotify
-              ? `<button onclick="useCachedData('spotify')" class="cache-btn">Use Last Data</button>`
-              : ""
-          }
-        </div>
-      `;
+      console.error("New Releases Error:", error);
+      handleError(container, "new", "South African new releases");
     }
   }
 
-  // Search for new releases from specific SA artists
-  async function searchSAAristNewReleases(token) {
+  // === GENRE-SPECIFIC MUSIC ===
+  async function fetchGenreMusic(genre) {
+    const container = document.getElementById(`${genre}Container`);
+    if (!container) return;
+
+    container.innerHTML = `<div class="loading refreshing">Loading ${genre} music...</div>`;
+
+    try {
+      const token = await getSpotifyToken();
+      const albums = [];
+
+      // Search by genre keywords
+      const queries = genreQueries[genre] || [genre];
+      for (const query of queries) {
+        try {
+          const response = await fetch(
+            `https://api.spotify.com/v1/search?q=${encodeURIComponent(
+              query
+            )}%20genre:%22${genre}%22&type=album&limit=10`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.albums?.items) {
+              // Filter for South African artists in this genre
+              const genreAlbums = data.albums.items.filter(
+                (album) =>
+                  isSouthAfricanMusic(album) && isGenreMatch(album, genre)
+              );
+              albums.push(...genreAlbums);
+            }
+          }
+        } catch (e) {
+          console.log(`Search failed for ${query}`, e);
+        }
+      }
+
+      // If not enough, search specific artists for this genre
+      if (albums.length < 9) {
+        const artistAlbums = await searchArtistsByGenre(
+          token,
+          genre,
+          12 - albums.length
+        );
+        albums.push(...artistAlbums);
+      }
+
+      cache[genre] = { albums: albums.slice(0, 12) };
+      lastRefresh[genre] = Date.now();
+      renderSpotifyData(
+        container,
+        { albums: { items: albums.slice(0, 12) } },
+        genre.toUpperCase()
+      );
+    } catch (error) {
+      console.error(`${genre} Error:`, error);
+      handleError(container, genre, `${genre} music`);
+    }
+  }
+
+  // Search specific artists for a genre
+  async function searchArtistsByGenre(token, genre, limit) {
     const albums = [];
+    const artists = southAfricanArtists[genre] || [];
 
-    // Search top SA artists for recent albums
-    const artistsToSearch = southAfricanArtists.slice(0, 10);
-
-    for (const artist of artistsToSearch) {
+    for (const artist of artists.slice(0, 6)) {
       try {
         const response = await fetch(
           `https://api.spotify.com/v1/search?q=artist:${encodeURIComponent(
             artist
-          )}&type=album&limit=5`,
+          )}&type=album&limit=3`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
         if (response.ok) {
           const data = await response.json();
           if (data.albums?.items) {
-            // Filter for recent SA albums
-            const recentSAAlbums = data.albums.items.filter(
-              (album) =>
-                isSouthAfricanMusic(album) &&
-                isWithinLastSixMonths(album.release_date)
+            const recentAlbums = data.albums.items.filter((album) =>
+              isWithinLastYear(album.release_date)
             );
-            albums.push(...recentSAAlbums);
+            albums.push(...recentAlbums);
           }
         }
       } catch (e) {
-        console.log(`Search failed for ${artist}`, e);
+        console.log(`Artist search failed for ${artist}`, e);
       }
 
-      if (albums.length >= 9) break;
+      if (albums.length >= limit) break;
     }
 
     return albums;
   }
 
-  function renderSpotifyData(container, data) {
-    if (!data.albums?.items?.length) {
-      container.innerHTML = `
-        <div class="error">
-          <p>No new South African music found from the last 6 months</p>
-          <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">
-            Try refreshing in a few minutes or check back when new music is released.
-          </p>
-          <button onclick="fetchSpotifyNewReleases()" class="retry-btn">Try Again</button>
-        </div>
-      `;
-      return;
-    }
+  // Search multiple genres for supplemental content
+  async function searchMultipleGenres(token, genres, perGenre) {
+    const allAlbums = [];
 
-    container.innerHTML = data.albums.items
-      .map((album) => {
-        const releaseInfo = getDaysAgo(album.release_date);
-        const isSA = isSouthAfricanMusic(album);
-
-        return `
-      <div class="music-card">
-        <div class="album-art-container">
-          <img src="${
-            album.images[0]?.url || "https://via.placeholder.com/300"
-          }" 
-               alt="${album.name}" class="album-art" />
-          <div style="position: absolute; top: 4px; right: 4px; display: flex; gap: 2px;">
-            ${isSA ? '<span class="sa-badge">SA</span>' : ""}
-            <span class="new-badge">NEW</span>
-          </div>
-        </div>
-        <div class="album-info">
-          <div class="genre">${getAlbumGenre(album)}</div>
-          <h3 class="song-title">${escapeHtml(album.name)}</h3>
-          <p class="artist">${escapeHtml(
-            album.artists.map((a) => a.name).join(", ")
-          )}</p>
-          <p class="date">Released ${releaseInfo}</p>
-          <a href="${
-            album.external_urls.spotify
-          }" target="_blank" class="spotify-btn">
-            Listen on Spotify
-          </a>
-        </div>
-      </div>
-    `;
-      })
-      .join("");
-  }
-
-  async function fetchGNewsArticles() {
-    const container = document.getElementById("newsContainer");
-    if (!container) return;
-
-    container.innerHTML =
-      '<div class="loading refreshing">Loading South African music news...</div>';
-
-    try {
-      const response = await fetch(
-        `https://gnews.io/api/v4/search?q=music%20south%20africa&lang=en&country=za&max=9&token=${GNEWS_API_KEY}`
-      );
-
-      if (!response.ok) throw new Error("News API failed");
-
-      const data = await response.json();
-
-      cache.news = data;
-      lastRefresh.news = Date.now();
-
-      if (isTabActive("reviews")) {
-        showRefreshMessage("news");
+    for (const genre of genres) {
+      try {
+        const albums = await searchArtistsByGenre(token, genre, perGenre);
+        allAlbums.push(...albums);
+      } catch (e) {
+        console.log(`Genre search failed for ${genre}`, e);
       }
-
-      renderNewsData(container, data);
-    } catch (error) {
-      console.error("News Error:", error);
-      container.innerHTML = `
-        <div class="error">
-          <p>Failed to load music news</p>
-          <button onclick="fetchGNewsArticles()" class="retry-btn">Try Again</button>
-          ${
-            cache.news
-              ? `<button onclick="useCachedData('news')" class="cache-btn">Use Last Data</button>`
-              : ""
-          }
-        </div>
-      `;
-    }
-  }
-
-  function renderNewsData(container, data) {
-    if (!data.articles?.length) {
-      container.innerHTML = '<div class="error">No news found</div>';
-      return;
     }
 
-    container.innerHTML = data.articles
-      .map(
-        (article) => `
-      <div class="music-card">
-        <div class="album-art-container">
-          <img src="${article.image || "https://via.placeholder.com/300"}" 
-               alt="${article.title}" class="album-art" />
-        </div>
-        <div class="album-info">
-          <div class="genre">NEWS</div>
-          <h3 class="song-title">${escapeHtml(article.title)}</h3>
-          <p class="artist">${escapeHtml(
-            article.description || "South African music news"
-          )}</p>
-          <p class="author">By ${article.source?.name || "The Beat Report"}</p>
-          <a href="${
-            article.url
-          }" target="_blank" class="spotify-btn">Read Article</a>
-        </div>
-      </div>
-    `
-      )
-      .join("");
+    return allAlbums;
   }
 
+  // === CLASSICS ===
   async function fetchSAClassics() {
-    const container = document.getElementById("lastfmContainer");
+    const container = document.getElementById("classicsContainer");
     if (!container) return;
 
     container.innerHTML =
@@ -605,7 +466,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const albums = [];
 
       // Search for classic artists
-      for (const artist of classicSAArtists.slice(0, 6)) {
+      for (const artist of southAfricanArtists.classic.slice(0, 8)) {
         try {
           const response = await fetch(
             `https://api.spotify.com/v1/search?q=${encodeURIComponent(
@@ -631,109 +492,182 @@ document.addEventListener("DOMContentLoaded", () => {
           console.log(`Failed for ${artist}`, e);
         }
 
-        if (albums.length >= 9) break;
+        if (albums.length >= 12) break;
       }
 
-      cache.classics = { albums };
+      cache.classics = { albums: albums.slice(0, 12) };
       lastRefresh.classics = Date.now();
-
-      if (isTabActive("classics")) {
-        showRefreshMessage("classics");
-      }
-
-      renderClassicsData(container, { albums: albums.slice(0, 9) });
+      renderSpotifyData(
+        container,
+        { albums: { items: albums.slice(0, 12) } },
+        "CLASSIC"
+      );
     } catch (error) {
       console.error("Classics Error:", error);
-      container.innerHTML = `
-        <div class="error">
-          <p>Failed to load classics</p>
-          <button onclick="fetchSAClassics()" class="retry-btn">Try Again</button>
-          ${
-            cache.classics
-              ? `<button onclick="useCachedData('classics')" class="cache-btn">Use Last Data</button>`
-              : ""
-          }
-        </div>
-      `;
+      handleError(container, "classics", "classic music");
     }
   }
 
-  function renderClassicsData(container, data) {
-    if (!data.albums?.length) {
-      container.innerHTML = '<div class="error">No classics found</div>';
-      return;
-    }
-
-    container.innerHTML = data.albums
-      .map((album) => {
-        const releaseYear = album.release_date?.substring(0, 4) || "Classic";
-
-        return `
-      <div class="music-card">
-        <div class="album-art-container">
-          <img src="${
-            album.images[0]?.url || "https://via.placeholder.com/300"
-          }" 
-               alt="${album.name}" class="album-art" />
-          <span class="sa-badge" style="position: absolute; top: 4px; right: 4px;">CLASSIC</span>
-        </div>
-        <div class="album-info">
-          <div class="genre">CLASSIC</div>
-          <h3 class="song-title">${escapeHtml(album.name)}</h3>
-          <p class="artist">${escapeHtml(
-            album.artists.map((a) => a.name).join(", ")
-          )}</p>
-          <p class="date">${releaseYear} • South African Classic</p>
-          <a href="${
-            album.external_urls.spotify
-          }" target="_blank" class="spotify-btn">
-            Listen on Spotify
-          </a>
-        </div>
-      </div>
-    `;
-      })
-      .join("");
-  }
-
+  // === VIDEOS ===
   async function fetchYouTubeVideos() {
-    const container = document.getElementById("youtubeContainer");
+    const container = document.getElementById("videosContainer");
     if (!container) return;
 
     container.innerHTML =
       '<div class="loading refreshing">Loading South African music videos...</div>';
 
     try {
+      // Different search queries for variety
+      const queries = [
+        "south african amapiano 2024",
+        "south african hip hop 2024",
+        "south african music videos",
+        "afrohouse south africa",
+      ];
+
+      const randomQuery = queries[Math.floor(Math.random() * queries.length)];
+
       const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&q=south+african+music+2024&type=video&maxResults=9&key=${YOUTUBE_API_KEY}`
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(
+          randomQuery
+        )}&type=video&maxResults=12&key=${YOUTUBE_API_KEY}`
       );
 
       if (!response.ok) throw new Error("YouTube API failed");
 
       const data = await response.json();
-
       cache.videos = data;
       lastRefresh.videos = Date.now();
-
-      if (isTabActive("videos")) {
-        showRefreshMessage("videos");
-      }
-
       renderYouTubeData(container, data);
     } catch (error) {
       console.error("YouTube Error:", error);
+      handleError(container, "videos", "music videos");
+    }
+  }
+
+  // === FILTERING AND HELPER FUNCTIONS ===
+  function isSouthAfricanMusic(album) {
+    if (!album || !album.artists) return false;
+
+    const artistNames = album.artists.map((artist) =>
+      artist.name.toLowerCase()
+    );
+
+    // Check if any artist is South African across all genres
+    const hasSAArist = Object.values(southAfricanArtists)
+      .flat()
+      .some((artist) =>
+        artistNames.some(
+          (name) =>
+            name.includes(artist.toLowerCase()) ||
+            artist.toLowerCase().includes(name)
+        )
+      );
+
+    return hasSAArist && isWithinLastYear(album.release_date);
+  }
+
+  function isGenreMatch(album, genre) {
+    const albumName = album.name.toLowerCase();
+    const artistNames = album.artists.map((artist) =>
+      artist.name.toLowerCase()
+    );
+
+    // Check genre keywords
+    const genreKeywords = genreQueries[genre] || [genre];
+    const hasGenreKeyword = genreKeywords.some((keyword) =>
+      albumName.includes(keyword.toLowerCase())
+    );
+
+    // Check if artists belong to this genre
+    const genreArtists = southAfricanArtists[genre] || [];
+    const hasGenreArtist = genreArtists.some((artist) =>
+      artistNames.some(
+        (name) =>
+          name.includes(artist.toLowerCase()) ||
+          artist.toLowerCase().includes(name)
+      )
+    );
+
+    return hasGenreKeyword || hasGenreArtist;
+  }
+
+  function isWithinLastYear(releaseDate) {
+    if (!releaseDate) return false;
+    const release = new Date(releaseDate);
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    return release >= oneYearAgo;
+  }
+
+  function isWithinLastSixMonths(releaseDate) {
+    if (!releaseDate) return false;
+    const release = new Date(releaseDate);
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    return release >= sixMonthsAgo;
+  }
+
+  function getDaysAgo(releaseDate) {
+    if (!releaseDate) return "";
+    const release = new Date(releaseDate);
+    const now = new Date();
+    const diffTime = Math.abs(now - release);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 1) return "1 day ago";
+    if (diffDays < 30) return `${diffDays} days ago`;
+    if (diffDays < 60) return "1 month ago";
+    return `${Math.floor(diffDays / 30)} months ago`;
+  }
+
+  // === RENDER FUNCTIONS ===
+  function renderSpotifyData(container, data, badgeText = "NEW") {
+    if (!data.albums?.items?.length) {
       container.innerHTML = `
         <div class="error">
-          <p>Failed to load videos</p>
-          <button onclick="fetchYouTubeVideos()" class="retry-btn">Try Again</button>
-          ${
-            cache.videos
-              ? `<button onclick="useCachedData('videos')" class="cache-btn">Use Last Data</button>`
-              : ""
-          }
+          <p>No music found</p>
+          <button onclick="fetchNewReleases()" class="retry-btn">Try Again</button>
         </div>
       `;
+      return;
     }
+
+    container.innerHTML = data.albums.items
+      .map((album) => {
+        const releaseInfo = getDaysAgo(album.release_date);
+        const genre = getAlbumGenre(album);
+
+        return `
+        <div class="music-card">
+          <div class="album-art-container">
+            <img src="${
+              album.images[0]?.url || "https://via.placeholder.com/300"
+            }" 
+                 alt="${album.name}" class="album-art" />
+            <div class="badge-container">
+              <span class="sa-badge">SA</span>
+              <span class="genre-badge">${badgeText}</span>
+            </div>
+          </div>
+          <div class="info">
+            <div class="genre">${genre}</div>
+            <h3 class="song-title">${escapeHtml(album.name)}</h3>
+            <p class="artist">${escapeHtml(
+              album.artists.map((a) => a.name).join(", ")
+            )}</p>
+            <p class="date">Released ${releaseInfo}</p>
+            <a href="${
+              album.external_urls.spotify
+            }" target="_blank" class="spotify-btn">
+              <i class="fab fa-spotify"></i>
+              Listen on Spotify
+            </a>
+          </div>
+        </div>
+      `;
+      })
+      .join("");
   }
 
   function renderYouTubeData(container, data) {
@@ -751,12 +685,13 @@ document.addEventListener("DOMContentLoaded", () => {
                alt="${video.snippet.title}" />
           <div class="play-button">▶</div>
         </div>
-        <div class="album-info">
+        <div class="info">
           <div class="genre">VIDEO</div>
           <h3 class="song-title">${escapeHtml(video.snippet.title)}</h3>
           <p class="artist">${escapeHtml(video.snippet.channelTitle)}</p>
           <a href="https://www.youtube.com/watch?v=${video.id.videoId}" 
-             target="_blank" class="spotify-btn">
+             target="_blank" class="youtube-btn">
+            <i class="fab fa-youtube"></i>
             Watch on YouTube
           </a>
         </div>
@@ -766,16 +701,45 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
   }
 
-  // Helper function to determine album genre
   function getAlbumGenre(album) {
     const albumName = album.name.toLowerCase();
-    if (albumName.includes("amapiano")) return "AMAPIANO";
-    if (albumName.includes("hip") || albumName.includes("rap"))
+    const artistNames = album.artists
+      .map((artist) => artist.name.toLowerCase())
+      .join(" ");
+
+    if (albumName.includes("amapiano") || artistNames.includes("amapiano"))
+      return "AMAPIANO";
+    if (
+      albumName.includes("hip") ||
+      albumName.includes("rap") ||
+      artistNames.includes("hip") ||
+      artistNames.includes("rap")
+    )
       return "HIP-HOP";
-    if (albumName.includes("r&b") || albumName.includes("rb")) return "R&B";
-    if (albumName.includes("dance") || albumName.includes("house"))
-      return "DANCE";
+    if (
+      albumName.includes("r&b") ||
+      albumName.includes("rb") ||
+      albumName.includes("soul")
+    )
+      return "R&B";
+    if (albumName.includes("house") || artistNames.includes("house"))
+      return "AFROHOUSE";
+    if (albumName.includes("pop")) return "POP";
     return "MUSIC";
+  }
+
+  function handleError(container, type, contentName) {
+    container.innerHTML = `
+      <div class="error">
+        <p>Failed to load ${contentName}</p>
+        <button onclick="loadContentForTab('${type}')" class="retry-btn">Try Again</button>
+        ${
+          cache[type]
+            ? `<button onclick="useCachedData('${type}')" class="cache-btn">Use Last Data</button>`
+            : ""
+        }
+      </div>
+    `;
   }
 
   // === UTILITY FUNCTIONS ===
@@ -790,21 +754,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function useCachedData(type) {
-    const container = document.getElementById(
-      {
-        spotify: "spotifyContainer",
-        news: "newsContainer",
-        classics: "lastfmContainer",
-        videos: "youtubeContainer",
-      }[type]
-    );
+    const containerMap = {
+      new: "newContainer",
+      classics: "classicsContainer",
+      videos: "videosContainer",
+      amapiano: "amapianoContainer",
+      hiphop: "hiphopContainer",
+      rnb: "rnbContainer",
+      afrohouse: "afrohouseContainer",
+    };
 
+    const container = document.getElementById(containerMap[type]);
     if (!container || !cache[type]) return;
 
     const renderers = {
-      spotify: renderSpotifyData,
-      news: renderNewsData,
-      classics: renderClassicsData,
+      new: (c, d) => renderSpotifyData(c, d, "New Release"),
+      amapiano: (c, d) => renderSpotifyData(c, d, "AMAPIANO"),
+      hiphop: (c, d) => renderSpotifyData(c, d, "HIP-HOP"),
+      rnb: (c, d) => renderSpotifyData(c, d, "R&B"),
+      afrohouse: (c, d) => renderSpotifyData(c, d, "AFROHOUSE"),
+      classics: (c, d) => renderSpotifyData(c, d, "CLASSIC"),
       videos: renderYouTubeData,
     };
 
@@ -821,9 +790,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Make functions global for buttons
-  window.fetchSpotifyNewReleases = fetchSpotifyNewReleases;
-  window.fetchGNewsArticles = fetchGNewsArticles;
+  window.fetchNewReleases = fetchNewReleases;
   window.fetchSAClassics = fetchSAClassics;
   window.fetchYouTubeVideos = fetchYouTubeVideos;
+  window.fetchGenreMusic = fetchGenreMusic;
+  window.loadContentForTab = loadContentForTab;
   window.useCachedData = useCachedData;
 });

@@ -142,12 +142,12 @@ document.addEventListener("DOMContentLoaded", () => {
   async function generateLargeDataset() {
     isLoading = true;
     grid.innerHTML = `
-            <div class="loading">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Loading extensive South African music collection...</p>
-                <p style="font-size: 0.9rem; margin-top: 10px;">This may take a moment as we fetch real album data</p>
-            </div>
-        `;
+      <div class="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading extensive South African music collection...</p>
+        <p style="font-size: 0.9rem; margin-top: 10px;">This may take a moment as we fetch real album data</p>
+      </div>
+    `;
 
     try {
       const batchPromises = [];
@@ -255,6 +255,26 @@ document.addEventListener("DOMContentLoaded", () => {
     return albums;
   }
 
+  // Fetch album info from Last.fm
+  async function fetchAlbumInfo(artist, albumName) {
+    try {
+      const url = `${LAST_FM_BASE_URL}?method=album.getinfo&artist=${encodeURIComponent(
+        artist
+      )}&album=${encodeURIComponent(
+        albumName
+      )}&api_key=${LAST_FM_API_KEY}&format=json`;
+
+      const response = await fetch(url);
+      if (!response.ok) return {};
+
+      const data = await response.json();
+      return data.album || {};
+    } catch (error) {
+      console.error(`Error fetching album info for ${albumName}:`, error);
+      return {};
+    }
+  }
+
   // Process individual album data
   async function processAlbumData(artist, album, isClassic) {
     const albumDetails = await fetchAlbumInfo(artist, album.name);
@@ -281,6 +301,28 @@ document.addEventListener("DOMContentLoaded", () => {
       isClassic: isClassic,
       tags: albumDetails.tags?.tag?.map((t) => t.name) || [],
     };
+  }
+
+  // Get album image
+  function getAlbumImage(images) {
+    if (!images || !Array.isArray(images)) {
+      return "https://via.placeholder.com/300/333/FFFFFF?text=Album+Art";
+    }
+
+    const largeImage =
+      images.find((img) => img.size === "large") ||
+      images.find((img) => img.size === "extralarge");
+    return (
+      largeImage?.["#text"] ||
+      images[0]?.["#text"] ||
+      "https://via.placeholder.com/300/333/FFFFFF?text=Album+Art"
+    );
+  }
+
+  // Get primary genre from tags
+  function getPrimaryGenre(tags) {
+    if (!tags || !tags.tag || !Array.isArray(tags.tag)) return null;
+    return tags.tag[0]?.name || null;
   }
 
   // Generate synthetic reviews when API data is limited
@@ -444,51 +486,140 @@ document.addEventListener("DOMContentLoaded", () => {
     return (Math.random() * 1.2 + 3.8).toFixed(1);
   }
 
-  // ... (keep the existing filterReviewsByCategory, displayReviews, and other helper functions)
+  function generateAuthorName() {
+    const authors = [
+      "Lerato M.",
+      "Thabo K.",
+      "Zanele P.",
+      "Kagiso L.",
+      "Nomsa D.",
+      "Sipho M.",
+      "Buhle N.",
+      "Mandla R.",
+    ];
+    return authors[Math.floor(Math.random() * authors.length)];
+  }
+
+  function generateDate(releaseYear) {
+    const currentYear = new Date().getFullYear();
+    const year = Math.min(releaseYear + 1, currentYear);
+    const month = Math.floor(Math.random() * 12) + 1;
+    const day = Math.floor(Math.random() * 28) + 1;
+    return `${year}-${month.toString().padStart(2, "0")}-${day
+      .toString()
+      .padStart(2, "0")}`;
+  }
+
+  // Filter reviews by category
+  function filterReviewsByCategory(category) {
+    let filteredReviews = [];
+
+    switch (category) {
+      case "new":
+        filteredReviews = allReviews.filter((review) => !review.isClassic);
+        break;
+      case "classics":
+        filteredReviews = allReviews.filter((review) => review.isClassic);
+        break;
+      case "featured":
+        filteredReviews = allReviews.filter((review) => review.rating >= 4.5);
+        break;
+      default:
+        filteredReviews = allReviews;
+    }
+
+    displayReviews(filteredReviews);
+  }
+
+  // Display reviews in the grid
+  function displayReviews(reviews) {
+    if (!reviews || reviews.length === 0) {
+      grid.innerHTML = `
+        <div class="error">
+          <p>No reviews found for this category.</p>
+          <button onclick="generateLargeDataset()" class="retry-btn">Try Again</button>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = reviews
+      .map(
+        (review) => `
+      <div class="music-card">
+        <div class="album-art-container">
+          <img src="${review.cover}" alt="${review.title}" class="album-art" />
+          <div class="badge-container">
+            <span class="sa-badge">SA</span>
+            <span class="genre-badge">${review.genre}</span>
+          </div>
+        </div>
+        <div class="info">
+          <div class="genre">${review.genre}</div>
+          <h3 class="song-title">${review.title}</h3>
+          <p class="artist">${review.artist}</p>
+          <p class="date">Released ${review.releaseYear}</p>
+          <div class="rating">
+            <span class="stars">${"★".repeat(Math.floor(review.rating))}${
+          review.rating % 1 >= 0.5 ? "½" : ""
+        }</span>
+            <span class="rating-value">${review.rating}/5</span>
+          </div>
+          <p class="summary">${review.summary}</p>
+          <p class="author">Reviewed by ${review.author}</p>
+        </div>
+      </div>
+    `
+      )
+      .join("");
+  }
+
+  // Get current category reviews
+  function getCurrentCategoryReviews() {
+    switch (currentCategory) {
+      case "new":
+        return allReviews.filter((review) => !review.isClassic);
+      case "classics":
+        return allReviews.filter((review) => review.isClassic);
+      case "featured":
+        return allReviews.filter((review) => review.rating >= 4.5);
+      default:
+        return allReviews;
+    }
+  }
 
   // Search functionality with debouncing
   let searchTimeout;
   const searchBar = document.getElementById("searchBar");
 
-  searchBar.addEventListener("input", (e) => {
-    clearTimeout(searchTimeout);
-    const searchTerm = e.target.value.toLowerCase();
+  if (searchBar) {
+    searchBar.addEventListener("input", (e) => {
+      clearTimeout(searchTimeout);
+      const searchTerm = e.target.value.toLowerCase();
 
-    searchTimeout = setTimeout(() => {
-      if (searchTerm.length < 2) {
-        filterReviewsByCategory(currentCategory);
-        return;
-      }
+      searchTimeout = setTimeout(() => {
+        if (searchTerm.length < 2) {
+          filterReviewsByCategory(currentCategory);
+          return;
+        }
 
-      const filteredReviews = allReviews.filter(
-        (review) =>
-          review.title.toLowerCase().includes(searchTerm) ||
-          review.artist.toLowerCase().includes(searchTerm) ||
-          review.genre.toLowerCase().includes(searchTerm) ||
-          (review.tags &&
-            review.tags.some((tag) => tag.toLowerCase().includes(searchTerm)))
-      );
+        const filteredReviews = allReviews.filter(
+          (review) =>
+            review.title.toLowerCase().includes(searchTerm) ||
+            review.artist.toLowerCase().includes(searchTerm) ||
+            review.genre.toLowerCase().includes(searchTerm) ||
+            (review.tags &&
+              review.tags.some((tag) => tag.toLowerCase().includes(searchTerm)))
+        );
 
-      displayReviews(filteredReviews);
-    }, 300);
-  });
+        displayReviews(filteredReviews);
+      }, 300);
+    });
+  }
 
-  // Load more functionality
-  let displayedCount = 0;
-  const LOAD_BATCH_SIZE = 12;
-
-  window.loadMoreReviews = function () {
-    const currentReviews = getCurrentCategoryReviews();
-    const nextBatch = currentReviews.slice(
-      displayedCount,
-      displayedCount + LOAD_BATCH_SIZE
-    );
-
-    if (nextBatch.length > 0) {
-      displayReviews([...grid.children, ...nextBatch]);
-      displayedCount += LOAD_BATCH_SIZE;
-    }
-  };
+  // Make functions global
+  window.generateLargeDataset = generateLargeDataset;
+  window.filterReviewsByCategory = filterReviewsByCategory;
 
   // Initial load
   generateLargeDataset();

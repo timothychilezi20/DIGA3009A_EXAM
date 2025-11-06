@@ -1,19 +1,21 @@
-#news-page {
-  padding: 40px 20px;
-  max-width: 1100px;
-  margin: 0 auto;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.page-header {
-  padding: 10px 30px;
-  border-bottom: 1px solid #ccc;
-  height: 100px;
-  position: relative;
-  top: 0;
-  z-index: 5;
+body {
+  background-color: #f8f9fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+.news-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 15px 80px;
   background-color: #fff;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
@@ -41,8 +43,37 @@
 
 #searchBar:focus {
   outline: none;
-  border-color: #ffb915;
+  border-color: #007847;
   width: 250px;
+}
+
+.icon {
+  cursor: pointer;
+  color: #555;
+  transition: color 0.3s;
+}
+
+.icon:hover {
+  color: #007847;
+}
+
+#userLoginContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 15px;
+  border-radius: 30px;
+  transition: background-color 0.3s;
+}
+
+#userLoginContainer:hover {
+  background-color: #f0f0f0;
+}
+
+.login-text {
+  font-weight: 600;
+  color: #555;
 }
 
 #news-section h2 {

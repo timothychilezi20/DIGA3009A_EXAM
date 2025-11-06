@@ -15,11 +15,13 @@
     <!-- Header -->
     <header class="main-header">
       <div class="logo-section">
-        <img
-          src="../images/Logo.png"
-          alt="The Beat Report Logo"
-          class="logo-img"
-        />
+        <a href="../index.html" aria-label="Go to homepage">
+          <img
+            src="../images/Logo.png"
+            alt="The Beat Report Logo"
+            class="logo-img"
+          />
+        </a>
       </div>
       <div class="header-icons">
         <div class="search-wrapper">
@@ -45,7 +47,7 @@
     </header>
 
     <!-- NAVIGATION -->
-    <nav class="main-nav">
+    <nav class="reviews-nav">
       <ul>
         <li><a href="../index.html">Home</a></li>
         <li><a href="../news/news.html">News</a></li>
@@ -56,7 +58,7 @@
 
     <!-- MAIN CONTENT -->
     <main class="reviews-section">
-      <h2 class="section-title">SOUTH AFRICAN MUSIC REVIEWS</h2>
+      <h1 class="section-title">SOUTH AFRICAN MUSIC REVIEWS</h1>
 
       <div class="tabs">
         <button class="tab active" data-category="new">New Releases</button>
@@ -67,7 +69,7 @@
       <div class="reviews-grid" id="reviewsGrid">
         <div class="loading">
           <i class="fas fa-spinner fa-spin"></i>
-          Loading South African music reviews...
+          <p>Loading South African music reviews...</p>
         </div>
       </div>
 
