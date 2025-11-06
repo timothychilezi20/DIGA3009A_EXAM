@@ -3,37 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Music | The Beat Report</title>
-    <meta name="author" content="Timothy Chilezi" />
-    <meta
-      name="description"
-      content="South African music updates and classics archive."
-    />
-
-    <!-- STYLES -->
+    <title>Events | The Beat Report</title>
     <link rel="stylesheet" href="events.css" />
     <link rel="stylesheet" href="../Main/main.css" />
-
-    <!-- FontAwesome CSS -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-
-    <!-- ICONS & SCRIPTS -->
-    <script
-      src="https://kit.fontawesome.com/dddfa338de.js"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="events.js" defer></script>
   </head>
-
   <body>
-    <!-- HEADER -->
-    <header class="main-header" role="banner">
+    <!-- Header -->
+    <header class="main-header">
       <div class="logo-section">
-        <a href="../index.html" aria-label="Go to homepage">
+        <a href="../index.html">
           <img
             src="../images/Logo.png"
             alt="The Beat Report Logo"
@@ -41,136 +23,121 @@
           />
         </a>
       </div>
-
       <div class="header-icons">
         <div class="search-wrapper">
-          <button
-            id="searchIcon"
-            class="icon"
-            aria-label="Search Music"
-            aria-expanded="false"
-          >
-            <img src="../images/SearchIcon.png" alt="Search" />
+          <button id="searchIcon" class="icon">
+            <i class="fas fa-search"></i>
           </button>
           <input
             type="text"
             id="searchBar"
-            placeholder="Search..."
-            aria-label="Search Music"
-            aria-hidden="true"
+            placeholder="Search events, artists..."
           />
         </div>
-
         <div id="userLoginContainer">
-          <span id="loginText" class="login-text" aria-label="User login">
-            Login
-          </span>
-          <img
+          <span id="loginText" class="login-text">Login</span>
+          <i
             id="userIcon"
-            src="../images/UserIcon.png"
-            alt="User Profile"
-            class="icon"
+            class="fas fa-user-circle icon"
             style="display: none"
-          />
+          ></i>
         </div>
       </div>
     </header>
 
-    <!-- NAVIGATION -->
-    <nav class="main-nav" role="navigation" aria-label="Main site navigation">
+    <!-- Navigation -->
+    <nav class="events-nav">
       <ul>
         <li><a href="../index.html">Home</a></li>
         <li><a href="../news/news.html">News</a></li>
         <li><a href="../reviews/reviews.html">Reviews</a></li>
         <li><a href="../music/music.html">Music</a></li>
-        <li><a href="#" class="active" aria-current="page">Events</a></li>
+        <li><a href="#" class="active">Events</a></li>
       </ul>
     </nav>
 
-    <!-- MAIN CONTENT -->
-    <main class="music-container">
-      <h1 class="page-title">MUSIC</h1>
+    <!-- Main Content -->
+    <main class="events-section">
+      <h1 class="section-title">SOUTH AFRICAN MUSIC EVENTS</h1>
 
-      <!-- TABS -->
-      <div class="music-tabs">
-        <button class="tab active" data-tab="new">New Releases</button>
-        <button class="tab" data-tab="amapiano">Amapiano</button>
-        <button class="tab" data-tab="hiphop">Hip-Hop</button>
-        <button class="tab" data-tab="rnb">R&B</button>
-        <button class="tab" data-tab="afrohouse">Afro House</button>
-        <button class="tab" data-tab="classics">Classics</button>
-        <button class="tab" data-tab="videos">Videos</button>
+      <!-- Main Tabs -->
+      <div class="main-tabs">
+        <button class="main-tab active" data-category="upcoming">
+          Upcoming Events
+        </button>
+        <button class="main-tab" data-category="festivals">Festivals</button>
+        <button class="main-tab" data-category="concerts">Concerts</button>
       </div>
 
-      <div class="music-grids">
-        <div id="new" class="music-grid active">
-          <div id="newContainer"></div>
+      <!-- Filters Section -->
+      <div class="filters-section">
+        <div class="filter-group">
+          <label>Genre:</label>
+          <div class="genre-filters">
+            <button class="genre-filter active" data-genre="all">
+              All Genres
+            </button>
+            <!-- Genre buttons will be populated by JavaScript -->
+          </div>
         </div>
-        <div id="amapiano" class="music-grid">
-          <div id="amapianoContainer"></div>
+
+        <div class="filter-group">
+          <label>Location:</label>
+          <select id="locationSelect" class="location-select">
+            <option value="ZA">All South Africa</option>
+            <option value="Johannesburg">Johannesburg</option>
+            <option value="Cape Town">Cape Town</option>
+            <option value="Durban">Durban</option>
+            <option value="Pretoria">Pretoria</option>
+          </select>
         </div>
-        <div id="hiphop" class="music-grid">
-          <div id="hiphopContainer"></div>
-        </div>
-        <div id="rnb" class="music-grid">
-          <div id="rnbContainer"></div>
-        </div>
-        <div id="afrohouse" class="music-grid">
-          <div id="afrohouseContainer"></div>
-        </div>
-        <div id="classics" class="music-grid">
-          <div id="classicsContainer"></div>
-        </div>
-        <div id="videos" class="music-grid">
-          <div id="videosContainer"></div>
+
+        <div class="filter-group">
+          <label>Date:</label>
+          <select id="dateSelect" class="date-select">
+            <option value="all">All Dates</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="next-month">Next Month</option>
+          </select>
         </div>
       </div>
 
-      <!-- LOADING PLACEHOLDER -->
-      <div
-        id="loadingMessage"
-        class="loading"
-        style="display: none"
-        aria-live="polite"
-      >
-        Loading content...
+      <!-- Events Grid -->
+      <div class="events-grid" id="eventsGrid">
+        <div class="loading">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Loading South African music events...</p>
+        </div>
+      </div>
+
+      <!-- Load More -->
+      <div class="pagination">
+        <button id="loadMore" class="load-more-btn" style="display: none">
+          <i class="fas fa-plus"></i> Load More Events
+        </button>
+        <div class="pagination-info">
+          Showing <span id="showingCount">0</span> events
+        </div>
       </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="site-footer" role="contentinfo">
+    <!-- Footer -->
+    <footer class="site-footer">
       <img
         src="../images/Logo.png"
-        alt="The Beat Report Footer Logo"
+        alt="The Beat Report Logo"
         class="footer-logo"
       />
+      <p class="footer-text">Discover the best South African music events</p>
       <div class="footer-icons">
-        <a
-          href="https://twitter.com"
-          target="_blank"
-          aria-label="Twitter"
-          rel="noopener"
-        >
-          <i class="fab fa-twitter icon" aria-hidden="true"></i>
-        </a>
-        <a
-          href="https://instagram.com"
-          target="_blank"
-          aria-label="Instagram"
-          rel="noopener"
-        >
-          <i class="fab fa-instagram icon" aria-hidden="true"></i>
-        </a>
-        <a
-          href="https://youtube.com"
-          target="_blank"
-          aria-label="YouTube"
-          rel="noopener"
-        >
-          <i class="fab fa-youtube icon" aria-hidden="true"></i>
-        </a>
+        <a href="#" class="footer-icon"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="footer-icon"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="footer-icon"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="footer-icon"><i class="fab fa-youtube"></i></a>
       </div>
-      <p class="footer-text">© 2025 The Beat Report. All rights reserved.</p>
     </footer>
+
+    <script src="events.js"></script>
   </body>
 </html>
