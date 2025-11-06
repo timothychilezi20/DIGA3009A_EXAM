@@ -136,7 +136,7 @@ body {
 
 .section-title {
   color: #ffb915;
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 800;
   border-bottom: 2px solid #ccc;
   padding-bottom: 10px;
@@ -145,6 +145,8 @@ body {
 
 .news-page {
   padding: 40px 80px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .tabs {
@@ -163,11 +165,16 @@ body {
   cursor: pointer;
   color: #333;
   position: relative;
+  padding: 8px 20px;
+  border-radius: 20px;
+  transition: all 0.3s;
 }
 
 .tab.active {
   color: #fff;
   background-color: #ffb915;
-  border-radius: 20px;
-  padding: 5px 15px;
+}
+
+.tab:hover:not(.active) {
+  background-color: #e9ecef;
 }
