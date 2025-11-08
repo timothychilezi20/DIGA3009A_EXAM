@@ -1,764 +1,706 @@
-// Main JavaScript for The Beat Report - Global functionality
+// Main JavaScript - The Beat Report
+// Persistent Login System & Global Functionality
 
-// =========================
-// DOM CONTENT LOADED INITIALIZATION
-// =========================
+console.log("main.js loaded successfully");
+
+// ===== GLOBAL VARIABLES =====
+let currentUser = null;
+const VALID_CREDENTIALS = {
+  username: "admin",
+  password: "password123",
+};
+
+// Global search content storage
+window.searchContent = {
+  articles: [],
+  news: [],
+  reviews: [],
+  music: [],
+  events: [],
+  charts: [],
+  pages: [],
+};
+
+// ===== INITIALIZATION =====
 document.addEventListener("DOMContentLoaded", function () {
-  // === Search Toggle ===
-  const searchIcon = document.getElementById("searchIcon");
-  const searchBar = document.getElementById("searchBar");
+  console.log("DOM fully loaded");
+  initMainFunctionality();
+});
 
-  if (searchIcon && searchBar) {
-    searchIcon.addEventListener("click", () => {
-      searchBar.classList.toggle("active");
-      searchBar.focus(); // optional: focuses input immediately
-    });
+function initMainFunctionality() {
+  console.log("Initializing main functionality...");
+
+  // Check if user is already logged in
+  checkExistingLogin();
+
+  // Initialize all components
+  initSearch();
+  initLogin();
+  initFeedback();
+  initBackToTop();
+  initLoadingScreen();
+  initNavigation();
+  initModals();
+
+  console.log("✓ Main functionality initialized");
+}
+
+// ===== PERSISTENT LOGIN SYSTEM =====
+
+function checkExistingLogin() {
+  const savedUser = localStorage.getItem("beatReportUser");
+  const loginTime = localStorage.getItem("beatReportLoginTime");
+
+  if (savedUser && loginTime) {
+    const loginTimestamp = parseInt(loginTime);
+    const currentTime = new Date().getTime();
+    const twentyFourHours = 24 * 60 * 60 * 1000;
+
+    if (currentTime - loginTimestamp < twentyFourHours) {
+      currentUser = savedUser;
+      updateUIForLoggedInUser();
+      console.log("✓ User automatically logged in:", currentUser);
+    } else {
+      clearLoginData();
+      console.log("Login session expired");
+    }
   }
+}
 
-  // === Login Modal ===
+function initLogin() {
   const loginText = document.getElementById("loginText");
   const userIcon = document.getElementById("userIcon");
+  const loginModal = document.getElementById("loginModal");
+  const loginForm = document.getElementById("loginForm");
+  const closeModal = document.querySelector("#loginModal .close");
 
-  // Example: open login modal when clicking "Login"
-  if (loginText) {
-    loginText.addEventListener("click", () => {
-      const loginModal = document.getElementById("loginModal");
-      if (loginModal) loginModal.style.display = "flex";
+  if (!loginText || !loginModal) {
+    console.log("Login elements not found on this page");
+    return;
+  }
+
+  console.log("✓ Login functionality initialized");
+
+  // Login text click handler
+  loginText.addEventListener("click", function () {
+    if (currentUser) {
+      showLogoutOption();
+    } else {
+      loginModal.style.display = "flex";
+    }
+  });
+
+  // User icon click handler
+  if (userIcon) {
+    userIcon.addEventListener("click", function () {
+      showLogoutOption();
     });
   }
 
-  // Example: handle login form submission
-  const loginForm = document.getElementById("loginForm");
+  // Close modal handler
+  if (closeModal) {
+    closeModal.addEventListener("click", function () {
+      loginModal.style.display = "none";
+    });
+  }
+
+  // Login form submission
   if (loginForm) {
     loginForm.addEventListener("submit", function (e) {
       e.preventDefault();
-
-      // Simulate successful login
-      if (loginText) loginText.style.display = "none";
-      if (userIcon) userIcon.style.display = "inline-block";
-
-      // Close login modal
-      const loginModal = document.getElementById("loginModal");
-      if (loginModal) loginModal.style.display = "none";
+      handleLogin();
     });
   }
+}
 
-  // === Feedback Bar ===
+function handleLogin() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  const loginMessage = document.querySelector(".login-message");
+
+  console.log("Login attempt:", username);
+
+  if (!username || !password) {
+    showLoginMessage("Please enter both username and password", "error");
+    return;
+  }
+
+  if (
+    username === VALID_CREDENTIALS.username &&
+    password === VALID_CREDENTIALS.password
+  ) {
+    currentUser = username;
+
+    // Save to localStorage
+    const loginTime = new Date().getTime();
+    localStorage.setItem("beatReportUser", currentUser);
+    localStorage.setItem("beatReportLoginTime", loginTime.toString());
+
+    // Update UI
+    updateUIForLoggedInUser();
+
+    // Close modal and show success
+    document.getElementById("loginModal").style.display = "none";
+    showLoginMessage("Login successful! Welcome back.", "success");
+
+    // Clear form
+    document.getElementById("loginForm").reset();
+
+    console.log("✓ User logged in successfully:", currentUser);
+  } else {
+    showLoginMessage("Invalid username or password", "error");
+    console.log("✗ Login failed for user:", username);
+  }
+}
+
+function handleLogout() {
+  clearLoginData();
+  updateUIForLoggedOutUser();
+  showLoginMessage("You have been logged out successfully", "success");
+  console.log("✓ User logged out");
+}
+
+function clearLoginData() {
+  currentUser = null;
+  localStorage.removeItem("beatReportUser");
+  localStorage.removeItem("beatReportLoginTime");
+}
+
+function updateUIForLoggedInUser() {
+  const loginText = document.getElementById("loginText");
+  const userIcon = document.getElementById("userIcon");
+
+  if (loginText) {
+    loginText.textContent = currentUser;
+    loginText.style.fontWeight = "600";
+    loginText.style.color = "#007847";
+  }
+
+  if (userIcon) {
+    userIcon.style.display = "block";
+    userIcon.title = `Logged in as ${currentUser} (Click to logout)`;
+  }
+}
+
+function updateUIForLoggedOutUser() {
+  const loginText = document.getElementById("loginText");
+  const userIcon = document.getElementById("userIcon");
+
+  if (loginText) {
+    loginText.textContent = "Login";
+    loginText.style.fontWeight = "600";
+    loginText.style.color = "#111";
+  }
+
+  if (userIcon) {
+    userIcon.style.display = "none";
+  }
+}
+
+function showLogoutOption() {
+  if (confirm(`Do you want to logout of ${currentUser}?`)) {
+    handleLogout();
+  }
+}
+
+function showLoginMessage(message, type) {
+  const loginMessage = document.querySelector(".login-message");
+  if (loginMessage) {
+    loginMessage.textContent = message;
+    loginMessage.style.color = type === "error" ? "#e74c3c" : "#27ae60";
+    loginMessage.style.fontWeight = "600";
+
+    setTimeout(() => {
+      loginMessage.textContent = "";
+    }, 3000);
+  }
+}
+
+// ===== SEARCH FUNCTIONALITY =====
+
+function initSearch() {
+  const searchIcon = document.getElementById("searchIcon");
+  const searchBar = document.getElementById("searchBar");
+
+  if (!searchIcon || !searchBar) {
+    console.log("Search elements not found on this page");
+    return;
+  }
+
+  console.log("✓ Search functionality initialized");
+
+  searchIcon.addEventListener("click", function () {
+    searchBar.classList.toggle("active");
+    if (searchBar.classList.contains("active")) {
+      searchBar.focus();
+    }
+  });
+
+  // Close search when clicking outside
+  document.addEventListener("click", function (event) {
+    if (
+      !event.target.closest(".search-wrapper") &&
+      searchBar.classList.contains("active")
+    ) {
+      searchBar.classList.remove("active");
+    }
+  });
+
+  // Search functionality
+  searchBar.addEventListener("input", function () {
+    performSearch(this.value);
+  });
+
+  // Enter key to search
+  searchBar.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      performGlobalSearch(this.value);
+    }
+  });
+}
+
+function performSearch(query) {
+  if (query.length > 2) {
+    console.log("Searching for:", query);
+    // Basic search implementation
+    const results = window.performGlobalSearch(query);
+    displaySearchResults(results, query);
+  } else {
+    hideSearchResults();
+  }
+}
+
+function performGlobalSearch(query) {
+  if (query.length < 2) return [];
+
+  const results = [];
+  const searchTerms = query.toLowerCase().split(" ");
+
+  Object.keys(window.searchContent).forEach((category) => {
+    window.searchContent[category].forEach((item) => {
+      const searchableText = (
+        item.title +
+        " " +
+        (item.description || "") +
+        " " +
+        (item.content || "") +
+        " " +
+        (item.artist || "") +
+        " " +
+        (item.venue || "") +
+        " " +
+        (item.genre || "")
+      ).toLowerCase();
+
+      const allTermsFound = searchTerms.every((term) =>
+        searchableText.includes(term)
+      );
+
+      if (allTermsFound) {
+        results.push({
+          ...item,
+          category: category,
+        });
+      }
+    });
+  });
+
+  console.log(`Global search for "${query}" found ${results.length} results`);
+  return results;
+}
+
+function displaySearchResults(results, query) {
+  // Remove existing results if any
+  const existingResults = document.getElementById("globalSearchResults");
+  if (existingResults) {
+    existingResults.remove();
+  }
+
+  if (results.length === 0) {
+    return;
+  }
+
+  // Create results container
+  const resultsContainer = document.createElement("div");
+  resultsContainer.id = "globalSearchResults";
+  resultsContainer.className = "global-search-results";
+
+  // Create results header
+  const headerHTML = `
+        <div class="search-results-header">
+            <h2><i class="fas fa-search"></i> Search Results for "${query}"</h2>
+            <button class="clear-search-btn" onclick="hideSearchResults()">
+                <i class="fas fa-times"></i> Clear
+            </button>
+        </div>
+    `;
+
+  // Group results by category
+  const resultsByCategory = {};
+  results.forEach((result) => {
+    if (!resultsByCategory[result.category]) {
+      resultsByCategory[result.category] = [];
+    }
+    resultsByCategory[result.category].push(result);
+  });
+
+  // Create results content
+  let contentHTML = '<div class="search-results-content">';
+
+  Object.keys(resultsByCategory).forEach((category) => {
+    const categoryResults = resultsByCategory[category];
+    const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+
+    contentHTML += `
+            <div class="search-category-section">
+                <h3>${categoryName} (${categoryResults.length})</h3>
+                <div class="search-category-grid ${category}-grid">
+        `;
+
+    categoryResults.forEach((item) => {
+      contentHTML += `
+                <div class="search-result-item" onclick="window.location.href='${
+                  item.url
+                }'">
+                    ${
+                      item.image
+                        ? `<img src="${item.image}" alt="${item.title}">`
+                        : ""
+                    }
+                    <div class="search-item-content">
+                        <h4>${item.title}</h4>
+                        <p>${item.description || ""}</p>
+                        ${
+                          item.artist
+                            ? `<p class="search-artist">${item.artist}</p>`
+                            : ""
+                        }
+                        ${
+                          item.date
+                            ? `<p class="search-date">${item.date}</p>`
+                            : ""
+                        }
+                        ${
+                          item.venue
+                            ? `<p class="search-venue">${item.venue}</p>`
+                            : ""
+                        }
+                    </div>
+                </div>
+            `;
+    });
+
+    contentHTML += `
+                </div>
+            </div>
+        `;
+  });
+
+  contentHTML += "</div>";
+
+  resultsContainer.innerHTML = headerHTML + contentHTML;
+
+  // Insert after main content or at the end of body
+  const mainContent = document.querySelector("main") || document.body;
+  mainContent.parentNode.insertBefore(
+    resultsContainer,
+    mainContent.nextSibling
+  );
+
+  // Smooth scroll to results
+  resultsContainer.scrollIntoView({ behavior: "smooth" });
+}
+
+function hideSearchResults() {
+  const existingResults = document.getElementById("globalSearchResults");
+  if (existingResults) {
+    existingResults.remove();
+  }
+
+  // Clear search bar
+  const searchBar = document.getElementById("searchBar");
+  if (searchBar) {
+    searchBar.value = "";
+    searchBar.classList.remove("active");
+  }
+}
+
+// Global function to add content to search
+window.addContentToSearch = function (category, items) {
+  if (window.searchContent[category]) {
+    window.searchContent[category] =
+      window.searchContent[category].concat(items);
+    console.log(`✓ Added ${items.length} items to ${category} search`);
+  }
+};
+
+// ===== FEEDBACK FUNCTIONALITY =====
+
+function initFeedback() {
   const feedbackButton = document.getElementById("feedbackButton");
   const feedbackModal = document.getElementById("feedbackModal");
   const closeFeedback = document.getElementById("closeFeedback");
+  const sendFeedback = document.getElementById("sendFeedback");
 
-  if (feedbackButton && feedbackModal) {
-    feedbackButton.addEventListener("click", () => {
-      feedbackModal.style.display = "flex";
-    });
+  if (!feedbackButton || !feedbackModal) {
+    console.log("Feedback elements not found on this page");
+    return;
   }
 
-  if (closeFeedback && feedbackModal) {
-    closeFeedback.addEventListener("click", () => {
+  console.log("✓ Feedback functionality initialized");
+
+  feedbackButton.addEventListener("click", function () {
+    feedbackModal.style.display = "flex";
+  });
+
+  if (closeFeedback) {
+    closeFeedback.addEventListener("click", function () {
       feedbackModal.style.display = "none";
     });
   }
 
-  // Optional: close modal if clicked outside
-  window.addEventListener("click", (e) => {
-    if (e.target === feedbackModal) {
+  // Click outside to close
+  window.addEventListener("click", function (event) {
+    if (event.target === feedbackModal) {
       feedbackModal.style.display = "none";
     }
   });
 
-  // Initialize Global Search
-  window.globalSearch = new GlobalSearch();
+  // Send feedback
+  if (sendFeedback) {
+    sendFeedback.addEventListener("click", function () {
+      const feedbackText = document.getElementById("feedbackText").value;
+      const feedbackMessage = document.getElementById("feedbackMessage");
 
-  // Initialize Back to Top
-  window.backToTop = new BackToTop();
-
-  // Add special effects after a short delay
-  setTimeout(() => {
-    if (window.backToTop) {
-      window.backToTop.addSpecialEffects();
-    }
-  }, 1000);
-});
-
-// =========================
-// GLOBAL SEARCH FUNCTIONALITY
-// =========================
-class GlobalSearch {
-  constructor() {
-    this.allContentData = {};
-    this.init();
-  }
-
-  init() {
-    this.setupSearchListeners();
-    this.loadSearchData();
-  }
-
-  setupSearchListeners() {
-    const searchIcon = document.getElementById("searchIcon");
-    const searchBar = document.getElementById("searchBar");
-
-    if (!searchIcon || !searchBar) return;
-
-    // Toggle search bar visibility
-    searchIcon.addEventListener("click", () => {
-      const isVisible = searchBar.style.display === "block";
-      searchBar.style.display = isVisible ? "none" : "block";
-      if (!isVisible) {
-        searchBar.focus();
-      } else {
-        this.clearSearch();
-      }
-    });
-
-    // Handle search input
-    searchBar.addEventListener("input", (e) => {
-      this.handleSearch(e.target.value.trim());
-    });
-
-    searchBar.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        this.performSearch(e.target.value.trim());
-      }
-    });
-
-    // Close search when clicking outside
-    document.addEventListener("click", (e) => {
-      if (
-        searchBar &&
-        !searchBar.contains(e.target) &&
-        searchIcon &&
-        !searchIcon.contains(e.target)
-      ) {
-        searchBar.style.display = "none";
-        this.clearSearch();
-      }
-    });
-  }
-
-  handleSearch(searchTerm) {
-    if (searchTerm.length === 0) {
-      this.clearSearch();
-      return;
-    }
-
-    if (searchTerm.length >= 2) {
-      this.performSearch(searchTerm);
-    }
-  }
-
-  performSearch(searchTerm) {
-    if (!searchTerm) {
-      this.clearSearch();
-      return;
-    }
-
-    console.log(`Global Search for: ${searchTerm}`);
-
-    const searchResults = this.searchAllContent(searchTerm);
-    this.displaySearchResults(searchResults, searchTerm);
-  }
-
-  searchAllContent(searchTerm) {
-    const results = {
-      articles: [],
-      releases: [],
-      events: [],
-      charts: [],
-      news: [],
-      reviews: [],
-    };
-
-    const lowerSearchTerm = searchTerm.toLowerCase();
-
-    // Search through all stored data
-    Object.keys(this.allContentData).forEach((category) => {
-      if (
-        this.allContentData[category] &&
-        Array.isArray(this.allContentData[category])
-      ) {
-        results[category] = this.allContentData[category].filter((item) =>
-          this.doesItemMatchSearch(item, lowerSearchTerm)
-        );
-      }
-    });
-
-    // Also search current page content
-    this.searchCurrentPageContent(results, lowerSearchTerm);
-
-    return results;
-  }
-
-  doesItemMatchSearch(item, lowerSearchTerm) {
-    // Check various properties that might contain searchable text
-    const searchableFields = [
-      "title",
-      "name",
-      "description",
-      "content",
-      "artist",
-      "venue",
-      "source",
-      "author",
-      "genre",
-      "platform",
-      "album",
-      "track",
-    ];
-
-    return searchableFields.some((field) => {
-      if (item[field] && typeof item[field] === "string") {
-        return item[field].toLowerCase().includes(lowerSearchTerm);
-      }
-      if (item[field] && typeof item[field] === "object" && item[field].name) {
-        return item[field].name.toLowerCase().includes(lowerSearchTerm);
-      }
-      return false;
-    });
-  }
-
-  searchCurrentPageContent(results, lowerSearchTerm) {
-    // Search visible content on the current page
-    const pageSpecificSelectors = {
-      articles: ".sidebar-article, .side-article, .latest-article, .story-card",
-      news: ".news-item, .news-article",
-      reviews: ".review-item, .review-card",
-      music: ".release-card, .track-item, .album-card",
-      events: ".event-item, .event-card",
-    };
-
-    Object.keys(pageSpecificSelectors).forEach((category) => {
-      const elements = document.querySelectorAll(
-        pageSpecificSelectors[category]
-      );
-      elements.forEach((element) => {
-        const textContent = element.textContent.toLowerCase();
-        if (textContent.includes(lowerSearchTerm)) {
-          const item = this.createElementSearchItem(element, category);
-          if (item) {
-            results[category].push(item);
-          }
+      if (feedbackText.trim() === "") {
+        if (feedbackMessage) {
+          feedbackMessage.textContent = "Please enter your feedback";
+          feedbackMessage.style.color = "#e74c3c";
         }
-      });
-    });
-  }
-
-  createElementSearchItem(element, category) {
-    // Create a search result item from DOM element
-    const title =
-      element.querySelector("h1, h2, h3, h4, h5, h6")?.textContent ||
-      "Untitled";
-    const description = element.querySelector("p")?.textContent || "";
-    const image =
-      element.querySelector("img")?.src || this.getDefaultImage(category);
-    const url =
-      element.getAttribute("onclick")?.match(/window\.open\('([^']+)'/)?.[1] ||
-      element.querySelector("a")?.href ||
-      "#";
-
-    return {
-      title: title.trim(),
-      description: description.trim(),
-      image: image,
-      url: url,
-      category: category,
-    };
-  }
-
-  getDefaultImage(category) {
-    const defaultImages = {
-      articles: "images/music-default.jpg",
-      news: "images/music-default.jpg",
-      reviews: "images/music-default.jpg",
-      music: "images/sa-music-default.jpg",
-      events: "images/event-default.jpg",
-      charts: "images/chart-default.jpg",
-    };
-    return defaultImages[category] || "images/music-default.jpg";
-  }
-
-  displaySearchResults(results, searchTerm) {
-    // Hide regular content
-    this.hidePageContent();
-
-    // Create search results container
-    let searchResultsContainer = document.getElementById("globalSearchResults");
-    if (!searchResultsContainer) {
-      searchResultsContainer = document.createElement("div");
-      searchResultsContainer.id = "globalSearchResults";
-      searchResultsContainer.className = "global-search-results";
-
-      // Insert at the top of main content
-      const mainContent =
-        document.querySelector(".main-content") || document.body;
-      const firstContent = mainContent.querySelector(
-        ".content-grid, .the-latest, main"
-      );
-      if (firstContent) {
-        mainContent.insertBefore(searchResultsContainer, firstContent);
-      } else {
-        mainContent.prepend(searchResultsContainer);
+        return;
       }
-    }
 
-    // Build results HTML
-    searchResultsContainer.innerHTML = this.buildResultsHTML(
-      results,
-      searchTerm
-    );
+      // Simulate sending feedback
+      if (feedbackMessage) {
+        feedbackMessage.textContent = "Thank you for your feedback!";
+        feedbackMessage.style.color = "#27ae60";
+      }
 
-    // Add clear search event listener
-    const clearSearchBtn = document.getElementById("clearGlobalSearch");
-    if (clearSearchBtn) {
-      clearSearchBtn.addEventListener("click", () => this.clearSearch());
-    }
-  }
+      console.log("Feedback submitted:", feedbackText);
 
-  buildResultsHTML(results, searchTerm) {
-    let resultsHTML = `
-      <div class="search-results-header">
-        <h2><i class="fas fa-search"></i> Search Results for "${searchTerm}"</h2>
-        <button id="clearGlobalSearch" class="clear-search-btn">
-          <i class="fas fa-times"></i> Clear Search
-        </button>
-      </div>
-      <div class="search-results-content">
-    `;
-
-    const totalResults = Object.values(results).reduce(
-      (sum, arr) => sum + arr.length,
-      0
-    );
-
-    if (totalResults === 0) {
-      resultsHTML += `
-        <div class="no-results">
-          <i class="fas fa-search fa-3x"></i>
-          <h3>No results found for "${searchTerm}"</h3>
-          <p>Try different keywords or check the spelling.</p>
-        </div>
-      `;
-    } else {
-      // Display results by category
-      Object.keys(results).forEach((category) => {
-        if (results[category].length > 0) {
-          resultsHTML += this.buildCategoryHTML(category, results[category]);
+      // Clear and close after 2 seconds
+      setTimeout(() => {
+        document.getElementById("feedbackText").value = "";
+        feedbackModal.style.display = "none";
+        if (feedbackMessage) {
+          feedbackMessage.textContent = "";
         }
-      });
-    }
-
-    resultsHTML += `</div>`;
-    return resultsHTML;
-  }
-
-  buildCategoryHTML(category, items) {
-    const categoryTitles = {
-      articles: "Articles",
-      news: "News",
-      reviews: "Reviews",
-      music: "Music Releases",
-      events: "Events",
-      charts: "Charts",
-    };
-
-    return `
-      <section class="search-category-section">
-        <h3>${categoryTitles[category] || category} (${items.length})</h3>
-        <div class="search-category-grid ${category}-grid">
-          ${items.map((item) => this.buildItemHTML(item, category)).join("")}
-        </div>
-      </section>
-    `;
-  }
-
-  buildItemHTML(item, category) {
-    const clickHandler =
-      item.url && item.url !== "#"
-        ? `onclick="window.open('${item.url}', '_blank')"`
-        : "";
-
-    return `
-      <div class="search-result-item ${category}-item" ${clickHandler}>
-        <img src="${item.image}" alt="${item.title}" 
-             onerror="this.src='${this.getDefaultImage(category)}'">
-        <div class="search-item-content">
-          <h4>${item.title}</h4>
-          ${
-            item.description
-              ? `<p>${this.truncateText(item.description, 120)}</p>`
-              : ""
-          }
-          ${item.artist ? `<p class="search-artist">${item.artist}</p>` : ""}
-          ${item.date ? `<p class="search-date">${item.date}</p>` : ""}
-          ${item.venue ? `<p class="search-venue">${item.venue}</p>` : ""}
-        </div>
-      </div>
-    `;
-  }
-
-  hidePageContent() {
-    const contentSelectors = [
-      ".content-grid",
-      ".the-latest",
-      ".spotify-releases",
-      ".news-grid",
-      ".reviews-container",
-      ".music-grid",
-      ".events-container",
-    ];
-
-    contentSelectors.forEach((selector) => {
-      const elements = document.querySelectorAll(selector);
-      elements.forEach((el) => {
-        el.style.display = "none";
-      });
+      }, 2000);
     });
-  }
-
-  showPageContent() {
-    const contentSelectors = [
-      ".content-grid",
-      ".the-latest",
-      ".spotify-releases",
-      ".news-grid",
-      ".reviews-container",
-      ".music-grid",
-      ".events-container",
-    ];
-
-    contentSelectors.forEach((selector) => {
-      const elements = document.querySelectorAll(selector);
-      elements.forEach((el) => {
-        el.style.display = "";
-      });
-    });
-  }
-
-  clearSearch() {
-    const searchResultsContainer = document.getElementById(
-      "globalSearchResults"
-    );
-    if (searchResultsContainer) {
-      searchResultsContainer.remove();
-    }
-
-    const searchBar = document.getElementById("searchBar");
-    if (searchBar) {
-      searchBar.value = "";
-      searchBar.style.display = "none";
-    }
-
-    this.showPageContent();
-  }
-
-  loadSearchData() {
-    // Try to load search data from localStorage or global variable
-    try {
-      const savedData = localStorage.getItem("beatReportSearchData");
-      if (savedData) {
-        this.allContentData = JSON.parse(savedData);
-      }
-    } catch (e) {
-      console.log("No saved search data found");
-    }
-
-    // Also check for global data
-    if (window.globalContentData) {
-      this.allContentData = {
-        ...this.allContentData,
-        ...window.globalContentData,
-      };
-    }
-  }
-
-  saveSearchData() {
-    try {
-      localStorage.setItem(
-        "beatReportSearchData",
-        JSON.stringify(this.allContentData)
-      );
-    } catch (e) {
-      console.warn("Could not save search data to localStorage");
-    }
-  }
-
-  addContentData(category, data) {
-    if (!this.allContentData[category]) {
-      this.allContentData[category] = [];
-    }
-    this.allContentData[category] = this.allContentData[category].concat(data);
-    this.saveSearchData();
-  }
-
-  truncateText(text, maxLength) {
-    if (!text) return "";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   }
 }
 
-// =========================
-// BACK TO TOP FUNCTIONALITY
-// =========================
-class BackToTop {
-  constructor() {
-    this.button = null;
-    this.scrollThreshold = 300;
-    this.pageThemes = {
-      home: {
-        bgColor: "#e74c3c", // Red from your header
-        hoverColor: "#c0392b",
-        icon: "fas fa-arrow-up",
-      },
-      news: {
-        bgColor: "#3498db", // Blue
-        hoverColor: "#2980b9",
-        icon: "fas fa-newspaper",
-      },
-      reviews: {
-        bgColor: "#2ecc71", // Green
-        hoverColor: "#27ae60",
-        icon: "fas fa-star",
-      },
-      music: {
-        bgColor: "#9b59b6", // Purple
-        hoverColor: "#8e44ad",
-        icon: "fas fa-music",
-      },
-      events: {
-        bgColor: "#f39c12", // Orange
-        hoverColor: "#d35400",
-        icon: "fas fa-calendar-alt",
-      },
-    };
-    this.init();
+// ===== BACK TO TOP FUNCTIONALITY =====
+
+function initBackToTop() {
+  // Create back to top button if it doesn't exist
+  if (!document.getElementById("backToTop")) {
+    const backToTopBtn = document.createElement("button");
+    backToTopBtn.id = "backToTop";
+    backToTopBtn.className = "back-to-top-btn";
+    backToTopBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+    backToTopBtn.title = "Back to Top";
+    document.body.appendChild(backToTopBtn);
+
+    console.log("✓ Back to top button created");
   }
 
-  init() {
-    this.createButton();
-    this.setPageTheme();
-    this.addEventListeners();
-    this.toggleVisibility();
-  }
+  const backToTopBtn = document.getElementById("backToTop");
 
-  createButton() {
-    this.button = document.createElement("button");
-    this.button.id = "backToTop";
-    this.button.className = "back-to-top-btn";
-    this.button.innerHTML = '<i class="fas fa-arrow-up"></i>';
-    this.button.setAttribute("aria-label", "Back to top");
-
-    // Add to body
-    document.body.appendChild(this.button);
-  }
-
-  setPageTheme() {
-    const currentPage = this.getCurrentPage();
-    const theme = this.pageThemes[currentPage] || this.pageThemes.home;
-
-    // REMOVE this line to prevent adding classes to body
-    // document.body.classList.add(`${currentPage}-page`);
-
-    if (this.button) {
-      this.button.style.backgroundColor = theme.bgColor;
-      this.button.innerHTML = `<i class="${theme.icon}"></i>`;
-
-      // Add hover effect
-      this.button.addEventListener("mouseenter", () => {
-        this.button.style.backgroundColor = theme.hoverColor;
-      });
-
-      this.button.addEventListener("mouseleave", () => {
-        this.button.style.backgroundColor = theme.bgColor;
-      });
-    }
-  }
-
-  getCurrentPage() {
-    const path = window.location.pathname;
-    if (path.includes("news")) return "news";
-    if (path.includes("reviews")) return "reviews";
-    if (path.includes("music")) return "music";
-    if (path.includes("events")) return "events";
-    if (path.includes("contact")) return "contact"; // Add this line
-    return "home";
-  }
-
-  addEventListeners() {
-    // Scroll event
-    window.addEventListener("scroll", () => {
-      this.toggleVisibility();
-    });
-
-    // Click event
-    this.button.addEventListener("click", (e) => {
-      e.preventDefault();
-      this.scrollToTop();
-    });
-
-    // Keyboard accessibility
-    this.button.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        this.scrollToTop();
-      }
-    });
-  }
-
-  toggleVisibility() {
-    if (!this.button) return;
-
-    const scrollY = window.scrollY || document.documentElement.scrollTop;
-
-    if (scrollY > this.scrollThreshold) {
-      this.button.classList.add("visible");
-      this.button.setAttribute("aria-hidden", "false");
+  // Show/hide button based on scroll position
+  window.addEventListener("scroll", function () {
+    if (window.pageYOffset > 300) {
+      backToTopBtn.classList.add("visible");
     } else {
-      this.button.classList.remove("visible");
-      this.button.setAttribute("aria-hidden", "true");
+      backToTopBtn.classList.remove("visible");
     }
-  }
+  });
 
-  scrollToTop() {
-    const scrollToTop = () => {
-      const currentPosition =
-        window.scrollY || document.documentElement.scrollTop;
-
-      if (currentPosition > 0) {
-        window.requestAnimationFrame(scrollToTop);
-        window.scrollTo(0, currentPosition - currentPosition / 8);
-      }
-    };
-
-    scrollToTop();
-
-    // Add a little bounce effect at the end
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 600);
-  }
-
-  // Optional: Add special effects based on page
-  addSpecialEffects() {
-    const page = this.getCurrentPage();
-
-    switch (page) {
-      case "music":
-        // Add occasional pulse for music vibe
-        setInterval(() => {
-          if (this.button.classList.contains("visible")) {
-            this.button.classList.add("pulse");
-            setTimeout(() => {
-              this.button.classList.remove("pulse");
-            }, 2000);
-          }
-        }, 10000); // Pulse every 10 seconds when visible
-        break;
-
-      case "events":
-        // Events page could have a calendar flip animation
-        this.button.addEventListener("click", () => {
-          this.button.style.transform = "scale(0.9) rotate(180deg)";
-          setTimeout(() => {
-            this.button.style.transform = "scale(1) rotate(0deg)";
-          }, 300);
-        });
-        break;
-    }
-  }
+  // Scroll to top when clicked
+  backToTopBtn.addEventListener("click", function () {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  });
 }
 
-// =========================
-// GLOBAL EXPORTS AND UTILITIES
-// =========================
+// ===== LOADING SCREEN FUNCTIONALITY =====
 
-// Export function for other pages to add their content
-window.addContentToSearch = function (category, data) {
-  if (window.globalSearch) {
-    window.globalSearch.addContentData(category, data);
-  } else {
-    // Store for when globalSearch is initialized
-    if (!window.pendingSearchData) window.pendingSearchData = {};
-    if (!window.pendingSearchData[category])
-      window.pendingSearchData[category] = [];
-    window.pendingSearchData[category] =
-      window.pendingSearchData[category].concat(data);
+function initLoadingScreen() {
+  const websiteLoader = document.getElementById("websiteLoader");
+  const mainContent = document.getElementById("mainContent");
+
+  if (!websiteLoader || !mainContent) {
+    console.log("Loading screen elements not found on this page");
+    return;
   }
-};
 
-// Helper function to extract content from current page
-window.extractPageContent = function () {
-  const content = {
-    articles: [],
-    news: [],
-    reviews: [],
-    music: [],
-    events: [],
+  console.log("✓ Loading screen functionality initialized");
+
+  // Simulate loading process
+  const progressFill = document.querySelector(".progress-fill");
+  let progress = 0;
+
+  const loadingInterval = setInterval(() => {
+    progress += Math.random() * 15;
+    if (progress > 100) progress = 100;
+
+    if (progressFill) {
+      progressFill.style.width = progress + "%";
+    }
+
+    if (progress >= 100) {
+      clearInterval(loadingInterval);
+      setTimeout(() => {
+        websiteLoader.style.display = "none";
+        mainContent.style.display = "block";
+        console.log("✓ Loading complete, main content revealed");
+      }, 500);
+    }
+  }, 200);
+}
+
+// ===== NAVIGATION FUNCTIONALITY =====
+
+function initNavigation() {
+  console.log("✓ Navigation functionality initialized");
+
+  // Set active navigation based on current page
+  setActiveNavigation();
+
+  // Add hover effects to navigation items
+  const navItems = document.querySelectorAll(
+    ".main-nav a, .news-nav a, .reviews-nav a, .music-nav a, .events-nav a, .contact-nav a"
+  );
+  navItems.forEach((item) => {
+    item.addEventListener("mouseenter", function () {
+      this.style.transition = "all 0.3s ease";
+    });
+  });
+}
+
+function setActiveNavigation() {
+  const currentPage = window.location.pathname.split("/").pop();
+  const navLinks = document.querySelectorAll("nav a");
+
+  navLinks.forEach((link) => {
+    const linkHref = link.getAttribute("href");
+    if (
+      linkHref === currentPage ||
+      (currentPage === "" && linkHref === "index.html")
+    ) {
+      link.classList.add("active");
+    } else {
+      link.classList.remove("active");
+    }
+  });
+}
+
+// ===== MODAL MANAGEMENT =====
+
+function initModals() {
+  console.log("✓ Modal management initialized");
+
+  // Close modals with Escape key
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      closeAllModals();
+    }
+  });
+}
+
+function closeAllModals() {
+  const modals = document.querySelectorAll(".modal, .feedback-modal");
+  modals.forEach((modal) => {
+    modal.style.display = "none";
+  });
+}
+
+// ===== UTILITY FUNCTIONS =====
+
+// Debounce function for search
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
   };
+}
 
-  // Extract articles
-  document
-    .querySelectorAll(".sidebar-article, .side-article, .latest-article")
-    .forEach((el) => {
-      const title = el.querySelector("h1, h2, h3, h4")?.textContent?.trim();
-      const description = el.querySelector("p")?.textContent?.trim();
-      const image = el.querySelector("img")?.src;
-      const url =
-        el.getAttribute("onclick")?.match(/window\.open\('([^']+)'/)?.[1] ||
-        "#";
-
-      if (title) {
-        content.articles.push({ title, description, image, url });
-      }
-    });
-
-  // Extract music releases
-  document.querySelectorAll(".release-card").forEach((el) => {
-    const name = el.querySelector("h4")?.textContent?.trim();
-    const artist = el.querySelector(".artist")?.textContent?.trim();
-    const image = el.querySelector("img")?.src;
-    const url =
-      el.getAttribute("onclick")?.match(/window\.open\('([^']+)'/)?.[1] || "#";
-
-    if (name) {
-      content.music.push({ name: name, artist, image, url });
-    }
-  });
-
-  // Extract events
-  document.querySelectorAll(".side-article").forEach((el) => {
-    const name = el.querySelector("h4")?.textContent?.trim();
-    const venue = el.querySelector(".venue")?.textContent?.trim();
-    const date = el.querySelector(".date")?.textContent?.trim();
-    const image = el.querySelector("img")?.src;
-    const url =
-      el.getAttribute("onclick")?.match(/window\.open\('([^']+)'/)?.[1] || "#";
-
-    if (name) {
-      content.events.push({ name, venue, date, image, url });
-    }
-  });
-
-  return content;
+// Format date function
+window.formatDate = function (dateString) {
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
-// Auto-extract content from page when loaded
-document.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => {
-    const pageContent = window.extractPageContent();
-    Object.keys(pageContent).forEach((category) => {
-      if (pageContent[category].length > 0) {
-        window.addContentToSearch(category, pageContent[category]);
-      }
-    });
-  }, 2000);
+// Truncate text function
+window.truncateText = function (text, maxLength) {
+  if (text.length <= maxLength) return text;
+  return text.substr(0, maxLength) + "...";
+};
+
+// ===== GLOBAL EXPORTS =====
+
+// Make functions globally accessible
+window.mainFunctions = {
+  getCurrentUser: () => currentUser,
+  isLoggedIn: () => currentUser !== null,
+  logout: handleLogout,
+  performSearch: performGlobalSearch,
+  hideSearchResults: hideSearchResults,
+  formatDate: window.formatDate,
+  truncateText: window.truncateText,
+};
+
+// Global login state checker
+window.isUserLoggedIn = function () {
+  return currentUser !== null;
+};
+
+// Global user info getter
+window.getCurrentUserInfo = function () {
+  return currentUser;
+};
+
+console.log("✓ main.js setup complete - All systems ready");
+console.log(
+  "Available global functions: mainFunctions, addContentToSearch, performGlobalSearch"
+);
+
+// Sample content for search (can be removed when real content is added)
+window.addEventListener("load", function () {
+  // Add sample content to search index
+  const sampleContent = [
+    {
+      title: "Welcome to The Beat Report",
+      description:
+        "South Africa's premier music news source featuring the latest in music, reviews, and events.",
+      url: "index.html",
+      category: "pages",
+    },
+    {
+      title: "Contact Us",
+      description:
+        "Get in touch with The Beat Report team for music submissions, event coverage, and partnerships.",
+      url: "contact/contact.html",
+      category: "pages",
+    },
+  ];
+
+  window.addContentToSearch("pages", sampleContent);
 });
-
-// Export for manual control if needed
-window.scrollToTop = function () {
-  if (window.backToTop) {
-    window.backToTop.scrollToTop();
-  } else {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-};

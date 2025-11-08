@@ -9,34 +9,30 @@
       name="description"
       content="Get in touch with The Beat Report - South Africa's premier music news source."
     />
-    <link rel="stylesheet" href="../main/Normalize.css" />
-    <link rel="stylesheet" href="../main/main.css" />
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../Main/Normalize.css" />
+    <link rel="stylesheet" href="../Main/main.css" />
     <link rel="stylesheet" href="contact.css" />
+
+    <!-- Font Awesome -->
     <script
       src="https://kit.fontawesome.com/dddfa338de.js"
       crossorigin="anonymous"
     ></script>
-    <script src="../main/main.js" defer></script>
+
+    <!-- GSAP Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- JavaScript Files -->
+    <script src="../Main/main.js" defer></script>
     <script src="contact.js" defer></script>
   </head>
 
   <body>
-    <!-- Website Loading Screen -->
-    <div id="websiteLoader" class="website-loader">
-      <div class="loader-container">
-        <img
-          src="../images/Logo.png"
-          alt="The Beat Report"
-          class="loader-logo"
-        />
-        <div class="progress-bar">
-          <div class="progress-fill"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main Content (hidden initially) -->
-    <div id="mainContent" class="main-content" style="display: none">
+    <!-- Main Content -->
+    <div id="mainContent" class="main-content">
       <!-- Header -->
       <header class="main-header">
         <div class="logo-section">
@@ -75,7 +71,7 @@
           <li><a href="../reviews/reviews.html">Reviews</a></li>
           <li><a href="../music/music.html">Music</a></li>
           <li><a href="../events/events.html">Events</a></li>
-          <li><a href="#" class="active">Contact Us</a></li>
+          <li><a href="contact.html" class="active">Contact Us</a></li>
         </ul>
       </nav>
 
@@ -99,8 +95,7 @@
                 <i class="fas fa-envelope"></i>
                 <div>
                   <h3>Email</h3>
-                  <p>info@thebeatreport.com</p>
-                  <p>submissions@thebeatreport.com</p>
+                  <p>timothychilezi@gmail.com</p>
                 </div>
               </div>
 
@@ -133,34 +128,19 @@
                 </div>
               </div>
             </div>
-
-            <div class="social-links">
-              <h3>Follow Us</h3>
-              <div class="social-icons">
-                <a href="#" class="social-icon"
-                  ><i class="fab fa-twitter"></i
-                ></a>
-                <a href="#" class="social-icon"
-                  ><i class="fab fa-facebook-f"></i
-                ></a>
-                <a href="#" class="social-icon"
-                  ><i class="fab fa-instagram"></i
-                ></a>
-                <a href="#" class="social-icon"
-                  ><i class="fab fa-youtube"></i
-                ></a>
-                <a href="#" class="social-icon"
-                  ><i class="fab fa-tiktok"></i
-                ></a>
-              </div>
-            </div>
           </aside>
 
           <!-- Contact Form -->
           <section class="contact-form-section">
             <div class="contact-form-container">
               <h2>Send us a Message</h2>
-              <form id="contactForm" class="contact-form">
+              <!-- Formspree Form - Replace YOUR_FORM_ID with your actual Formspree form ID -->
+              <form
+                id="contactForm"
+                class="contact-form"
+                action="https://formspree.io/f/YOUR_FORM_ID"
+                method="POST"
+              >
                 <div class="form-group">
                   <label for="name">Full Name *</label>
                   <input type="text" id="name" name="name" required />
@@ -211,23 +191,6 @@
           <h2>Frequently Asked Questions</h2>
           <div class="faq-grid">
             <div class="faq-item">
-              <h3>How do I submit music for review?</h3>
-              <p>
-                Send your music to submissions@thebeatreport.com with a brief
-                bio and links to your work. We review all submissions but cannot
-                guarantee coverage.
-              </p>
-            </div>
-
-            <div class="faq-item">
-              <h3>Can I advertise on The Beat Report?</h3>
-              <p>
-                Yes! Contact us at advertising@thebeatreport.com for our media
-                kit and advertising rates.
-              </p>
-            </div>
-
-            <div class="faq-item">
               <h3>Do you cover events outside Johannesburg?</h3>
               <p>
                 We cover events nationwide. For event coverage requests, please
@@ -239,7 +202,7 @@
               <h3>How can I write for The Beat Report?</h3>
               <p>
                 We're always looking for talented writers. Send your writing
-                samples and resume to info@thebeatreport.com.
+                samples and resume to timothychilezi@gmail.com.
               </p>
             </div>
           </div>
@@ -253,22 +216,8 @@
           alt="The Beat Report"
           class="footer-logo"
         />
-        <div class="footer-icons">
-          <a href="#" class="icon"
-            ><img src="../images/twitter-icon.png" alt="Twitter"
-          /></a>
-          <a href="#" class="icon"
-            ><img src="../images/facebook-icon.png" alt="Facebook"
-          /></a>
-          <a href="#" class="icon"
-            ><img src="../images/instagram-icon.png" alt="Instagram"
-          /></a>
-          <a href="#" class="icon"
-            ><img src="../images/youtube-icon.png" alt="YouTube"
-          /></a>
-        </div>
         <p class="footer-text">
-          &copy; 2024 The Beat Report. All rights reserved.
+          &copy; 2025 The Beat Report. All rights reserved.
         </p>
       </footer>
 
