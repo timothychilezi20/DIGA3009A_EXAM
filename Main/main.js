@@ -580,7 +580,8 @@ class BackToTop {
     if (path.includes("reviews")) return "reviews";
     if (path.includes("music")) return "music";
     if (path.includes("events")) return "events";
-    return "home"; // Default to home
+    if (path.includes("contact")) return "contact"; // Add this line
+    return "home";
   }
 
   addEventListeners() {

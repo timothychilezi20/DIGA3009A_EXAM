@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Us - The Beat Report</title>
+    <meta name="author" content="Timothy Chilezi" />
+    <meta
+      name="description"
+      content="Get in touch with The Beat Report - South Africa's premier music news source."
+    />
+    <link rel="stylesheet" href="../main/Normalize.css" />
+    <link rel="stylesheet" href="../main/main.css" />
+    <link rel="stylesheet" href="contact.css" />
+    <script
+      src="https://kit.fontawesome.com/dddfa338de.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="../main/main.js" defer></script>
+    <script src="contact.js" defer></script>
+  </head>
+
+  <body>
+    <!-- Website Loading Screen -->
+    <div id="websiteLoader" class="website-loader">
+      <div class="loader-container">
+        <img
+          src="../images/Logo.png"
+          alt="The Beat Report"
+          class="loader-logo"
+        />
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content (hidden initially) -->
+    <div id="mainContent" class="main-content" style="display: none">
+      <!-- Header -->
+      <header class="main-header">
+        <div class="logo-section">
+          <img
+            src="../images/Logo.png"
+            alt="The Beat Report Logo"
+            class="logo-img"
+          />
+        </div>
+        <div class="header-icons">
+          <div class="search-wrapper">
+            <button id="searchIcon" class="icon">
+              <img src="../images/SearchIcon.png" alt="Search" />
+            </button>
+            <input type="text" id="searchBar" placeholder="Search..." />
+          </div>
+
+          <div id="userLoginContainer">
+            <span id="loginText" class="login-text">Login</span>
+            <img
+              id="userIcon"
+              src="../images/UserIcon.png"
+              alt="User Profile"
+              class="icon"
+              style="display: none"
+            />
+          </div>
+        </div>
+      </header>
+
+      <!-- Navigation -->
+      <nav class="contact-nav">
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../news/news.html">News</a></li>
+          <li><a href="../reviews/reviews.html">Reviews</a></li>
+          <li><a href="../music/music.html">Music</a></li>
+          <li><a href="../events/events.html">Events</a></li>
+          <li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Contact Page Content -->
+      <main class="contact-container">
+        <section class="contact-hero">
+          <div class="contact-hero-content">
+            <h1>Get In Touch</h1>
+            <p>
+              We'd love to hear from you about music, stories, or collaborations
+            </p>
+          </div>
+        </section>
+
+        <div class="contact-layout">
+          <!-- Contact Info -->
+          <aside class="contact-info">
+            <div class="contact-info-card">
+              <h2>Contact Information</h2>
+              <div class="contact-method">
+                <i class="fas fa-envelope"></i>
+                <div>
+                  <h3>Email</h3>
+                  <p>info@thebeatreport.com</p>
+                  <p>submissions@thebeatreport.com</p>
+                </div>
+              </div>
+
+              <div class="contact-method">
+                <i class="fas fa-phone"></i>
+                <div>
+                  <h3>Phone</h3>
+                  <p>+27 11 123 4567</p>
+                  <p>+27 82 123 4567</p>
+                </div>
+              </div>
+
+              <div class="contact-method">
+                <i class="fas fa-map-marker-alt"></i>
+                <div>
+                  <h3>Office</h3>
+                  <p>123 Music Street</p>
+                  <p>Braamfontein, Johannesburg</p>
+                  <p>South Africa, 2001</p>
+                </div>
+              </div>
+
+              <div class="contact-method">
+                <i class="fas fa-clock"></i>
+                <div>
+                  <h3>Business Hours</h3>
+                  <p>Monday - Friday: 9:00 - 17:00</p>
+                  <p>Saturday: 10:00 - 14:00</p>
+                  <p>Sunday: Closed</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="social-links">
+              <h3>Follow Us</h3>
+              <div class="social-icons">
+                <a href="#" class="social-icon"
+                  ><i class="fab fa-twitter"></i
+                ></a>
+                <a href="#" class="social-icon"
+                  ><i class="fab fa-facebook-f"></i
+                ></a>
+                <a href="#" class="social-icon"
+                  ><i class="fab fa-instagram"></i
+                ></a>
+                <a href="#" class="social-icon"
+                  ><i class="fab fa-youtube"></i
+                ></a>
+                <a href="#" class="social-icon"
+                  ><i class="fab fa-tiktok"></i
+                ></a>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Contact Form -->
+          <section class="contact-form-section">
+            <div class="contact-form-container">
+              <h2>Send us a Message</h2>
+              <form id="contactForm" class="contact-form">
+                <div class="form-group">
+                  <label for="name">Full Name *</label>
+                  <input type="text" id="name" name="name" required />
+                </div>
+
+                <div class="form-group">
+                  <label for="email">Email Address *</label>
+                  <input type="email" id="email" name="email" required />
+                </div>
+
+                <div class="form-group">
+                  <label for="subject">Subject *</label>
+                  <select id="subject" name="subject" required>
+                    <option value="">Select a subject</option>
+                    <option value="general">General Inquiry</option>
+                    <option value="music-submission">Music Submission</option>
+                    <option value="event-coverage">Event Coverage</option>
+                    <option value="advertising">Advertising</option>
+                    <option value="partnership">Partnership</option>
+                    <option value="technical">Technical Support</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="message">Message *</label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows="6"
+                    required
+                  ></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                  <i class="fas fa-paper-plane"></i>
+                  Send Message
+                </button>
+              </form>
+
+              <div id="formMessage" class="form-message"></div>
+            </div>
+          </section>
+        </div>
+
+        <!-- FAQ Section -->
+        <section class="faq-section">
+          <h2>Frequently Asked Questions</h2>
+          <div class="faq-grid">
+            <div class="faq-item">
+              <h3>How do I submit music for review?</h3>
+              <p>
+                Send your music to submissions@thebeatreport.com with a brief
+                bio and links to your work. We review all submissions but cannot
+                guarantee coverage.
+              </p>
+            </div>
+
+            <div class="faq-item">
+              <h3>Can I advertise on The Beat Report?</h3>
+              <p>
+                Yes! Contact us at advertising@thebeatreport.com for our media
+                kit and advertising rates.
+              </p>
+            </div>
+
+            <div class="faq-item">
+              <h3>Do you cover events outside Johannesburg?</h3>
+              <p>
+                We cover events nationwide. For event coverage requests, please
+                contact us at least 2 weeks in advance.
+              </p>
+            </div>
+
+            <div class="faq-item">
+              <h3>How can I write for The Beat Report?</h3>
+              <p>
+                We're always looking for talented writers. Send your writing
+                samples and resume to info@thebeatreport.com.
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="site-footer">
+        <img
+          src="../images/Logo.png"
+          alt="The Beat Report"
+          class="footer-logo"
+        />
+        <div class="footer-icons">
+          <a href="#" class="icon"
+            ><img src="../images/twitter-icon.png" alt="Twitter"
+          /></a>
+          <a href="#" class="icon"
+            ><img src="../images/facebook-icon.png" alt="Facebook"
+          /></a>
+          <a href="#" class="icon"
+            ><img src="../images/instagram-icon.png" alt="Instagram"
+          /></a>
+          <a href="#" class="icon"
+            ><img src="../images/youtube-icon.png" alt="YouTube"
+          /></a>
+        </div>
+        <p class="footer-text">
+          &copy; 2024 The Beat Report. All rights reserved.
+        </p>
+      </footer>
+
+      <!-- LOGIN MODAL -->
+      <div id="loginModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Login</h2>
+          <form id="loginForm">
+            <input type="text" id="username" placeholder="Username" required />
+            <input
+              type="password"
+              id="password"
+              placeholder="Password"
+              required
+            />
+            <button type="submit">Login</button>
+          </form>
+          <p class="login-message"></p>
+        </div>
+      </div>
+
+      <!-- Floating Feedback Button -->
+      <button id="feedbackButton" class="feedback-button">
+        <i class="fas fa-comment-alt"></i> Feedback
+      </button>
+
+      <!-- Feedback Form Modal -->
+      <div id="feedbackModal" class="feedback-modal">
+        <div class="feedback-modal-content">
+          <span id="closeFeedback" class="close">&times;</span>
+          <h3>Send us your feedback</h3>
+          <textarea
+            id="feedbackText"
+            placeholder="Tell us what you think..."
+          ></textarea>
+          <button id="sendFeedback">Send</button>
+          <p id="feedbackMessage"></p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
