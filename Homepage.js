@@ -1,6 +1,11 @@
 // 🌍 INTERNATIONAL MUSIC NEWS HOMEPAGE.JS
 
 document.addEventListener("DOMContentLoaded", () => {
+  // === WEBSITE LOADER ELEMENTS ===
+  const websiteLoader = document.getElementById("websiteLoader");
+  const mainContent = document.getElementById("mainContent");
+  const progressFill = document.querySelector(".progress-fill");
+
   // === DOM ELEMENTS ===
   const leftSidebar = document.querySelector(".left-sidebar");
   const rightSidebar = document.querySelector(".right-sidebar");
@@ -317,6 +322,37 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   };
 
+  // === WEBSITE LOADER FUNCTIONS ===
+  function updateProgress(percentage) {
+    if (progressFill) {
+      progressFill.style.width = percentage + "%";
+    }
+  }
+
+  function hideWebsiteLoader() {
+    if (websiteLoader) {
+      // Add fade-out class
+      websiteLoader.classList.add("fade-out");
+
+      // Show main content
+      mainContent.style.display = "block";
+
+      // Animate main content in
+      setTimeout(() => {
+        mainContent.classList.add("reveal");
+        // Initialize GSAP animations after main content is visible
+        initGSAPAnimations();
+      }, 500);
+
+      // Remove loader from DOM after animation
+      setTimeout(() => {
+        if (websiteLoader.parentNode) {
+          websiteLoader.parentNode.removeChild(websiteLoader);
+        }
+      }, 1300);
+    }
+  }
+
   // === GSAP ANIMATIONS ===
   function initGSAPAnimations() {
     // Register GSAP plugins
@@ -546,23 +582,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function initLoadingAnimations() {
-    // Loading animations
-    function createPulseAnimation(element) {
-      gsap.to(element, {
-        duration: 1,
-        opacity: 0.3,
-        yoyo: true,
-        repeat: -1,
-        ease: "power1.inOut",
-      });
-    }
-
-    // Apply to loading elements
-    gsap.utils.toArray(".loading").forEach((loadingEl) => {
-      createPulseAnimation(loadingEl);
-    });
-
-    // Music-themed beat pulse animation
+    // Music-themed beat pulse animation for section headings
     function createBeatPulse() {
       gsap.to(".exclusive-label, .section-heading", {
         duration: 0.5,
@@ -581,7 +601,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(createBeatPulse, 2000);
 
     // Enhanced bottom scroll animation
-    const scrollItems = gsap.utils.toArray(".scroll-item");
+    const scrollItems = gsap.utils.toArray(".scroll-item:not(.loading)");
     if (scrollItems.length > 0) {
       // First, make them visible with a fade in
       gsap.to(scrollItems, {
@@ -669,72 +689,120 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // === UTILITY FUNCTIONS ===
+  // === VINYL LOADING FUNCTION ===
   function showLoading(container, type = "articles", count = 3) {
     if (!container) return;
     container.innerHTML = "";
 
+    // Determine vinyl type based on container or type
+    const getVinylType = () => {
+      if (container.classList.contains("left-sidebar")) return "home";
+      if (container.id === "saCharts") return "charts";
+      if (container.id === "spotifyReleases") return "releases";
+      if (container.id === "eventsList") return "events";
+      if (container.classList.contains("latest-side-list")) return "music";
+      if (container.classList.contains("exclusive-container")) return "home";
+      if (container.classList.contains("featured-latest")) return "music";
+      if (container.classList.contains("right-sidebar")) return "reviews";
+      return type;
+    };
+
+    const vinylType = getVinylType();
+
+    // Vinyl labels for different types
+    const vinylLabels = {
+      home: "HOME",
+      reviews: "REVIEWS",
+      music: "MUSIC",
+      events: "EVENTS",
+      charts: "CHARTS",
+      releases: "NEW",
+      articles: "NEWS",
+    };
+
     for (let i = 0; i < count; i++) {
       const placeholder = document.createElement("div");
 
-      if (type === "articles") {
-        placeholder.classList.add("side-article", "loading");
-        placeholder.innerHTML = `
-          <div class="loading-thumb"></div>
-          <div class="loading-text">
-            <div class="loading-line short"></div>
-            <div class="loading-line long"></div>
-          </div>`;
-      } else if (type === "exclusive") {
-        placeholder.classList.add("loading");
-        placeholder.innerHTML = `
-          <div class="loading-exclusive">
-            <div class="loading-line" style="width: 60%; height: 30px; margin-bottom: 20px;"></div>
-            <div class="loading-line" style="width: 80%; height: 15px;"></div>
-          </div>`;
-      } else if (type === "featured") {
-        placeholder.classList.add("loading");
-        placeholder.innerHTML = `
-          <div class="loading-thumb" style="width: 100%; height: 300px; margin-bottom: 15px;"></div>
-          <div class="loading-line" style="width: 70%; height: 20px; margin-bottom: 10px;"></div>
-          <div class="loading-line" style="width: 90%; height: 15px;"></div>`;
-      } else if (type === "sidebar") {
+      if (type === "articles" || type === "sidebar") {
         placeholder.classList.add("sidebar-article", "loading");
         placeholder.innerHTML = `
-          <div class="loading-line" style="width: 80%; height: 18px; margin-bottom: 10px;"></div>
-          <div class="loading-line" style="width: 95%; height: 12px; margin-bottom: 8px;"></div>
-          <div class="loading-line" style="width: 60%; height: 12px;"></div>`;
+          <div class="loading-vinyl-container">
+            <div class="loading-vinyl ${vinylType}">
+              <div class="vinyl-label ${vinylType}">${
+          vinylLabels[vinylType] || "LOAD"
+        }</div>
+            </div>
+            <div class="loading-vinyl-text">Loading ${vinylType} content...</div>
+          </div>`;
+      } else if (type === "exclusive") {
+        placeholder.classList.add("exclusive", "loading");
+        placeholder.innerHTML = `
+          <div class="loading-vinyl-container">
+            <div class="loading-vinyl ${vinylType}">
+              <div class="vinyl-label ${vinylType}">EXCL</div>
+            </div>
+            <div class="loading-vinyl-text">Loading exclusive content...</div>
+          </div>`;
+      } else if (type === "featured") {
+        placeholder.classList.add("featured-latest", "loading");
+        placeholder.innerHTML = `
+          <div class="loading-vinyl-container">
+            <div class="loading-vinyl ${vinylType}">
+              <div class="vinyl-label ${vinylType}">FEAT</div>
+            </div>
+            <div class="loading-vinyl-text">Loading featured story...</div>
+          </div>`;
       } else if (type === "releases") {
         placeholder.classList.add("release-card", "loading");
         placeholder.innerHTML = `
-          <div class="loading-thumb" style="width: 100%; height: 160px; margin-bottom: 10px;"></div>
-          <div class="loading-line" style="width: 80%; height: 16px; margin-bottom: 8px;"></div>
-          <div class="loading-line" style="width: 60%; height: 14px;"></div>`;
+          <div class="loading-vinyl-container">
+            <div class="loading-vinyl ${vinylType}">
+              <div class="vinyl-label ${vinylType}">NEW</div>
+            </div>
+            <div class="loading-vinyl-text">Loading new releases...</div>
+          </div>`;
       } else if (type === "events") {
         placeholder.classList.add("side-article", "loading");
         placeholder.innerHTML = `
-          <div class="loading-thumb" style="width: 120px; height: 80px; margin-bottom: 10px;"></div>
-          <div class="loading-text">
-            <div class="loading-line" style="width: 70%; height: 16px; margin-bottom: 8px;"></div>
-            <div class="loading-line" style="width: 90%; height: 14px; margin-bottom: 8px;"></div>
-            <div class="loading-line" style="width: 50%; height: 12px;"></div>
+          <div class="loading-vinyl ${vinylType}">
+            <div class="vinyl-label ${vinylType}">EVENTS</div>
+          </div>
+          <div>
+            <div class="loading-line" style="width: 70%; height: 16px; margin-bottom: 8px; background: #ddd; border-radius: 4px;"></div>
+            <div class="loading-line" style="width: 90%; height: 14px; margin-bottom: 8px; background: #ddd; border-radius: 4px;"></div>
+            <div class="loading-line" style="width: 50%; height: 12px; background: #ddd; border-radius: 4px;"></div>
           </div>`;
       } else if (type === "charts") {
         placeholder.classList.add("chart-item", "loading");
         placeholder.innerHTML = `
-          <div class="chart-rank loading-line" style="width: 30px; height: 20px; margin: 0 auto;"></div>
-          <div class="loading-thumb" style="width: 50px; height: 50px; border-radius: 6px;"></div>
-          <div class="loading-text" style="flex: 1;">
-            <div class="loading-line" style="width: 70%; height: 16px; margin-bottom: 8px;"></div>
-            <div class="loading-line" style="width: 90%; height: 14px;"></div>
+          <div class="chart-rank">
+            <div class="loading-vinyl ${vinylType}" style="width: 30px; height: 30px;">
+              <div class="vinyl-label ${vinylType}" style="width: 10px; height: 10px; font-size: 6px;">${
+          i + 1
+        }</div>
+            </div>
           </div>
-          <div class="platform-badge loading-line" style="width: 60px; height: 20px;"></div>`;
+          <div class="loading-vinyl ${vinylType}" style="width: 50px; height: 50px;">
+            <div class="vinyl-label ${vinylType}" style="width: 15px; height: 15px; font-size: 7px;">TRACK</div>
+          </div>
+          <div class="chart-details">
+            <div class="loading-line" style="width: 70%; height: 16px; margin-bottom: 8px; background: #ddd; border-radius: 4px;"></div>
+            <div class="loading-line" style="width: 90%; height: 14px; background: #ddd; border-radius: 4px;"></div>
+          </div>
+          <div class="platform-badge" style="background: #ddd; color: transparent; width: 60px; height: 20px; border-radius: 15px;"></div>`;
+      } else if (type === "bottom-scroll") {
+        placeholder.classList.add("scroll-item", "loading");
+        placeholder.innerHTML = `
+          <div class="loading-vinyl ${vinylType}">
+            <div class="vinyl-label ${vinylType}" style="font-size: 6px;">SCROLL</div>
+          </div>`;
       }
 
       container.appendChild(placeholder);
     }
   }
 
+  // === UTILITY FUNCTIONS ===
   function showError(container, message) {
     if (!container) return;
     container.innerHTML = `<p class="error-message">${message}</p>`;
@@ -949,7 +1017,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const url = `${EVENT_APIS.eventbrite.url}?${params}`;
       const response = await fetchWithTimeout(
         url,
-        { headers: { Authorization: `Bearer ${EVENT_APIS.eventbrite.key}` } },
+        { headers: { Authorization: `Bearer ${EVENTBRITE_API_KEY}` } },
         8000
       );
       if (!response.ok)
@@ -1067,27 +1135,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // === INTERNATIONAL CONTENT FETCHING ===
   async function fetchAllArticles() {
-    let allArticles = [];
-    const sources = [];
+    console.log("Starting article fetch...");
 
     try {
-      const newsApiArticles = await fetchFromNewsAPI();
-      if (newsApiArticles.length > 0) {
-        allArticles = [...allArticles, ...newsApiArticles];
-        sources.push(`NewsAPI (${newsApiArticles.length})`);
+      // Try NewsAPI first
+      let newsApiArticles = [];
+      try {
+        newsApiArticles = await fetchFromNewsAPI();
+        console.log(`NewsAPI returned ${newsApiArticles.length} articles`);
+      } catch (newsError) {
+        console.warn("NewsAPI failed:", newsError);
       }
 
-      const guardianArticles = await fetchFromGuardian();
-      if (guardianArticles.length > 0) {
-        allArticles = [...allArticles, ...guardianArticles];
-        sources.push(`Guardian (${guardianArticles.length})`);
+      // Try Guardian as backup
+      let guardianArticles = [];
+      try {
+        guardianArticles = await fetchFromGuardian();
+        console.log(`Guardian returned ${guardianArticles.length} articles`);
+      } catch (guardianError) {
+        console.warn("Guardian API failed:", guardianError);
       }
 
+      const allArticles = [...newsApiArticles, ...guardianArticles];
+      console.log(`Total articles from APIs: ${allArticles.length}`);
+
+      // Filter music articles
       let musicArticles = allArticles.filter(isMusicArticle);
-      if (musicArticles.length < 5) return FALLBACK_ARTICLES;
+      console.log(`Music articles after filtering: ${musicArticles.length}`);
 
+      // Use fallbacks if no articles found
+      if (musicArticles.length < 3) {
+        console.log("Using fallback articles - not enough music content");
+        return FALLBACK_ARTICLES;
+      }
+
+      // Remove duplicates
       const uniqueArticles = [];
       const seenTitles = new Set();
+
       for (const article of musicArticles) {
         const title = (article.title || "").trim().toLowerCase();
         if (title && title.length > 10 && !seenTitles.has(title)) {
@@ -1095,9 +1180,11 @@ document.addEventListener("DOMContentLoaded", () => {
           uniqueArticles.push(article);
         }
       }
+
+      console.log(`Final unique articles: ${uniqueArticles.length}`);
       return uniqueArticles.slice(0, 15);
     } catch (error) {
-      console.error("Error fetching articles:", error);
+      console.error("Critical error in fetchAllArticles:", error);
       return FALLBACK_ARTICLES;
     }
   }
@@ -1176,13 +1263,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // === POPULATE FUNCTIONS ===
   function populateLeftSidebar(articles) {
-    if (!leftSidebar || !articles?.length) return;
+    if (!leftSidebar) return;
+
+    if (!articles?.length) {
+      console.warn("No articles provided to populateLeftSidebar");
+      showLoading(leftSidebar, "sidebar", 4);
+      return;
+    }
+
     leftSidebar.innerHTML = "";
     articles.forEach((article) => {
       const el = document.createElement("article");
       el.classList.add("sidebar-article");
-      el.innerHTML = `<h3>${article.title}</h3><p>${truncateText(
-        article.description,
+      el.innerHTML = `<h3>${
+        article.title || "Music News"
+      }</h3><p>${truncateText(
+        article.description || "Latest music updates",
         120
       )}</p><p><strong>By ${
         article.source?.name ? article.source.name.toUpperCase() : "MUSIC GLOBE"
@@ -1193,27 +1289,46 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       leftSidebar.appendChild(el);
     });
+    console.log(`Populated ${articles.length} left sidebar articles`);
   }
 
   function populateExclusiveSection(article) {
-    if (!exclusiveSection || !article) return;
+    if (!exclusiveSection) return;
+
+    if (!article) {
+      console.warn("No article provided to populateExclusiveSection");
+      showLoading(exclusiveSection, "exclusive", 1);
+      return;
+    }
+
     exclusiveSection.innerHTML = `<div class="exclusive-image"><img src="${
       article.image || "images/music-default.jpg"
     }" alt="${
       article.title || ""
     }" onerror="this.src='images/music-default.jpg'"><span class="exclusive-label">GLOBAL EXCLUSIVE</span></div><div class="exclusive-text"><h1>${
-      article.title || ""
-    }</h1><p>${truncateText(article.description, 150)}</p></div>`;
+      article.title || "Breaking Music News"
+    }</h1><p>${truncateText(
+      article.description || "Exclusive music coverage",
+      150
+    )}</p></div>`;
     if (article.url && article.url !== "#") {
       exclusiveSection.style.cursor = "pointer";
       exclusiveSection.addEventListener("click", () =>
         window.open(article.url, "_blank")
       );
     }
+    console.log("Populated exclusive section");
   }
 
   function populateRightSidebar(articles) {
-    if (!rightSidebar || !articles?.length) return;
+    if (!rightSidebar) return;
+
+    if (!articles?.length) {
+      console.warn("No articles provided to populateRightSidebar");
+      showLoading(rightSidebar, "sidebar", 2);
+      return;
+    }
+
     rightSidebar.innerHTML = "";
     articles.forEach((article, idx) => {
       const section = document.createElement("section");
@@ -1224,7 +1339,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }" alt="${
         article.title || ""
       }" onerror="this.src='images/music-default.jpg'"><h4>${label}</h4><h3>${
-        article.title || ""
+        article.title || "Music News"
       }</h3><p><strong>${
         article.source?.name ? article.source.name.toUpperCase() : "MUSIC GLOBE"
       }</strong></p></div>`;
@@ -1236,18 +1351,26 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       rightSidebar.appendChild(section);
     });
+    console.log(`Populated ${articles.length} right sidebar articles`);
   }
 
   function populateFeaturedLatest(article) {
-    if (!featuredLatest || !article) return;
+    if (!featuredLatest) return;
+
+    if (!article) {
+      console.warn("No article provided to populateFeaturedLatest");
+      showLoading(featuredLatest, "featured", 1);
+      return;
+    }
+
     featuredLatest.innerHTML = `<img src="${
       article.image || "images/music-default.jpg"
     }" alt="${
       article.title || ""
     }" onerror="this.src='images/music-default.jpg'"><div class="latest-text"><h3>${
-      article.title || ""
+      article.title || "Featured Story"
     }</h3><p>${truncateText(
-      article.description,
+      article.description || "Featured music content",
       200
     )}</p><span class="author">By ${
       article.source?.name || "Music Globe"
@@ -1258,10 +1381,18 @@ document.addEventListener("DOMContentLoaded", () => {
         window.open(article.url, "_blank")
       );
     }
+    console.log("Populated featured latest section");
   }
 
   function populateLatestSideList(articles) {
-    if (!latestSideList || !articles?.length) return;
+    if (!latestSideList) return;
+
+    if (!articles?.length) {
+      console.warn("No articles provided to populateLatestSideList");
+      showLoading(latestSideList, "articles", 3);
+      return;
+    }
+
     latestSideList.innerHTML = "";
     articles.forEach((article) => {
       const el = document.createElement("article");
@@ -1271,14 +1402,20 @@ document.addEventListener("DOMContentLoaded", () => {
       }" alt="${
         article.title || ""
       }" onerror="this.src='images/music-default.jpg'"><div><h4>${
-        article.title || ""
-      }</h4><p>${truncateText(article.description, 100)}</p></div>`;
+        article.title || "Music News"
+      }</h4><p>${truncateText(
+        article.description || "Latest music updates",
+        100
+      )}</p></div>`;
+
       if (article.url && article.url !== "#") {
         el.style.cursor = "pointer";
         el.addEventListener("click", () => window.open(article.url, "_blank"));
       }
       latestSideList.appendChild(el);
     });
+
+    console.log(`Populated ${articles.length} side list articles`);
   }
 
   function populateBottomScroll(articles) {
@@ -1287,7 +1424,7 @@ document.addEventListener("DOMContentLoaded", () => {
     articles.slice(0, 10).forEach((article) => {
       const div = document.createElement("div");
       div.classList.add("scroll-item");
-      div.textContent = (article.title || "").toUpperCase();
+      div.textContent = (article.title || "Music News").toUpperCase();
       if (article.url && article.url !== "#") {
         div.style.cursor = "pointer";
         div.addEventListener("click", () => window.open(article.url, "_blank"));
@@ -1297,7 +1434,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function populateSAReleases(releases) {
-    if (!releasesGrid || !releases?.length) return;
+    if (!releasesGrid) return;
+
+    if (!releases?.length) {
+      console.warn("No releases provided to populateSAReleases");
+      showLoading(releasesGrid, "releases", 4);
+      return;
+    }
+
     releasesGrid.innerHTML = releases
       .map(
         (release) => `
@@ -1320,10 +1464,18 @@ document.addEventListener("DOMContentLoaded", () => {
     `
       )
       .join("");
+    console.log(`Populated ${releases.length} SA releases`);
   }
 
   function populateMusicEvents(events) {
-    if (!eventsList || !events?.length) return;
+    if (!eventsList) return;
+
+    if (!events?.length) {
+      console.warn("No events provided to populateMusicEvents");
+      showLoading(eventsList, "events", 4);
+      return;
+    }
+
     eventsList.innerHTML = events
       .map(
         (event) => `
@@ -1341,11 +1493,19 @@ document.addEventListener("DOMContentLoaded", () => {
     `
       )
       .join("");
+    console.log(`Populated ${events.length} music events`);
   }
 
   function populateSACharts(charts) {
     const chartsContainer = document.getElementById("saCharts");
-    if (!chartsContainer || !charts?.length) return;
+    if (!chartsContainer) return;
+
+    if (!charts?.length) {
+      console.warn("No charts provided to populateSACharts");
+      showLoading(chartsContainer, "charts", 5);
+      return;
+    }
+
     chartsContainer.innerHTML = charts
       .map(
         (chart) => `
@@ -1368,18 +1528,41 @@ document.addEventListener("DOMContentLoaded", () => {
     `
       )
       .join("");
+    console.log(`Populated ${charts.length} SA charts`);
   }
 
   // === MAIN CONTENT LOADER ===
   async function loadAllContent() {
+    console.log("Starting content loading...");
+
     try {
-      const [articles, saReleases, events, charts] = await Promise.all([
+      updateProgress(20);
+
+      // Add timeout to prevent hanging
+      const contentPromise = Promise.all([
         fetchAllArticles(),
         fetchSAMusicReleases(),
         fetchMusicEvents(),
         fetchSACharts(),
       ]);
 
+      const [articles, saReleases, events, charts] = await Promise.race([
+        contentPromise,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Content loading timeout")), 15000)
+        ),
+      ]);
+
+      console.log("Content loaded:", {
+        articles: articles?.length,
+        releases: saReleases?.length,
+        events: events?.length,
+        charts: charts?.length,
+      });
+
+      updateProgress(60);
+
+      // Populate all sections with improved error handling
       populateLeftSidebar(articles.slice(0, 4));
       populateExclusiveSection(articles[0]);
       populateRightSidebar(articles.slice(1, 3));
@@ -1391,6 +1574,8 @@ document.addEventListener("DOMContentLoaded", () => {
       populateSACharts(charts);
       updateTimestamp();
 
+      updateProgress(90);
+
       // Animate dynamic content after population
       setTimeout(() => {
         animateDynamicContent(leftSidebar, "articles");
@@ -1398,9 +1583,16 @@ document.addEventListener("DOMContentLoaded", () => {
         animateDynamicContent(releasesGrid, "releases");
         animateDynamicContent(eventsList, "events");
         animateDynamicContent(latestSideList, "articles");
+
+        updateProgress(100);
+
+        // Hide loader after content is ready
+        setTimeout(hideWebsiteLoader, 500);
       }, 100);
     } catch (error) {
       console.error("Critical error loading content:", error);
+
+      // Use fallbacks for everything
       const articles = FALLBACK_ARTICLES;
       populateLeftSidebar(articles.slice(0, 4));
       populateExclusiveSection(articles[0]);
@@ -1412,23 +1604,34 @@ document.addEventListener("DOMContentLoaded", () => {
       populateMusicEvents(FALLBACK_EVENTS);
       populateSACharts(FALLBACK_CHARTS);
       updateTimestamp();
+
+      updateProgress(100);
+      setTimeout(hideWebsiteLoader, 500);
     }
   }
 
   // === INITIALIZATION ===
-  showLoading(leftSidebar, "sidebar", 4);
-  showLoading(exclusiveSection, "exclusive", 1);
-  showLoading(rightSidebar, "sidebar", 2);
-  showLoading(featuredLatest, "featured", 1);
-  showLoading(latestSideList, "articles", 5);
-  if (releasesGrid) showLoading(releasesGrid, "releases", 4);
-  if (eventsList) showLoading(eventsList, "events", 4);
-  const chartsContainer = document.getElementById("saCharts");
-  if (chartsContainer) showLoading(chartsContainer, "charts", 5);
-
-  // Initialize GSAP animations
-  initGSAPAnimations();
-
-  // Load content
+  // Start loading content immediately
   loadAllContent();
+
+  // Temporary debugging - remove after testing
+  setTimeout(() => {
+    console.log("Current state check:");
+    console.log(
+      "Left sidebar children:",
+      document.querySelector(".left-sidebar")?.children.length
+    );
+    console.log(
+      "Latest side list children:",
+      document.querySelector(".latest-side-list")?.children.length
+    );
+    console.log(
+      "Events list children:",
+      document.getElementById("eventsList")?.children.length
+    );
+    console.log(
+      "Releases grid children:",
+      document.getElementById("spotifyReleases")?.children.length
+    );
+  }, 3000);
 });

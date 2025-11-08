@@ -1,4 +1,112 @@
 /* =========================
+   WEBSITE LOADER
+========================= */
+.website-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.8s ease-out;
+}
+
+.website-loader.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loader-container {
+  text-align: center;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.loader-logo {
+  width: 300px;
+  height: auto;
+  animation: pulseScale 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+}
+
+.progress-bar {
+  width: 300px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #e74c3c, #3498db);
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.3s ease;
+  animation: progressLoad 3s ease-in-out;
+}
+
+@keyframes progressLoad {
+  0% {
+    width: 0%;
+  }
+  20% {
+    width: 30%;
+  }
+  40% {
+    width: 50%;
+  }
+  60% {
+    width: 70%;
+  }
+  80% {
+    width: 85%;
+  }
+  90% {
+    width: 95%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes pulseScale {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+}
+
+/* Main content reveal animation */
+.main-content {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease-out;
+}
+
+.main-content.reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================
+   VINYL LOADING ANIMATIONS
+========================= */
+/* ... (keep all your existing vinyl loading styles from previous implementation) ... */ /* =========================
    FONTS
 ========================= */
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&family=Lora:ital@1&display=swap");
@@ -33,6 +141,248 @@ blockquote,
   border-left: 4px solid #e74c3c;
   padding-left: 12px;
   margin: 1em 0;
+}
+
+/* =========================
+   VINYL LOADING ANIMATIONS
+========================= */
+.loading-vinyl {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #333, #666);
+  position: relative;
+  margin: 0 auto;
+  border: 8px solid #222;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  animation: spin 2s linear infinite;
+}
+
+.loading-vinyl::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  border: 3px solid #222;
+  z-index: 2;
+}
+
+.loading-vinyl::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.vinyl-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: bold;
+  color: #fff;
+  text-transform: uppercase;
+  z-index: 3;
+}
+
+.vinyl-label.home {
+  background: #e74c3c;
+}
+.vinyl-label.reviews {
+  background: #3498db;
+}
+.vinyl-label.music {
+  background: #2ecc71;
+}
+.vinyl-label.events {
+  background: #f39c12;
+}
+.vinyl-label.charts {
+  background: #9b59b6;
+}
+.vinyl-label.releases {
+  background: #1abc9c;
+}
+
+.loading-vinyl-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 20px;
+}
+
+.loading-vinyl-text {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Different vinyl colors for different sections */
+.loading-vinyl.home {
+  background: linear-gradient(45deg, #e74c3c, #c0392b);
+  border-color: #c0392b;
+}
+
+.loading-vinyl.reviews {
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  border-color: #2980b9;
+}
+
+.loading-vinyl.music {
+  background: linear-gradient(45deg, #2ecc71, #27ae60);
+  border-color: #27ae60;
+}
+
+.loading-vinyl.events {
+  background: linear-gradient(45deg, #f39c12, #d35400);
+  border-color: #d35400;
+}
+
+.loading-vinyl.charts {
+  background: linear-gradient(45deg, #9b59b6, #8e44ad);
+  border-color: #8e44ad;
+}
+
+.loading-vinyl.releases {
+  background: linear-gradient(45deg, #1abc9c, #16a085);
+  border-color: #16a085;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Vinyl grid for multiple loading items */
+.vinyl-loading-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.vinyl-loading-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Update existing loading styles to use vinyl */
+.sidebar-article.loading,
+.side-article.loading,
+.release-card.loading,
+.chart-item.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+.sidebar-article.loading {
+  padding: 30px 20px;
+  border-bottom: 2px solid #000 !important;
+}
+
+.side-article.loading {
+  padding: 20px;
+  border-bottom: 1px solid #ddd !important;
+  flex-direction: row;
+  gap: 15px;
+}
+
+.side-article.loading .loading-vinyl {
+  width: 60px;
+  height: 60px;
+  margin: 0;
+}
+
+.release-card.loading {
+  padding: 40px 20px;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-radius: 10px;
+}
+
+.chart-item.loading {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-radius: 8px;
+  grid-template-columns: 60px 1fr 80px;
+  gap: 15px;
+}
+
+.chart-item.loading .loading-vinyl {
+  width: 50px;
+  height: 50px;
+}
+
+/* Exclusive section vinyl loading */
+.exclusive.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  border: 4px solid #000;
+  min-height: 400px;
+}
+
+.featured-latest.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  border: 3px solid #000;
+  border-radius: 4px;
+  min-height: 450px;
+}
+
+.featured-latest.loading .loading-vinyl {
+  width: 100px;
+  height: 100px;
+}
+
+/* Bottom scroll vinyl loading */
+.bottom-scroll.loading {
+  justify-content: center;
+  gap: 30px;
+  padding: 25px 0;
+}
+
+.bottom-scroll.loading .loading-vinyl {
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  margin: 0 20px;
 }
 
 /* =========================
@@ -163,6 +513,8 @@ blockquote,
   flex-direction: column;
   border-bottom: 2px solid #000;
   padding-bottom: 18px;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .left-sidebar .sidebar-article:last-child {
@@ -223,6 +575,7 @@ blockquote,
 
 .sidebar-story {
   text-align: left;
+  cursor: pointer;
 }
 
 .sidebar-story img {
@@ -259,6 +612,7 @@ blockquote,
   padding: 12px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
 }
 
 .story-card img {
@@ -315,6 +669,7 @@ blockquote,
   border-radius: 4px;
   z-index: 5;
   letter-spacing: 1px;
+  transform-origin: center;
 }
 
 .exclusive-container {
@@ -326,6 +681,7 @@ blockquote,
   position: relative;
   box-sizing: border-box;
   transition: transform 0.3s ease;
+  cursor: pointer;
 }
 
 .exclusive-container:hover {
@@ -397,6 +753,8 @@ blockquote,
   margin: 80px 60px;
   border-top: 2px solid #000;
   padding-top: 30px;
+  opacity: 0;
+  transform: translateY(50px);
 }
 
 .the-latest .section-heading {
@@ -411,6 +769,7 @@ blockquote,
   border-bottom: 3px solid #000;
   display: inline-block;
   padding-bottom: 6px;
+  transform-origin: center;
 }
 
 .latest-layout {
@@ -423,6 +782,7 @@ blockquote,
 /* FEATURED STORY (left) */
 .featured-latest {
   position: relative;
+  cursor: pointer;
 }
 
 .featured-latest img {
@@ -478,6 +838,9 @@ blockquote,
   border-bottom: 1px solid #ddd;
   padding-bottom: 15px;
   transition: background-color 0.3s ease;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateX(-50px);
 }
 
 .side-article:last-child {
@@ -557,6 +920,8 @@ blockquote,
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 2px solid transparent;
   cursor: pointer;
+  opacity: 0;
+  transform: translateX(-100px);
 }
 
 .chart-item:hover {
@@ -657,6 +1022,8 @@ blockquote,
   background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
   margin: 2rem 0;
   border-radius: 15px;
+  opacity: 0;
+  transform: translateY(50px);
 }
 
 .spotify-releases .section-heading {
@@ -681,6 +1048,8 @@ blockquote,
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  opacity: 0;
+  transform: translateY(30px);
 }
 
 .release-card:hover {
@@ -727,6 +1096,9 @@ blockquote,
   border-bottom: 1px solid #ddd;
   padding-bottom: 15px;
   transition: background-color 0.3s ease;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateX(-50px);
 }
 
 #eventsList .side-article:last-child {
@@ -793,6 +1165,7 @@ blockquote,
   animation: scrollText 20s linear infinite;
   transition: color 0.3s ease;
   cursor: pointer;
+  opacity: 0;
 }
 
 .scroll-item:hover {
@@ -900,6 +1273,7 @@ blockquote,
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
 }
 
 .modal-content {
@@ -909,6 +1283,7 @@ blockquote,
   border-radius: 8px;
   width: 300px;
   position: relative;
+  transform: scale(0.8);
 }
 
 .close {
@@ -947,6 +1322,7 @@ blockquote,
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
 }
 
 .feedback-modal-content {
@@ -956,6 +1332,7 @@ blockquote,
   border-radius: 8px;
   width: 400px;
   position: relative;
+  transform: scale(0.8);
 }
 
 #feedbackText {
@@ -1054,6 +1431,16 @@ blockquote,
   .release-card img {
     height: 140px;
   }
+
+  .loading-vinyl {
+    width: 60px;
+    height: 60px;
+  }
+
+  .featured-latest.loading .loading-vinyl {
+    width: 80px;
+    height: 80px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1101,6 +1488,21 @@ blockquote,
   .scroll-item {
     padding: 0 20px;
     font-size: 0.9rem;
+  }
+
+  .loading-vinyl {
+    width: 50px;
+    height: 50px;
+  }
+
+  .featured-latest.loading .loading-vinyl {
+    width: 70px;
+    height: 70px;
+  }
+
+  .side-article.loading .loading-vinyl {
+    width: 50px;
+    height: 50px;
   }
 }
 

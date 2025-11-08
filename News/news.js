@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const grid = document.getElementById("reviewsGrid");
   const newsContainer = document.getElementById("news-container");
   const tabs = document.querySelectorAll(".tab");
+  const featuredSection = document.getElementById("featured-news");
 
   // Last.fm API Key
   const LAST_FM_API_KEY = "bf85b73d5ac9150697aa9cd05a40cb55";
@@ -39,17 +40,57 @@ document.addEventListener("DOMContentLoaded", () => {
         // Hide news for other tabs
         document.getElementById("news-section").style.display = "none";
         document.getElementById("reviews-section").style.display = "block";
+        featuredSection.style.display = "none";
       }
     });
   });
+
+  // Create featured news section (Rolling Stone style)
+  function createFeaturedNews(articles) {
+    if (!articles || articles.length === 0) return;
+
+    const mainArticle = articles[0];
+    const sideArticles = articles.slice(1, 4);
+
+    featuredSection.innerHTML = `
+      <div class="featured-main">
+        <img src="${mainArticle.image}" alt="${mainArticle.title}" 
+             onerror="this.src='https://via.placeholder.com/800x500/000000/FFFFFF?text=Featured+News'">
+        <div class="featured-main-content">
+          <h2>${mainArticle.title}</h2>
+          <p>${mainArticle.description}</p>
+          <div class="news-source">${mainArticle.source}</div>
+        </div>
+      </div>
+      <div class="featured-sidebar">
+        ${sideArticles
+          .map(
+            (article) => `
+          <article class="featured-side-item">
+            <img src="${article.image}" alt="${article.title}"
+                 onerror="this.src='https://via.placeholder.com/120x100/000000/FFFFFF?text=News'">
+            <div class="featured-side-content">
+              <h3>${article.title}</h3>
+              <p>${article.description.substring(0, 100)}...</p>
+              <div class="news-source">${article.source}</div>
+            </div>
+          </article>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+  }
 
   // Display music news (using curated content for now)
   function displayMusicNews() {
     document.getElementById("news-section").style.display = "block";
     document.getElementById("reviews-section").style.display = "block";
+    featuredSection.style.display = "grid";
 
     const musicNews = getCuratedMusicNews();
-    renderNews(musicNews);
+    createFeaturedNews(musicNews.slice(0, 4)); // First 4 articles for featured section
+    renderNews(musicNews.slice(4)); // Remaining articles for the grid
   }
 
   // Curated music news from major publications
@@ -60,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
         description:
           "From breakthrough artists to established legends, discover the albums that defined the year in music across all genres.",
         image:
-          "https://via.placeholder.com/300x180/FF0000/FFFFFF?text=Rolling+Stone+2024",
+          "https://via.placeholder.com/800x500/FF0000/FFFFFF?text=Rolling+Stone+2024",
         url: "#",
         source: "Rolling Stone",
         date: "December 2024",
@@ -70,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
         description:
           "This week's essential new tracks and albums including must-hear releases from emerging and established artists.",
         image:
-          "https://via.placeholder.com/300x180/000000/FFFFFF?text=Pitchfork+Weekly",
+          "https://via.placeholder.com/400x300/000000/FFFFFF?text=Pitchfork+Weekly",
         url: "#",
         source: "Pitchfork",
         date: "This Week",
@@ -80,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
         description:
           "Latest updates from the Billboard charts with new entries breaking into the Top 100 and surprising chart movements.",
         image:
-          "https://via.placeholder.com/300x180/0000FF/FFFFFF?text=Billboard+Charts",
+          "https://via.placeholder.com/400x300/0000FF/FFFFFF?text=Billboard+Charts",
         url: "#",
         source: "Billboard",
         date: "Latest",
@@ -90,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
         description:
           "Complete guide to summer music festivals with major lineup announcements and exclusive artist interviews.",
         image:
-          "https://via.placeholder.com/300x180/FF00FF/FFFFFF?text=NME+Festivals",
+          "https://via.placeholder.com/400x300/FF00FF/FFFFFF?text=NME+Festivals",
         url: "#",
         source: "NME",
         date: "March 2024",
@@ -100,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
         description:
           "Exclusive deep dive into the most exciting new artist making waves in the music industry right now.",
         image:
-          "https://via.placeholder.com/300x180/FFFF00/000000?text=Spin+Artist",
+          "https://via.placeholder.com/350x220/FFFF00/000000?text=Spin+Artist",
         url: "#",
         source: "Spin",
         date: "March 2024",
@@ -110,10 +151,30 @@ document.addEventListener("DOMContentLoaded", () => {
         description:
           "In-depth look at streaming trends, label moves, and the business behind today's biggest hits.",
         image:
-          "https://via.placeholder.com/300x180/00FF00/FFFFFF?text=Music+Business",
+          "https://via.placeholder.com/350x220/00FF00/FFFFFF?text=Music+Business",
         url: "#",
         source: "Consequence",
         date: "Recent",
+      },
+      {
+        title: "The Fader: Emerging Artists Spotlight",
+        description:
+          "Meet the next generation of music stars breaking through with innovative sounds and fresh perspectives.",
+        image:
+          "https://via.placeholder.com/350x220/FF6B6B/FFFFFF?text=Fader+Spotlight",
+        url: "#",
+        source: "The Fader",
+        date: "This Month",
+      },
+      {
+        title: "Complex: Hip-Hop Culture Update",
+        description:
+          "Latest news from the world of hip-hop including new releases, collaborations, and cultural moments.",
+        image:
+          "https://via.placeholder.com/350x220/4ECDC4/000000?text=Complex+HipHop",
+        url: "#",
+        source: "Complex",
+        date: "Weekly",
       },
     ];
   }
@@ -129,13 +190,15 @@ document.addEventListener("DOMContentLoaded", () => {
       newsCard.innerHTML = `
         <img src="${article.image}" 
              alt="${article.title}" 
-             onerror="this.src='https://via.placeholder.com/300x180/002395/FFFFFF?text=Music+News'">
+             onerror="this.src='https://via.placeholder.com/350x220/002395/FFFFFF?text=Music+News'">
         <div class="news-card-content">
           <h3>${article.title}</h3>
           <p>${article.description}</p>
           <a href="${article.url}" target="_blank" rel="noopener">Read on ${article.source}</a>
-          <div class="news-source">Source: ${article.source}</div>
-          <div class="news-date">${article.date}</div>
+          <div class="news-meta">
+            <div class="news-source">${article.source}</div>
+            <div class="news-date">${article.date}</div>
+          </div>
         </div>
       `;
 
@@ -240,7 +303,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function getAlbumImage(images) {
     if (!images)
-      return "https://via.placeholder.com/300x300/002395/FFFFFF?text=No+Image";
+      return "https://via.placeholder.com/300x300/000000/FFFFFF?text=No+Image";
 
     const largeImage = images.find((img) => img.size === "large")?.["#text"];
     const mediumImage = images.find((img) => img.size === "medium")?.["#text"];
@@ -250,7 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
       largeImage ||
       mediumImage ||
       smallImage ||
-      "https://via.placeholder.com/300x300/002395/FFFFFF?text=No+Image"
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=No+Image"
     );
   }
 
@@ -325,7 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
       card.innerHTML = `
         <img src="${review.cover}" alt="${
         review.title
-      }" class="album-cover" onerror="this.src='https://via.placeholder.com/300x300/002395/FFFFFF?text=No+Image'">
+      }" class="album-cover" onerror="this.src='https://via.placeholder.com/300x300/000000/FFFFFF?text=No+Image'">
         <div class="review-card-content">
           <p class="genre">${review.genre.toUpperCase()}</p>
           <h3>${review.title}</h3>
@@ -337,8 +400,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }/5</span>
           </div>
           <p class="review-summary">${review.summary}</p>
-          <p class="author">${review.author}</p>
-          <p class="date">${review.date}</p>
+          <div class="review-meta">
+            <div class="author">${review.author}</div>
+            <div class="date">${review.date}</div>
+          </div>
         </div>
       `;
 
@@ -382,7 +447,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector(".tab.active").textContent.toLowerCase() ===
         "new"
       ) {
-        renderNews(allNews);
+        renderNews(allNews.slice(4)); // Skip featured articles
+        createFeaturedNews(allNews.slice(0, 4)); // Restore featured section
       }
       return;
     }
@@ -402,6 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
           article.title.toLowerCase().includes(searchTerm) ||
           article.description.toLowerCase().includes(searchTerm)
       );
+      featuredSection.style.display = "none"; // Hide featured section during search
       renderNews(filteredNews);
     }
 
