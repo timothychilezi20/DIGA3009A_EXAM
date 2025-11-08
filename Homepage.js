@@ -337,11 +337,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // Show main content
       mainContent.style.display = "block";
 
-      // Animate main content in
+      // Show main content immediately without GSAP
       setTimeout(() => {
         mainContent.classList.add("reveal");
-        // Initialize GSAP animations after main content is visible
-        initGSAPAnimations();
       }, 500);
 
       // Remove loader from DOM after animation
@@ -353,340 +351,95 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // === GSAP ANIMATIONS ===
-  function initGSAPAnimations() {
-    // Register GSAP plugins
-    if (typeof gsap !== "undefined" && gsap.registerPlugin) {
-      gsap.registerPlugin(ScrollTrigger);
-    }
-
-    initPageLoadAnimations();
-    initScrollAnimations();
-    initHoverAnimations();
-    initLoadingAnimations();
+  // === SIMPLE ANIMATIONS (GSAP REMOVED) ===
+  function initSimpleAnimations() {
+    // Just ensure content is visible
+    const sections = document.querySelectorAll(
+      ".the-latest, .spotify-releases, #eventsList"
+    );
+    sections.forEach((section) => {
+      section.style.opacity = "1";
+      section.style.visibility = "visible";
+    });
   }
 
-  function initPageLoadAnimations() {
-    // Page load sequence
-    const pageLoadTL = gsap.timeline();
+  // === GLOBAL SEARCH INTEGRATION ===
+  function integrateWithGlobalSearch(articles, releases, events, charts) {
+    if (window.addContentToSearch) {
+      console.log("Integrating homepage content with global search...");
 
-    pageLoadTL
-      .from(".main-header", {
-        duration: 1,
-        y: -100,
-        opacity: 0,
-        ease: "power3.out",
-      })
-      .from(
-        ".main-nav li",
-        {
-          duration: 0.6,
-          y: -20,
-          opacity: 0,
-          stagger: 0.1,
-          ease: "back.out(1.7)",
-        },
-        "-=0.5"
-      )
-      .from(
-        ".content-grid > *",
-        {
-          duration: 0.8,
-          y: 30,
-          opacity: 0,
-          stagger: 0.15,
-          ease: "power2.out",
-        },
-        "-=0.3"
+      // Add articles to global search
+      if (articles && articles.length > 0) {
+        window.addContentToSearch("articles", articles);
+        console.log(`Added ${articles.length} articles to global search`);
+      }
+
+      // Add music releases to global search
+      if (releases && releases.length > 0) {
+        window.addContentToSearch("music", releases);
+        console.log(`Added ${releases.length} music releases to global search`);
+      }
+
+      // Add events to global search
+      if (events && events.length > 0) {
+        window.addContentToSearch("events", events);
+        console.log(`Added ${events.length} events to global search`);
+      }
+
+      // Add charts to global search
+      if (charts && charts.length > 0) {
+        window.addContentToSearch("charts", charts);
+        console.log(`Added ${charts.length} charts to global search`);
+      }
+    } else {
+      console.warn(
+        "Global search not available - make sure main.js is loaded first"
       );
 
-    // Logo scale animation
-    gsap.from(".logo-img", {
-      duration: 1,
-      scale: 0,
-      rotation: 360,
-      ease: "elastic.out(1, 0.5)",
-      delay: 0.3,
-    });
-  }
-
-  function initScrollAnimations() {
-    // Scroll-triggered animations for sections
-    gsap.utils.toArray(".the-latest").forEach((section) => {
-      gsap.from(section, {
-        scrollTrigger: {
-          trigger: section,
-          start: "top 80%",
-          end: "bottom 20%",
-          toggleActions: "play none none reverse",
-        },
-        duration: 1,
-        y: 50,
-        opacity: 0,
-        ease: "power2.out",
-      });
-    });
-
-    // Enhanced chart item animations
-    gsap.utils.toArray(".chart-item").forEach((item, index) => {
-      gsap.from(item, {
-        scrollTrigger: {
-          trigger: item,
-          start: "top 90%",
-          toggleActions: "play none none reverse",
-        },
-        duration: 0.6,
-        x: -50,
-        opacity: 0,
-        delay: index * 0.1,
-        ease: "power2.out",
-      });
-    });
-
-    // Sidebar article animations
-    gsap.utils.toArray(".sidebar-article").forEach((article, index) => {
-      gsap.from(article, {
-        scrollTrigger: {
-          trigger: article,
-          start: "top 85%",
-          toggleActions: "play none none reverse",
-        },
-        duration: 0.8,
-        y: 30,
-        opacity: 0,
-        delay: index * 0.15,
-        ease: "power2.out",
-      });
-    });
-
-    // Release cards animation
-    gsap.utils.toArray(".release-card").forEach((card, index) => {
-      gsap.from(card, {
-        scrollTrigger: {
-          trigger: card,
-          start: "top 85%",
-          toggleActions: "play none none reverse",
-        },
-        duration: 0.7,
-        y: 30,
-        opacity: 0,
-        delay: index * 0.1,
-        ease: "power2.out",
-      });
-    });
-
-    // Side articles animation
-    gsap.utils.toArray(".side-article").forEach((article, index) => {
-      gsap.from(article, {
-        scrollTrigger: {
-          trigger: article,
-          start: "top 85%",
-          toggleActions: "play none none reverse",
-        },
-        duration: 0.6,
-        x: -50,
-        opacity: 0,
-        delay: index * 0.08,
-        ease: "power2.out",
-      });
-    });
-  }
-
-  function initHoverAnimations() {
-    // Exclusive section hover animation
-    const exclusiveContainer = document.querySelector(".exclusive-container");
-    if (exclusiveContainer) {
-      exclusiveContainer.addEventListener("mouseenter", () => {
-        gsap.to(".exclusive-text", {
-          duration: 0.3,
-          y: -10,
-          ease: "power2.out",
-        });
-      });
-
-      exclusiveContainer.addEventListener("mouseleave", () => {
-        gsap.to(".exclusive-text", {
-          duration: 0.3,
-          y: 0,
-          ease: "power2.out",
-        });
-      });
-    }
-
-    // Image hover effects
-    gsap.utils
-      .toArray(
-        ".sidebar-story img, .latest-article img, .release-card img, .featured-latest img, .side-article img"
-      )
-      .forEach((img) => {
-        img.addEventListener("mouseenter", () => {
-          gsap.to(img, {
-            duration: 0.3,
-            scale: 1.05,
-            ease: "power2.out",
-          });
-        });
-
-        img.addEventListener("mouseleave", () => {
-          gsap.to(img, {
-            duration: 0.3,
-            scale: 1,
-            ease: "power2.out",
-          });
-        });
-      });
-
-    // Card hover animations
-    gsap.utils
-      .toArray(".story-card, .release-card, .sidebar-article, .side-article")
-      .forEach((card) => {
-        card.addEventListener("mouseenter", () => {
-          gsap.to(card, {
-            duration: 0.3,
-            y: -5,
-            boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
-            ease: "power2.out",
-          });
-        });
-
-        card.addEventListener("mouseleave", () => {
-          gsap.to(card, {
-            duration: 0.3,
-            y: 0,
-            boxShadow: "0 3px 6px rgba(0,0,0,0.05)",
-            ease: "power2.out",
-          });
-        });
-      });
-
-    // Chart item hover effects
-    gsap.utils.toArray(".chart-item").forEach((item) => {
-      item.addEventListener("mouseenter", () => {
-        gsap.to(item, {
-          duration: 0.3,
-          backgroundColor: "rgba(255, 255, 255, 1)",
-          scale: 1.02,
-          ease: "power2.out",
-        });
-      });
-
-      item.addEventListener("mouseleave", () => {
-        gsap.to(item, {
-          duration: 0.3,
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          scale: 1,
-          ease: "power2.out",
-        });
-      });
-    });
-  }
-
-  function initLoadingAnimations() {
-    // Music-themed beat pulse animation for section headings
-    function createBeatPulse() {
-      gsap.to(".exclusive-label, .section-heading", {
-        duration: 0.5,
-        scale: 1.1,
-        yoyo: true,
-        repeat: -1,
-        ease: "power1.inOut",
-        stagger: {
-          each: 0.2,
-          from: "random",
-        },
-      });
-    }
-
-    // Start beat pulse after page load
-    setTimeout(createBeatPulse, 2000);
-
-    // Enhanced bottom scroll animation
-    const scrollItems = gsap.utils.toArray(".scroll-item:not(.loading)");
-    if (scrollItems.length > 0) {
-      // First, make them visible with a fade in
-      gsap.to(scrollItems, {
-        duration: 0.5,
-        opacity: 1,
-        stagger: 0.1,
-        ease: "power2.out",
-      });
-
-      // Then start the scrolling animation
-      const scrollTL = gsap.timeline({ repeat: -1 });
-      scrollItems.forEach((item, i) => {
-        scrollTL.fromTo(
-          item,
-          { x: "100%", opacity: 0 },
-          { x: "-100%", opacity: 1, duration: 20, ease: "none" },
-          i * 2
-        );
+      // Fallback: store data for when global search becomes available
+      if (!window.pendingHomepageData) {
+        window.pendingHomepageData = [];
+      }
+      window.pendingHomepageData.push({
+        articles: articles || [],
+        releases: releases || [],
+        events: events || [],
+        charts: charts || [],
       });
     }
   }
 
-  function animateDynamicContent(container, type) {
-    if (!container) return;
-
-    const elements = container.children;
-    if (elements.length === 0) return;
-
-    switch (type) {
-      case "charts":
-        gsap.fromTo(
-          elements,
-          { x: -100, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            duration: 0.6,
-            stagger: 0.1,
-            ease: "power2.out",
-          }
+  // Process any pending data when global search becomes available
+  function processPendingData() {
+    if (window.addContentToSearch && window.pendingHomepageData) {
+      window.pendingHomepageData.forEach((data) => {
+        integrateWithGlobalSearch(
+          data.articles,
+          data.releases,
+          data.events,
+          data.charts
         );
-        break;
-
-      case "releases":
-        gsap.fromTo(
-          elements,
-          { y: 30, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.7,
-            stagger: 0.1,
-            ease: "power2.out",
-          }
-        );
-        break;
-
-      case "events":
-        gsap.fromTo(
-          elements,
-          { x: -50, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            duration: 0.5,
-            stagger: 0.08,
-            ease: "power2.out",
-          }
-        );
-        break;
-
-      case "articles":
-        gsap.fromTo(
-          elements,
-          { y: 20, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.6,
-            stagger: 0.1,
-            ease: "power2.out",
-          }
-        );
-        break;
+      });
+      window.pendingHomepageData = null;
     }
+  }
+
+  // Check for global search availability periodically
+  function waitForGlobalSearch() {
+    const maxAttempts = 10;
+    let attempts = 0;
+
+    const checkInterval = setInterval(() => {
+      attempts++;
+      if (window.addContentToSearch) {
+        clearInterval(checkInterval);
+        processPendingData();
+        console.log("Global search integrated successfully");
+      } else if (attempts >= maxAttempts) {
+        clearInterval(checkInterval);
+        console.warn("Global search not available after waiting");
+      }
+    }, 500);
   }
 
   // === VINYL LOADING FUNCTION ===
@@ -1272,6 +1025,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     leftSidebar.innerHTML = "";
+    leftSidebar.classList.remove("loading");
+
     articles.forEach((article) => {
       const el = document.createElement("article");
       el.classList.add("sidebar-article");
@@ -1311,6 +1066,8 @@ document.addEventListener("DOMContentLoaded", () => {
       article.description || "Exclusive music coverage",
       150
     )}</p></div>`;
+    exclusiveSection.classList.remove("loading");
+
     if (article.url && article.url !== "#") {
       exclusiveSection.style.cursor = "pointer";
       exclusiveSection.addEventListener("click", () =>
@@ -1330,6 +1087,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     rightSidebar.innerHTML = "";
+    rightSidebar.classList.remove("loading");
+
     articles.forEach((article, idx) => {
       const section = document.createElement("section");
       section.classList.add("sidebar-section");
@@ -1375,6 +1134,8 @@ document.addEventListener("DOMContentLoaded", () => {
     )}</p><span class="author">By ${
       article.source?.name || "Music Globe"
     }</span></div>`;
+    featuredLatest.classList.remove("loading");
+
     if (article.url && article.url !== "#") {
       featuredLatest.style.cursor = "pointer";
       featuredLatest.addEventListener("click", () =>
@@ -1394,6 +1155,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     latestSideList.innerHTML = "";
+    latestSideList.classList.remove("loading");
+
     articles.forEach((article) => {
       const el = document.createElement("article");
       el.classList.add("side-article");
@@ -1401,12 +1164,14 @@ document.addEventListener("DOMContentLoaded", () => {
         article.image || "images/music-default.jpg"
       }" alt="${
         article.title || ""
-      }" onerror="this.src='images/music-default.jpg'"><div><h4>${
-        article.title || "Music News"
-      }</h4><p>${truncateText(
-        article.description || "Latest music updates",
-        100
-      )}</p></div>`;
+      }" onerror="this.src='images/music-default.jpg'">
+      <div>
+        <h4>${article.title || "Music News"}</h4>
+        <p>${truncateText(
+          article.description || "Latest music updates",
+          100
+        )}</p>
+      </div>`;
 
       if (article.url && article.url !== "#") {
         el.style.cursor = "pointer";
@@ -1421,6 +1186,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function populateBottomScroll(articles) {
     if (!bottomScroll || !articles?.length) return;
     bottomScroll.innerHTML = "";
+    bottomScroll.classList.remove("loading");
+
     articles.slice(0, 10).forEach((article) => {
       const div = document.createElement("div");
       div.classList.add("scroll-item");
@@ -1441,6 +1208,9 @@ document.addEventListener("DOMContentLoaded", () => {
       showLoading(releasesGrid, "releases", 4);
       return;
     }
+
+    releasesGrid.innerHTML = "";
+    releasesGrid.classList.remove("loading");
 
     releasesGrid.innerHTML = releases
       .map(
@@ -1476,6 +1246,9 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    eventsList.innerHTML = "";
+    eventsList.classList.remove("loading");
+
     eventsList.innerHTML = events
       .map(
         (event) => `
@@ -1505,6 +1278,9 @@ document.addEventListener("DOMContentLoaded", () => {
       showLoading(chartsContainer, "charts", 5);
       return;
     }
+
+    chartsContainer.innerHTML = "";
+    chartsContainer.classList.remove("loading");
 
     chartsContainer.innerHTML = charts
       .map(
@@ -1542,15 +1318,6 @@ document.addEventListener("DOMContentLoaded", () => {
       theLatestSection: document.querySelector(".the-latest"),
     });
 
-    // Debug: Check if elements are visible
-    const latestSection = document.querySelector(".the-latest");
-    if (latestSection) {
-      console.log("Latest section styles:", {
-        display: window.getComputedStyle(latestSection).display,
-        opacity: window.getComputedStyle(latestSection).opacity,
-        visibility: window.getComputedStyle(latestSection).visibility,
-      });
-    }
     console.log("Starting content loading...");
 
     try {
@@ -1580,6 +1347,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       updateProgress(60);
 
+      // INTEGRATE WITH GLOBAL SEARCH - ADD THIS CALL
+      integrateWithGlobalSearch(articles, saReleases, events, charts);
+
       // Populate all sections with improved error handling
       populateLeftSidebar(articles.slice(0, 4));
       populateExclusiveSection(articles[0]);
@@ -1594,14 +1364,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       updateProgress(90);
 
-      // Animate dynamic content after population
+      // Initialize simple animations (no GSAP)
       setTimeout(() => {
-        animateDynamicContent(leftSidebar, "articles");
-        animateDynamicContent(document.getElementById("saCharts"), "charts");
-        animateDynamicContent(releasesGrid, "releases");
-        animateDynamicContent(eventsList, "events");
-        animateDynamicContent(latestSideList, "articles");
-
+        initSimpleAnimations();
         updateProgress(100);
 
         // Hide loader after content is ready
@@ -1612,6 +1377,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Use fallbacks for everything
       const articles = FALLBACK_ARTICLES;
+
+      // INTEGRATE FALLBACK DATA WITH GLOBAL SEARCH - ADD THIS CALL
+      integrateWithGlobalSearch(
+        articles,
+        SA_FALLBACK_RELEASES,
+        FALLBACK_EVENTS,
+        FALLBACK_CHARTS
+      );
+
       populateLeftSidebar(articles.slice(0, 4));
       populateExclusiveSection(articles[0]);
       populateRightSidebar(articles.slice(1, 3));
@@ -1631,6 +1405,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // === INITIALIZATION ===
   // Start loading content immediately
   loadAllContent();
+
+  // Wait for global search to become available
+  waitForGlobalSearch();
 
   // Temporary debugging - remove after testing
   setTimeout(() => {
