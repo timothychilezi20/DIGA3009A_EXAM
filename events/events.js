@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Register ScrollTrigger plugin
+  gsap.registerPlugin(ScrollTrigger);
+
   // API Configuration
-  const TICKETMASTER_API_KEY = "iAABWmE3QG0CbtAOfbpfmoSCrSC7PYcb"; // Get from https://developer.ticketmaster.com/
+  const TICKETMASTER_API_KEY = "iAABWmE3QG0CbtAOfbpfmoSCrSC7PYcb";
   const TICKETMASTER_BASE_URL =
     "https://app.ticketmaster.com/discovery/v2/events.json";
 
@@ -44,6 +47,231 @@ document.addEventListener("DOMContentLoaded", () => {
     Gospel: "Gospel",
     World: "World Music",
   };
+
+  // === GSAP ANIMATIONS ===
+  function initializePageAnimations() {
+    // Animation 1: Page load sequence
+    const tl = gsap.timeline();
+
+    tl.fromTo(
+      ".section-title",
+      { opacity: 0, y: -50 },
+      { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
+    )
+      .fromTo(
+        ".main-tabs .main-tab",
+        { opacity: 0, y: -20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "back.out(1.7)",
+        },
+        "-=0.3"
+      )
+      .fromTo(
+        ".filters-section",
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+        "-=0.2"
+      );
+
+    // Animate footer on scroll
+    gsap.fromTo(
+      ".site-footer",
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        scrollTrigger: {
+          trigger: ".site-footer",
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+      }
+    );
+  }
+
+  // Animation 2: Staggered event cards animation
+  function animateEventCards() {
+    const cards = eventsGrid.querySelectorAll(".event-card");
+
+    if (cards.length === 0) return;
+
+    gsap.fromTo(
+      cards,
+      {
+        opacity: 0,
+        y: 40,
+        scale: 0.9,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.7,
+        stagger: 0.1,
+        ease: "power2.out",
+        onComplete: function () {
+          // Add hover animations after initial load
+          cards.forEach((card) => {
+            card.addEventListener("mouseenter", () => {
+              gsap.to(card, {
+                scale: 1.03,
+                y: -5,
+                duration: 0.3,
+                ease: "power2.out",
+              });
+            });
+
+            card.addEventListener("mouseleave", () => {
+              gsap.to(card, {
+                scale: 1,
+                y: 0,
+                duration: 0.3,
+                ease: "power2.out",
+              });
+            });
+          });
+        },
+      }
+    );
+  }
+
+  // Animation 3: Filter section interactions
+  function initializeFilterAnimations() {
+    // Animate filter buttons on hover
+    const filterButtons = document.querySelectorAll(".genre-filter, .main-tab");
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("mouseenter", () => {
+        gsap.to(button, {
+          scale: 1.05,
+          duration: 0.2,
+          ease: "power2.out",
+        });
+      });
+
+      button.addEventListener("mouseleave", () => {
+        gsap.to(button, {
+          scale: 1,
+          duration: 0.2,
+          ease: "power2.out",
+        });
+      });
+    });
+
+    // Animate filter changes
+    const filterElements = document.querySelectorAll(
+      ".location-select, .date-select"
+    );
+    filterElements.forEach((element) => {
+      element.addEventListener("change", () => {
+        gsap.to(element, {
+          scale: 0.95,
+          duration: 0.1,
+          yoyo: true,
+          repeat: 1,
+          ease: "power2.inOut",
+        });
+      });
+    });
+  }
+
+  // Animation 4: Search bar animation
+  function initializeSearchAnimation() {
+    const searchWrapper = document.querySelector(".search-wrapper");
+    const searchIcon = document.getElementById("searchIcon");
+
+    if (searchIcon && searchBar) {
+      searchIcon.addEventListener("click", () => {
+        searchWrapper.classList.toggle("active");
+
+        if (searchWrapper.classList.contains("active")) {
+          gsap.fromTo(
+            searchBar,
+            { scaleX: 0, opacity: 0, width: 0 },
+            {
+              scaleX: 1,
+              opacity: 1,
+              width: 250,
+              duration: 0.4,
+              ease: "back.out(1.7)",
+            }
+          );
+          searchBar.focus();
+        } else {
+          gsap.to(searchBar, {
+            scaleX: 0,
+            opacity: 0,
+            width: 0,
+            duration: 0.3,
+            ease: "power2.in",
+            onComplete: () => {
+              searchBar.style.display = "none";
+            },
+          });
+        }
+      });
+
+      // Close search when clicking outside
+      document.addEventListener("click", (e) => {
+        if (
+          !searchWrapper.contains(e.target) &&
+          searchWrapper.classList.contains("active")
+        ) {
+          searchWrapper.classList.remove("active");
+          gsap.to(searchBar, {
+            scaleX: 0,
+            opacity: 0,
+            width: 0,
+            duration: 0.3,
+            ease: "power2.in",
+            onComplete: () => {
+              searchBar.style.display = "none";
+            },
+          });
+        }
+      });
+    }
+  }
+
+  // Animation 5: Loading state animation
+  function animateLoadingState() {
+    const loadingElement = eventsGrid.querySelector(".loading");
+    if (loadingElement) {
+      gsap.fromTo(
+        loadingElement,
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" }
+      );
+    }
+  }
+
+  // Animation 6: Smooth tab switching
+  function animateTabSwitch(oldActiveTab, newActiveTab) {
+    const tl = gsap.timeline();
+
+    tl.to(oldActiveTab, {
+      scale: 0.95,
+      opacity: 0.7,
+      duration: 0.2,
+      ease: "power2.in",
+    })
+      .to(newActiveTab, {
+        scale: 1.05,
+        opacity: 1,
+        duration: 0.3,
+        ease: "back.out(1.7)",
+      })
+      .to(newActiveTab, {
+        scale: 1,
+        duration: 0.2,
+        ease: "power2.out",
+      });
+  }
 
   // Initialize genre filters
   function initializeGenreFilters() {
@@ -179,65 +407,70 @@ document.addEventListener("DOMContentLoaded", () => {
   function displayEvents(events) {
     if (events.length === 0) {
       eventsGrid.innerHTML = `
-                <div class="error">
-                    <p>No events found matching your criteria.</p>
-                    <button onclick="loadInitialEvents()" class="retry-btn">Try Again</button>
-                </div>
-            `;
+        <div class="error">
+          <p>No events found matching your criteria.</p>
+          <button onclick="loadInitialEvents()" class="retry-btn">Try Again</button>
+        </div>
+      `;
+      // Animate error state
+      gsap.fromTo(
+        eventsGrid.querySelector(".error"),
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5 }
+      );
       return;
     }
 
     eventsGrid.innerHTML = events
       .map(
         (event) => `
-            <div class="event-card">
-                <div class="event-image">
-                    <img src="${getEventImage(event.images)}" alt="${
+        <div class="event-card">
+          <div class="event-image">
+            <img src="${getEventImage(event.images)}" alt="${
           event.name
         }" onerror="this.src='https://via.placeholder.com/400x225/002395/FFFFFF?text=Event+Image'">
-                    <div class="event-badges">
-                        <span class="date-badge">${formatEventDate(
-                          event.dates.start.localDate
-                        )}</span>
-                        <span class="genre-badge">${event.genre}</span>
-                    </div>
-                </div>
-                <div class="event-info">
-                    <h3 class="event-title">${event.name}</h3>
-                    <div class="event-meta">
-                        <div class="event-date">
-                            <i class="fas fa-calendar"></i>
-                            ${formatEventDateTime(event.dates.start)}
-                        </div>
-                        <div class="event-venue">
-                            <i class="fas fa-map-marker-alt"></i>
-                            ${event.venue?.name || "Venue TBA"}, ${
-          event.location
-        }
-                        </div>
-                        ${
-                          event.priceRange
-                            ? `
-                        <div class="event-price">
-                            <i class="fas fa-tag"></i>
-                            R${event.priceRange.min} - R${event.priceRange.max}
-                        </div>
-                        `
-                            : ""
-                        }
-                    </div>
-                    <div class="event-actions">
-                        <a href="${
-                          event.url
-                        }" target="_blank" class="ticket-btn">
-                            <i class="fas fa-ticket-alt"></i> Get Tickets
-                        </a>
-                    </div>
-                </div>
+            <div class="event-badges">
+              <span class="date-badge">${formatEventDate(
+                event.dates.start.localDate
+              )}</span>
+              <span class="genre-badge">${event.genre}</span>
             </div>
-        `
+          </div>
+          <div class="event-info">
+            <h3 class="event-title">${event.name}</h3>
+            <div class="event-meta">
+              <div class="event-date">
+                <i class="fas fa-calendar"></i>
+                ${formatEventDateTime(event.dates.start)}
+              </div>
+              <div class="event-venue">
+                <i class="fas fa-map-marker-alt"></i>
+                ${event.venue?.name || "Venue TBA"}, ${event.location}
+              </div>
+              ${
+                event.priceRange
+                  ? `
+              <div class="event-price">
+                <i class="fas fa-tag"></i>
+                R${event.priceRange.min} - R${event.priceRange.max}
+              </div>
+              `
+                  : ""
+              }
+            </div>
+            <div class="event-actions">
+              <a href="${event.url}" target="_blank" class="ticket-btn">
+                <i class="fas fa-ticket-alt"></i> Get Tickets
+              </a>
+            </div>
+          </div>
+        </div>
+      `
       )
       .join("");
+
+    // Animate the event cards
+    animateEventCards();
   }
 
   // Helper functions
@@ -298,20 +531,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showLoading() {
     eventsGrid.innerHTML = `
-            <div class="loading">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Loading South African music events...</p>
-            </div>
-        `;
+      <div class="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading South African music events...</p>
+      </div>
+    `;
+    animateLoadingState();
   }
 
   function showError(message) {
     eventsGrid.innerHTML = `
-            <div class="error">
-                <p>${message}</p>
-                <button onclick="loadInitialEvents()" class="retry-btn">Try Again</button>
-            </div>
-        `;
+      <div class="error">
+        <p>${message}</p>
+        <button onclick="loadInitialEvents()" class="retry-btn">Try Again</button>
+      </div>
+    `;
+    // Animate error state
+    gsap.fromTo(
+      eventsGrid.querySelector(".error"),
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.5 }
+    );
   }
 
   function updatePaginationInfo() {
@@ -319,24 +559,49 @@ document.addEventListener("DOMContentLoaded", () => {
     showingCount.textContent = filteredEvents.length;
 
     loadMoreBtn.style.display = currentPage < 4 ? "block" : "none";
+
+    // Animate load more button if shown
+    if (loadMoreBtn.style.display === "block") {
+      gsap.fromTo(
+        loadMoreBtn,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5 }
+      );
+    }
   }
 
   // Event handlers
   async function handleGenreFilter(e) {
+    const oldActive = document.querySelector(".genre-filter.active");
+    const newActive = e.target;
+
+    // Animate the filter change
+    if (oldActive !== newActive) {
+      animateTabSwitch(oldActive, newActive);
+    }
+
     document
       .querySelectorAll(".genre-filter")
       .forEach((btn) => btn.classList.remove("active"));
-    e.target.classList.add("active");
+    newActive.classList.add("active");
 
-    currentGenre = e.target.dataset.genre;
+    currentGenre = newActive.dataset.genre;
     filterEvents();
   }
 
   async function handleMainTabClick(e) {
-    mainTabs.forEach((tab) => tab.classList.remove("active"));
-    e.target.classList.add("active");
+    const oldActive = document.querySelector(".main-tab.active");
+    const newActive = e.target;
 
-    currentCategory = e.target.dataset.category;
+    // Animate tab switch
+    if (oldActive !== newActive) {
+      animateTabSwitch(oldActive, newActive);
+    }
+
+    mainTabs.forEach((tab) => tab.classList.remove("active"));
+    newActive.classList.add("active");
+
+    currentCategory = newActive.dataset.category;
     await loadInitialEvents();
   }
 
@@ -390,7 +655,10 @@ document.addEventListener("DOMContentLoaded", () => {
   window.loadInitialEvents = loadInitialEvents;
   window.handleLoadMore = handleLoadMore;
 
-  // Initialize
+  // Initialize everything
+  initializePageAnimations();
   initializeGenreFilters();
+  initializeFilterAnimations();
+  initializeSearchAnimation();
   loadInitialEvents();
 });

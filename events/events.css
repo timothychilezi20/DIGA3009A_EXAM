@@ -1,3 +1,87 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f8f9fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header styles */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 80px;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo-img {
+  height: 40px;
+}
+
+.header-icons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+#searchBar {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  width: 200px;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+  display: none; /* Hidden by default, shown with JS */
+}
+
+#searchBar:focus {
+  outline: none;
+  border-color: #007847;
+  width: 250px;
+}
+
+.icon {
+  cursor: pointer;
+  color: #555;
+  transition: color 0.3s;
+}
+
+.icon:hover {
+  color: #de3831;
+}
+
+#userLoginContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 15px;
+  border-radius: 30px;
+  transition: background-color 0.3s;
+}
+
+#userLoginContainer:hover {
+  background-color: #f0f0f0;
+}
+
+.login-text {
+  font-weight: 600;
+  color: #555;
+}
+
 /* Events Section */
 .events-section {
   padding: 40px 80px;
@@ -337,4 +421,83 @@
   .event-actions {
     flex-direction: column;
   }
+}
+
+/* ===== GSAP ANIMATION STYLES ===== */
+.animated-event {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.stagger-animation {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-load-animation {
+  opacity: 0;
+}
+
+.search-animation {
+  transform-origin: right center;
+}
+
+/* Ensure smooth transitions for animated elements */
+.event-card {
+  transform-origin: center;
+  will-change: transform;
+}
+
+.filters-section {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.3s ease;
+}
+
+/* Enhanced hover effects for animated cards */
+.event-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Search bar animation styles */
+.search-wrapper {
+  transition: all 0.3s ease;
+}
+
+.search-wrapper.active #searchBar {
+  display: block;
+  transform-origin: right center;
+}
+
+/* Loading animation */
+.loading {
+  animation: pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.6;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Filter animation states */
+.genre-filter,
+.main-tab {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Footer animation */
+.site-footer {
+  opacity: 0;
+  transform: translateY(20px);
 }

@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Register ScrollTrigger plugin
+  gsap.registerPlugin(ScrollTrigger);
+
   const grid = document.getElementById("reviewsGrid");
   const tabs = document.querySelectorAll(".tab");
 
@@ -125,10 +128,276 @@ document.addEventListener("DOMContentLoaded", () => {
   // Cache for API responses to avoid duplicate calls
   const albumCache = new Map();
 
+  // === GSAP ANIMATIONS ===
+  function initializePageAnimations() {
+    // Animation 1: Page load sequence
+    const tl = gsap.timeline();
+
+    tl.fromTo(
+      ".section-title",
+      { opacity: 0, y: -50 },
+      { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
+    ).fromTo(
+      ".tabs .tab",
+      { opacity: 0, y: -20 },
+      { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "back.out(1.7)" },
+      "-=0.3"
+    );
+
+    // Animate footer on scroll
+    gsap.fromTo(
+      ".site-footer",
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        scrollTrigger: {
+          trigger: ".site-footer",
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+      }
+    );
+  }
+
+  // Animation 2: Staggered review cards animation
+  function animateReviewCards() {
+    const cards = grid.querySelectorAll(".music-card");
+
+    if (cards.length === 0) return;
+
+    gsap.fromTo(
+      cards,
+      {
+        opacity: 0,
+        y: 40,
+        scale: 0.9,
+        rotationY: 5,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        rotationY: 0,
+        duration: 0.7,
+        stagger: 0.08,
+        ease: "power2.out",
+        onComplete: function () {
+          // Add enhanced hover animations after initial load
+          cards.forEach((card) => {
+            card.addEventListener("mouseenter", () => {
+              gsap.to(card, {
+                scale: 1.03,
+                y: -8,
+                rotationY: 2,
+                duration: 0.3,
+                ease: "power2.out",
+              });
+
+              // Animate stars on hover
+              const stars = card.querySelector(".stars");
+              if (stars) {
+                gsap.to(stars, {
+                  scale: 1.1,
+                  color: "#ffa726",
+                  duration: 0.2,
+                });
+              }
+
+              // Animate badges
+              const badges = card.querySelectorAll(".sa-badge, .genre-badge");
+              gsap.to(badges, {
+                y: -2,
+                duration: 0.2,
+                stagger: 0.05,
+              });
+            });
+
+            card.addEventListener("mouseleave", () => {
+              gsap.to(card, {
+                scale: 1,
+                y: 0,
+                rotationY: 0,
+                duration: 0.3,
+                ease: "power2.out",
+              });
+
+              const stars = card.querySelector(".stars");
+              if (stars) {
+                gsap.to(stars, {
+                  scale: 1,
+                  color: "#ffc107",
+                  duration: 0.2,
+                });
+              }
+
+              const badges = card.querySelectorAll(".sa-badge, .genre-badge");
+              gsap.to(badges, {
+                y: 0,
+                duration: 0.2,
+              });
+            });
+          });
+        },
+      }
+    );
+  }
+
+  // Animation 3: Tab switching animation
+  function initializeTabAnimations() {
+    // Animate tab buttons on hover
+    tabs.forEach((tab) => {
+      tab.addEventListener("mouseenter", () => {
+        if (!tab.classList.contains("active")) {
+          gsap.to(tab, {
+            scale: 1.05,
+            backgroundColor: "#e9ecef",
+            duration: 0.2,
+            ease: "power2.out",
+          });
+        }
+      });
+
+      tab.addEventListener("mouseleave", () => {
+        if (!tab.classList.contains("active")) {
+          gsap.to(tab, {
+            scale: 1,
+            backgroundColor: "transparent",
+            duration: 0.2,
+            ease: "power2.out",
+          });
+        }
+      });
+    });
+  }
+
+  // Animation 4: Search bar animation
+  function initializeSearchAnimation() {
+    const searchWrapper = document.querySelector(".search-wrapper");
+    const searchIcon = document.getElementById("searchIcon");
+    const searchBar = document.getElementById("searchBar");
+
+    if (searchIcon && searchBar) {
+      searchIcon.addEventListener("click", () => {
+        searchWrapper.classList.toggle("active");
+
+        if (searchWrapper.classList.contains("active")) {
+          gsap.fromTo(
+            searchBar,
+            { scaleX: 0, opacity: 0, width: 0 },
+            {
+              scaleX: 1,
+              opacity: 1,
+              width: 250,
+              duration: 0.4,
+              ease: "back.out(1.7)",
+            }
+          );
+          searchBar.focus();
+        } else {
+          gsap.to(searchBar, {
+            scaleX: 0,
+            opacity: 0,
+            width: 0,
+            duration: 0.3,
+            ease: "power2.in",
+            onComplete: () => {
+              searchBar.style.display = "none";
+            },
+          });
+        }
+      });
+
+      // Close search when clicking outside
+      document.addEventListener("click", (e) => {
+        if (
+          !searchWrapper.contains(e.target) &&
+          searchWrapper.classList.contains("active")
+        ) {
+          searchWrapper.classList.remove("active");
+          gsap.to(searchBar, {
+            scaleX: 0,
+            opacity: 0,
+            width: 0,
+            duration: 0.3,
+            ease: "power2.in",
+            onComplete: () => {
+              searchBar.style.display = "none";
+            },
+          });
+        }
+      });
+    }
+  }
+
+  // Animation 5: Loading state animation
+  function animateLoadingState() {
+    const loadingElement = grid.querySelector(".loading");
+    if (loadingElement) {
+      gsap.fromTo(
+        loadingElement,
+        { opacity: 0, scale: 0.8, y: 20 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: "power2.out" }
+      );
+    }
+  }
+
+  // Animation 6: Smooth tab switching
+  function animateTabSwitch(oldActiveTab, newActiveTab) {
+    const tl = gsap.timeline();
+
+    tl.to(oldActiveTab, {
+      scale: 0.95,
+      opacity: 0.7,
+      duration: 0.2,
+      ease: "power2.in",
+    })
+      .to(newActiveTab, {
+        scale: 1.1,
+        opacity: 1,
+        backgroundColor: "#002395",
+        color: "white",
+        duration: 0.3,
+        ease: "back.out(1.7)",
+      })
+      .to(newActiveTab, {
+        scale: 1,
+        duration: 0.2,
+        ease: "power2.out",
+      });
+  }
+
+  // Animation 7: Rating stars animation
+  function animateRatingStars(card, rating) {
+    const stars = card.querySelector(".stars");
+    if (stars) {
+      gsap.fromTo(
+        stars,
+        { scale: 0, opacity: 0 },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 0.5,
+          delay: 0.3,
+          ease: "back.out(1.7)",
+        }
+      );
+    }
+  }
+
   // Tab functionality
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
       if (isLoading) return;
+
+      const oldActiveTab = document.querySelector(".tab.active");
+      const newActiveTab = tab;
+
+      // Animate tab switch
+      if (oldActiveTab !== newActiveTab) {
+        animateTabSwitch(oldActiveTab, newActiveTab);
+      }
 
       tabs.forEach((t) => t.classList.remove("active"));
       tab.classList.add("active");
@@ -148,6 +417,9 @@ document.addEventListener("DOMContentLoaded", () => {
         <p style="font-size: 0.9rem; margin-top: 10px;">This may take a moment as we fetch real album data</p>
       </div>
     `;
+
+    // Animate loading state
+    animateLoadingState();
 
     try {
       const batchPromises = [];
@@ -518,11 +790,11 @@ document.addEventListener("DOMContentLoaded", () => {
       case "new":
         filteredReviews = allReviews.filter((review) => !review.isClassic);
         break;
+      case "popular":
+        filteredReviews = allReviews.filter((review) => review.rating >= 4.0);
+        break;
       case "classics":
         filteredReviews = allReviews.filter((review) => review.isClassic);
-        break;
-      case "featured":
-        filteredReviews = allReviews.filter((review) => review.rating >= 4.5);
         break;
       default:
         filteredReviews = allReviews;
@@ -540,6 +812,12 @@ document.addEventListener("DOMContentLoaded", () => {
           <button onclick="generateLargeDataset()" class="retry-btn">Try Again</button>
         </div>
       `;
+      // Animate error state
+      gsap.fromTo(
+        grid.querySelector(".error"),
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5 }
+      );
       return;
     }
 
@@ -572,20 +850,9 @@ document.addEventListener("DOMContentLoaded", () => {
     `
       )
       .join("");
-  }
 
-  // Get current category reviews
-  function getCurrentCategoryReviews() {
-    switch (currentCategory) {
-      case "new":
-        return allReviews.filter((review) => !review.isClassic);
-      case "classics":
-        return allReviews.filter((review) => review.isClassic);
-      case "featured":
-        return allReviews.filter((review) => review.rating >= 4.5);
-      default:
-        return allReviews;
-    }
+    // Animate the review cards
+    animateReviewCards();
   }
 
   // Search functionality with debouncing
@@ -621,6 +888,9 @@ document.addEventListener("DOMContentLoaded", () => {
   window.generateLargeDataset = generateLargeDataset;
   window.filterReviewsByCategory = filterReviewsByCategory;
 
-  // Initial load
+  // Initialize everything
+  initializePageAnimations();
+  initializeTabAnimations();
+  initializeSearchAnimation();
   generateLargeDataset();
 });

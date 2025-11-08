@@ -317,6 +317,358 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   };
 
+  // === GSAP ANIMATIONS ===
+  function initGSAPAnimations() {
+    // Register GSAP plugins
+    if (typeof gsap !== "undefined" && gsap.registerPlugin) {
+      gsap.registerPlugin(ScrollTrigger);
+    }
+
+    initPageLoadAnimations();
+    initScrollAnimations();
+    initHoverAnimations();
+    initLoadingAnimations();
+  }
+
+  function initPageLoadAnimations() {
+    // Page load sequence
+    const pageLoadTL = gsap.timeline();
+
+    pageLoadTL
+      .from(".main-header", {
+        duration: 1,
+        y: -100,
+        opacity: 0,
+        ease: "power3.out",
+      })
+      .from(
+        ".main-nav li",
+        {
+          duration: 0.6,
+          y: -20,
+          opacity: 0,
+          stagger: 0.1,
+          ease: "back.out(1.7)",
+        },
+        "-=0.5"
+      )
+      .from(
+        ".content-grid > *",
+        {
+          duration: 0.8,
+          y: 30,
+          opacity: 0,
+          stagger: 0.15,
+          ease: "power2.out",
+        },
+        "-=0.3"
+      );
+
+    // Logo scale animation
+    gsap.from(".logo-img", {
+      duration: 1,
+      scale: 0,
+      rotation: 360,
+      ease: "elastic.out(1, 0.5)",
+      delay: 0.3,
+    });
+  }
+
+  function initScrollAnimations() {
+    // Scroll-triggered animations for sections
+    gsap.utils.toArray(".the-latest").forEach((section) => {
+      gsap.from(section, {
+        scrollTrigger: {
+          trigger: section,
+          start: "top 80%",
+          end: "bottom 20%",
+          toggleActions: "play none none reverse",
+        },
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power2.out",
+      });
+    });
+
+    // Enhanced chart item animations
+    gsap.utils.toArray(".chart-item").forEach((item, index) => {
+      gsap.from(item, {
+        scrollTrigger: {
+          trigger: item,
+          start: "top 90%",
+          toggleActions: "play none none reverse",
+        },
+        duration: 0.6,
+        x: -50,
+        opacity: 0,
+        delay: index * 0.1,
+        ease: "power2.out",
+      });
+    });
+
+    // Sidebar article animations
+    gsap.utils.toArray(".sidebar-article").forEach((article, index) => {
+      gsap.from(article, {
+        scrollTrigger: {
+          trigger: article,
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+        duration: 0.8,
+        y: 30,
+        opacity: 0,
+        delay: index * 0.15,
+        ease: "power2.out",
+      });
+    });
+
+    // Release cards animation
+    gsap.utils.toArray(".release-card").forEach((card, index) => {
+      gsap.from(card, {
+        scrollTrigger: {
+          trigger: card,
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+        duration: 0.7,
+        y: 30,
+        opacity: 0,
+        delay: index * 0.1,
+        ease: "power2.out",
+      });
+    });
+
+    // Side articles animation
+    gsap.utils.toArray(".side-article").forEach((article, index) => {
+      gsap.from(article, {
+        scrollTrigger: {
+          trigger: article,
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+        duration: 0.6,
+        x: -50,
+        opacity: 0,
+        delay: index * 0.08,
+        ease: "power2.out",
+      });
+    });
+  }
+
+  function initHoverAnimations() {
+    // Exclusive section hover animation
+    const exclusiveContainer = document.querySelector(".exclusive-container");
+    if (exclusiveContainer) {
+      exclusiveContainer.addEventListener("mouseenter", () => {
+        gsap.to(".exclusive-text", {
+          duration: 0.3,
+          y: -10,
+          ease: "power2.out",
+        });
+      });
+
+      exclusiveContainer.addEventListener("mouseleave", () => {
+        gsap.to(".exclusive-text", {
+          duration: 0.3,
+          y: 0,
+          ease: "power2.out",
+        });
+      });
+    }
+
+    // Image hover effects
+    gsap.utils
+      .toArray(
+        ".sidebar-story img, .latest-article img, .release-card img, .featured-latest img, .side-article img"
+      )
+      .forEach((img) => {
+        img.addEventListener("mouseenter", () => {
+          gsap.to(img, {
+            duration: 0.3,
+            scale: 1.05,
+            ease: "power2.out",
+          });
+        });
+
+        img.addEventListener("mouseleave", () => {
+          gsap.to(img, {
+            duration: 0.3,
+            scale: 1,
+            ease: "power2.out",
+          });
+        });
+      });
+
+    // Card hover animations
+    gsap.utils
+      .toArray(".story-card, .release-card, .sidebar-article, .side-article")
+      .forEach((card) => {
+        card.addEventListener("mouseenter", () => {
+          gsap.to(card, {
+            duration: 0.3,
+            y: -5,
+            boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
+            ease: "power2.out",
+          });
+        });
+
+        card.addEventListener("mouseleave", () => {
+          gsap.to(card, {
+            duration: 0.3,
+            y: 0,
+            boxShadow: "0 3px 6px rgba(0,0,0,0.05)",
+            ease: "power2.out",
+          });
+        });
+      });
+
+    // Chart item hover effects
+    gsap.utils.toArray(".chart-item").forEach((item) => {
+      item.addEventListener("mouseenter", () => {
+        gsap.to(item, {
+          duration: 0.3,
+          backgroundColor: "rgba(255, 255, 255, 1)",
+          scale: 1.02,
+          ease: "power2.out",
+        });
+      });
+
+      item.addEventListener("mouseleave", () => {
+        gsap.to(item, {
+          duration: 0.3,
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          scale: 1,
+          ease: "power2.out",
+        });
+      });
+    });
+  }
+
+  function initLoadingAnimations() {
+    // Loading animations
+    function createPulseAnimation(element) {
+      gsap.to(element, {
+        duration: 1,
+        opacity: 0.3,
+        yoyo: true,
+        repeat: -1,
+        ease: "power1.inOut",
+      });
+    }
+
+    // Apply to loading elements
+    gsap.utils.toArray(".loading").forEach((loadingEl) => {
+      createPulseAnimation(loadingEl);
+    });
+
+    // Music-themed beat pulse animation
+    function createBeatPulse() {
+      gsap.to(".exclusive-label, .section-heading", {
+        duration: 0.5,
+        scale: 1.1,
+        yoyo: true,
+        repeat: -1,
+        ease: "power1.inOut",
+        stagger: {
+          each: 0.2,
+          from: "random",
+        },
+      });
+    }
+
+    // Start beat pulse after page load
+    setTimeout(createBeatPulse, 2000);
+
+    // Enhanced bottom scroll animation
+    const scrollItems = gsap.utils.toArray(".scroll-item");
+    if (scrollItems.length > 0) {
+      // First, make them visible with a fade in
+      gsap.to(scrollItems, {
+        duration: 0.5,
+        opacity: 1,
+        stagger: 0.1,
+        ease: "power2.out",
+      });
+
+      // Then start the scrolling animation
+      const scrollTL = gsap.timeline({ repeat: -1 });
+      scrollItems.forEach((item, i) => {
+        scrollTL.fromTo(
+          item,
+          { x: "100%", opacity: 0 },
+          { x: "-100%", opacity: 1, duration: 20, ease: "none" },
+          i * 2
+        );
+      });
+    }
+  }
+
+  function animateDynamicContent(container, type) {
+    if (!container) return;
+
+    const elements = container.children;
+    if (elements.length === 0) return;
+
+    switch (type) {
+      case "charts":
+        gsap.fromTo(
+          elements,
+          { x: -100, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "power2.out",
+          }
+        );
+        break;
+
+      case "releases":
+        gsap.fromTo(
+          elements,
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.7,
+            stagger: 0.1,
+            ease: "power2.out",
+          }
+        );
+        break;
+
+      case "events":
+        gsap.fromTo(
+          elements,
+          { x: -50, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.5,
+            stagger: 0.08,
+            ease: "power2.out",
+          }
+        );
+        break;
+
+      case "articles":
+        gsap.fromTo(
+          elements,
+          { y: 20, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "power2.out",
+          }
+        );
+        break;
+    }
+  }
+
   // === UTILITY FUNCTIONS ===
   function showLoading(container, type = "articles", count = 3) {
     if (!container) return;
@@ -822,42 +1174,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // === MAIN CONTENT LOADER ===
-  async function loadAllContent() {
-    try {
-      const [articles, saReleases, events, charts] = await Promise.all([
-        fetchAllArticles(),
-        fetchSAMusicReleases(),
-        fetchMusicEvents(),
-        fetchSACharts(),
-      ]);
-
-      populateLeftSidebar(articles.slice(0, 4));
-      populateExclusiveSection(articles[0]);
-      populateRightSidebar(articles.slice(1, 3));
-      populateFeaturedLatest(articles[3] || articles[0]);
-      populateLatestSideList(articles.slice(4, 9));
-      populateBottomScroll(articles.slice(0, 10));
-      populateSAReleases(saReleases);
-      populateMusicEvents(events);
-      populateSACharts(charts);
-      updateTimestamp();
-    } catch (error) {
-      console.error("Critical error loading content:", error);
-      const articles = FALLBACK_ARTICLES;
-      populateLeftSidebar(articles.slice(0, 4));
-      populateExclusiveSection(articles[0]);
-      populateRightSidebar(articles.slice(1, 3));
-      populateFeaturedLatest(articles[3]);
-      populateLatestSideList(articles.slice(4, 9));
-      populateBottomScroll(articles.slice(0, 10));
-      populateSAReleases(SA_FALLBACK_RELEASES);
-      populateMusicEvents(FALLBACK_EVENTS);
-      populateSACharts(FALLBACK_CHARTS);
-      updateTimestamp();
-    }
-  }
-
   // === POPULATE FUNCTIONS ===
   function populateLeftSidebar(articles) {
     if (!leftSidebar || !articles?.length) return;
@@ -1054,6 +1370,51 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
   }
 
+  // === MAIN CONTENT LOADER ===
+  async function loadAllContent() {
+    try {
+      const [articles, saReleases, events, charts] = await Promise.all([
+        fetchAllArticles(),
+        fetchSAMusicReleases(),
+        fetchMusicEvents(),
+        fetchSACharts(),
+      ]);
+
+      populateLeftSidebar(articles.slice(0, 4));
+      populateExclusiveSection(articles[0]);
+      populateRightSidebar(articles.slice(1, 3));
+      populateFeaturedLatest(articles[3] || articles[0]);
+      populateLatestSideList(articles.slice(4, 9));
+      populateBottomScroll(articles.slice(0, 10));
+      populateSAReleases(saReleases);
+      populateMusicEvents(events);
+      populateSACharts(charts);
+      updateTimestamp();
+
+      // Animate dynamic content after population
+      setTimeout(() => {
+        animateDynamicContent(leftSidebar, "articles");
+        animateDynamicContent(document.getElementById("saCharts"), "charts");
+        animateDynamicContent(releasesGrid, "releases");
+        animateDynamicContent(eventsList, "events");
+        animateDynamicContent(latestSideList, "articles");
+      }, 100);
+    } catch (error) {
+      console.error("Critical error loading content:", error);
+      const articles = FALLBACK_ARTICLES;
+      populateLeftSidebar(articles.slice(0, 4));
+      populateExclusiveSection(articles[0]);
+      populateRightSidebar(articles.slice(1, 3));
+      populateFeaturedLatest(articles[3]);
+      populateLatestSideList(articles.slice(4, 9));
+      populateBottomScroll(articles.slice(0, 10));
+      populateSAReleases(SA_FALLBACK_RELEASES);
+      populateMusicEvents(FALLBACK_EVENTS);
+      populateSACharts(FALLBACK_CHARTS);
+      updateTimestamp();
+    }
+  }
+
   // === INITIALIZATION ===
   showLoading(leftSidebar, "sidebar", 4);
   showLoading(exclusiveSection, "exclusive", 1);
@@ -1065,5 +1426,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const chartsContainer = document.getElementById("saCharts");
   if (chartsContainer) showLoading(chartsContainer, "charts", 5);
 
+  // Initialize GSAP animations
+  initGSAPAnimations();
+
+  // Load content
   loadAllContent();
 });

@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Register ScrollTrigger plugin
+  gsap.registerPlugin(ScrollTrigger);
+
   const tabs = document.querySelectorAll(".music-tabs .tab");
   const sections = document.querySelectorAll(".music-grid");
 
@@ -166,10 +169,192 @@ document.addEventListener("DOMContentLoaded", () => {
     classic: ["classic", "traditional", "mbaqanga", "maskandi"],
   };
 
+  // === GSAP ANIMATIONS ===
+  function initializeAnimations() {
+    // Animation 1: Page load animation
+    gsap.fromTo(
+      ".page-title",
+      { opacity: 0, y: -50 },
+      { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
+    );
+
+    gsap.fromTo(
+      ".music-tabs .tab",
+      { opacity: 0, y: -20 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        delay: 0.3,
+        ease: "back.out(1.7)",
+      }
+    );
+
+    // Animate footer
+    gsap.fromTo(
+      ".site-footer",
+      { opacity: 0, y: 20 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        delay: 0.5,
+        scrollTrigger: {
+          trigger: ".site-footer",
+          start: "top 90%",
+          toggleActions: "play none none reverse",
+        },
+      }
+    );
+  }
+
+  // Animation 2: Staggered card animation
+  function animateMusicCards(container) {
+    const cards = container.querySelectorAll(".music-card");
+
+    if (cards.length === 0) return;
+
+    gsap.fromTo(
+      cards,
+      {
+        opacity: 0,
+        y: 30,
+        scale: 0.9,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: "power2.out",
+        onComplete: function () {
+          // Add hover animations after initial load
+          cards.forEach((card) => {
+            card.addEventListener("mouseenter", () => {
+              gsap.to(card, {
+                scale: 1.02,
+                y: -5,
+                duration: 0.3,
+                ease: "power2.out",
+              });
+            });
+
+            card.addEventListener("mouseleave", () => {
+              gsap.to(card, {
+                scale: 1,
+                y: 0,
+                duration: 0.3,
+                ease: "power2.out",
+              });
+            });
+          });
+        },
+      }
+    );
+  }
+
+  // Animation 3: Tab switching animation
+  function animateTabSwitch(oldTab, newTab) {
+    const tl = gsap.timeline();
+
+    tl.to(oldTab, {
+      opacity: 0,
+      y: 20,
+      duration: 0.3,
+      ease: "power2.in",
+    }).to(
+      newTab,
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: "power2.out",
+      },
+      "-=0.1"
+    );
+  }
+
+  // Animation 4: Search bar animation
+  function initializeSearchAnimation() {
+    const searchWrapper = document.querySelector(".search-wrapper");
+    const searchIcon = document.getElementById("searchIcon");
+    const searchBar = document.getElementById("searchBar");
+
+    if (searchIcon && searchBar) {
+      searchIcon.addEventListener("click", () => {
+        searchWrapper.classList.toggle("active");
+
+        if (searchWrapper.classList.contains("active")) {
+          gsap.fromTo(
+            searchBar,
+            { scaleX: 0, opacity: 0, width: 0 },
+            {
+              scaleX: 1,
+              opacity: 1,
+              width: 200,
+              duration: 0.4,
+              ease: "back.out(1.7)",
+            }
+          );
+          searchBar.focus();
+        } else {
+          gsap.to(searchBar, {
+            scaleX: 0,
+            opacity: 0,
+            width: 0,
+            duration: 0.3,
+            ease: "power2.in",
+            onComplete: () => {
+              searchBar.style.display = "none";
+            },
+          });
+        }
+      });
+
+      // Close search when clicking outside
+      document.addEventListener("click", (e) => {
+        if (
+          !searchWrapper.contains(e.target) &&
+          searchWrapper.classList.contains("active")
+        ) {
+          searchWrapper.classList.remove("active");
+          gsap.to(searchBar, {
+            scaleX: 0,
+            opacity: 0,
+            width: 0,
+            duration: 0.3,
+            ease: "power2.in",
+            onComplete: () => {
+              searchBar.style.display = "none";
+            },
+          });
+        }
+      });
+    }
+  }
+
+  // Animation 5: Loading states animation
+  function animateLoadingState(container) {
+    const loadingElement = container.querySelector(".loading");
+    if (loadingElement) {
+      gsap.fromTo(
+        loadingElement,
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" }
+      );
+    }
+  }
+
   // === INITIAL SETUP ===
   sections.forEach((s, i) => {
     s.style.display = i === 0 ? "block" : "none";
   });
+
+  // Initialize animations
+  initializeAnimations();
+  initializeSearchAnimation();
 
   // Load initial content
   fetchNewReleases();
@@ -218,6 +403,17 @@ document.addEventListener("DOMContentLoaded", () => {
   tabs.forEach((tab) => {
     tab.addEventListener("click", async () => {
       const target = tab.dataset.tab;
+      const oldActiveSection = document.querySelector(".music-grid.active");
+      const newActiveSection = document.getElementById(target);
+
+      // Animation: Tab switch
+      if (
+        oldActiveSection &&
+        newActiveSection &&
+        oldActiveSection !== newActiveSection
+      ) {
+        animateTabSwitch(oldActiveSection, newActiveSection);
+      }
 
       // Update active tab
       tabs.forEach((t) => t.classList.remove("active"));
@@ -225,6 +421,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Show/hide sections
       sections.forEach((sec) => {
+        sec.classList.toggle("active", sec.id === target);
         sec.style.display = sec.id === target ? "block" : "none";
       });
 
@@ -297,6 +494,9 @@ document.addEventListener("DOMContentLoaded", () => {
     container.innerHTML =
       '<div class="loading refreshing">Loading new South African releases...</div>';
 
+    // Animate loading state
+    animateLoadingState(container);
+
     try {
       const token = await getSpotifyToken();
 
@@ -349,6 +549,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!container) return;
 
     container.innerHTML = `<div class="loading refreshing">Loading ${genre} music...</div>`;
+
+    // Animate loading state
+    animateLoadingState(container);
 
     try {
       const token = await getSpotifyToken();
@@ -461,6 +664,9 @@ document.addEventListener("DOMContentLoaded", () => {
     container.innerHTML =
       '<div class="loading refreshing">Loading South African classics...</div>';
 
+    // Animate loading state
+    animateLoadingState(container);
+
     try {
       const token = await getSpotifyToken();
       const albums = [];
@@ -515,6 +721,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     container.innerHTML =
       '<div class="loading refreshing">Loading South African music videos...</div>';
+
+    // Animate loading state
+    animateLoadingState(container);
 
     try {
       // Different search queries for variety
@@ -630,6 +839,12 @@ document.addEventListener("DOMContentLoaded", () => {
           <button onclick="fetchNewReleases()" class="retry-btn">Try Again</button>
         </div>
       `;
+      // Animate error state
+      gsap.fromTo(
+        container.querySelector(".error"),
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5 }
+      );
       return;
     }
 
@@ -668,11 +883,20 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       })
       .join("");
+
+    // Animate the new cards
+    animateMusicCards(container);
   }
 
   function renderYouTubeData(container, data) {
     if (!data.items?.length) {
       container.innerHTML = '<div class="error">No videos found</div>';
+      // Animate error state
+      gsap.fromTo(
+        container.querySelector(".error"),
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5 }
+      );
       return;
     }
 
@@ -699,6 +923,9 @@ document.addEventListener("DOMContentLoaded", () => {
     `
       )
       .join("");
+
+    // Animate the new cards
+    animateMusicCards(container);
   }
 
   function getAlbumGenre(album) {
@@ -740,6 +967,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       </div>
     `;
+
+    // Animate error state
+    gsap.fromTo(
+      container.querySelector(".error"),
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.5 }
+    );
   }
 
   // === UTILITY FUNCTIONS ===

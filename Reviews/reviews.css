@@ -492,3 +492,123 @@ body {
 .search-wrapper.active #searchIcon {
   display: none;
 }
+
+/* ===== GSAP ANIMATION STYLES ===== */
+.animated-review {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.stagger-animation {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-load-animation {
+  opacity: 0;
+}
+
+.search-animation {
+  transform-origin: right center;
+}
+
+/* Ensure smooth transitions for animated elements */
+.music-card {
+  transform-origin: center;
+  will-change: transform;
+}
+
+.reviews-grid {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.3s ease;
+}
+
+/* Enhanced hover effects for review cards */
+.music-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.music-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 35, 149, 0.15);
+}
+
+/* Search bar animation styles */
+.search-wrapper {
+  transition: all 0.3s ease;
+}
+
+.search-wrapper.active #searchBar {
+  display: block;
+  transform-origin: right center;
+}
+
+/* Loading animation */
+.loading {
+  animation: pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.6;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Tab animation states */
+.tab {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Rating star animation */
+.stars {
+  transition: all 0.3s ease;
+}
+
+.music-card:hover .stars {
+  transform: scale(1.1);
+  color: #ffa726;
+}
+
+/* Footer animation */
+.site-footer {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Badge animations */
+.sa-badge,
+.genre-badge {
+  transition: all 0.3s ease;
+}
+
+.music-card:hover .sa-badge {
+  transform: translateY(-2px);
+  background: #001a75;
+}
+
+.music-card:hover .genre-badge {
+  transform: translateY(-2px);
+  background: #1aa34a;
+}
+
+/* Summary text reveal effect */
+.summary {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Pagination button animation */
+.load-more-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.load-more-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 35, 149, 0.3);
+}

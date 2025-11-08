@@ -554,8 +554,6 @@ body {
   background: #555;
 }
 
-
-
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
   #spotifyContainer,
@@ -710,4 +708,84 @@ body {
 
 .search-wrapper.active #searchIcon {
   display: none;
+}
+
+/* ===== GSAP ANIMATION STYLES ===== */
+.animated-card {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.stagger-animation {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-load-animation {
+  opacity: 0;
+}
+
+.search-animation {
+  transform-origin: right center;
+}
+
+/* Ensure smooth transitions for transformed elements */
+.music-card {
+  transform-origin: center;
+  will-change: transform;
+}
+
+.music-grid {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Loading animation */
+.loading.refreshing {
+  animation: pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Enhanced hover effects for animated cards */
+.music-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.music-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Search bar animation styles */
+.search-wrapper {
+  transition: all 0.3s ease;
+}
+
+.search-wrapper.active #searchBar {
+  display: block;
+  transform-origin: right center;
+}
+
+.search-wrapper.active #searchIcon {
+  display: none;
+}
+
+/* Tab animation styles */
+.music-tabs .tab {
+  transition: all 0.3s ease;
+}
+
+/* Footer animation styles */
+.site-footer {
+  opacity: 0;
+  transform: translateY(20px);
 }
