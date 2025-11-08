@@ -1533,6 +1533,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // === MAIN CONTENT LOADER ===
   async function loadAllContent() {
+    console.log("=== HOMEPAGE DEBUGGING ===");
+
+    // Debug: Check if elements exist
+    console.log("Latest section elements:", {
+      featuredLatest: document.querySelector(".featured-latest"),
+      latestSideList: document.querySelector(".latest-side-list"),
+      theLatestSection: document.querySelector(".the-latest"),
+    });
+
+    // Debug: Check if elements are visible
+    const latestSection = document.querySelector(".the-latest");
+    if (latestSection) {
+      console.log("Latest section styles:", {
+        display: window.getComputedStyle(latestSection).display,
+        opacity: window.getComputedStyle(latestSection).opacity,
+        visibility: window.getComputedStyle(latestSection).visibility,
+      });
+    }
     console.log("Starting content loading...");
 
     try {

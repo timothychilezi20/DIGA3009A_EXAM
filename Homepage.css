@@ -709,9 +709,9 @@ blockquote,
 }
 
 .exclusive-text p {
-  font-size: 18px;
-  line-height: 1.4;
-  transition: color 0.3s ease;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  opacity: 0.9;
 }
 
 .exclusive-container:hover .exclusive-text {

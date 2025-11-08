@@ -1,12 +1,28 @@
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM loaded - initializing news page");
+
   const grid = document.getElementById("reviewsGrid");
   const newsContainer = document.getElementById("news-container");
   const tabs = document.querySelectorAll(".tab");
   const featuredSection = document.getElementById("featured-news");
+  const newsSection = document.getElementById("news-section");
+  const reviewsSection = document.getElementById("reviews-section");
 
-  // Last.fm API Key
+  // Debug: Check if elements exist
+  console.log("Elements found:", {
+    grid: !!grid,
+    newsContainer: !!newsContainer,
+    tabs: tabs.length,
+    featuredSection: !!featuredSection,
+    newsSection: !!newsSection,
+    reviewsSection: !!reviewsSection,
+  });
+
+  // API Keys
   const LAST_FM_API_KEY = "bf85b73d5ac9150697aa9cd05a40cb55";
   const LAST_FM_BASE_URL = "https://ws.audioscrobbler.com/2.0/";
+  const GUARDIAN_API_KEY = "test"; // Replace with your actual Guardian API key
+  const GUARDIAN_BASE_URL = "https://content.guardianapis.com/search";
 
   // South African artists to fetch
   const southAfricanArtists = [
@@ -24,30 +40,359 @@ document.addEventListener("DOMContentLoaded", () => {
     "Mlindo The Vocalist",
   ];
 
+  // Initialize GSAP Animations
+  function initGSAPAnimations() {
+    console.log("Initializing GSAP animations");
+
+    // Animation 1: Page Load Sequence - Staggered fade in for main elements
+    const pageLoadTL = gsap.timeline();
+    pageLoadTL
+      .from(".section-title", {
+        duration: 1,
+        y: -50,
+        opacity: 0,
+        ease: "power3.out",
+      })
+      .from(
+        ".tabs",
+        {
+          duration: 0.8,
+          y: -30,
+          opacity: 0,
+          ease: "back.out(1.7)",
+        },
+        "-=0.5"
+      )
+      .from(
+        ".tab",
+        {
+          duration: 0.6,
+          y: -20,
+          opacity: 0,
+          stagger: 0.1,
+          ease: "power2.out",
+        },
+        "-=0.3"
+      );
+
+    // Animation 2: Featured News Scale and Fade
+    gsap.from(".featured-main", {
+      scrollTrigger: {
+        trigger: ".featured-news",
+        start: "top 80%",
+        end: "bottom 20%",
+        toggleActions: "play none none reverse",
+      },
+      duration: 1.2,
+      scale: 0.9,
+      opacity: 0,
+      ease: "power2.out",
+    });
+
+    gsap.from(".featured-side-item", {
+      scrollTrigger: {
+        trigger: ".featured-sidebar",
+        start: "top 85%",
+        toggleActions: "play none none reverse",
+      },
+      duration: 0.8,
+      x: -50,
+      opacity: 0,
+      stagger: 0.2,
+      ease: "power2.out",
+    });
+
+    // Animation 3: News Cards Staggered Entrance
+    gsap.from(".news-card", {
+      scrollTrigger: {
+        trigger: ".news-section",
+        start: "top 85%",
+        toggleActions: "play none none reverse",
+      },
+      duration: 0.8,
+      y: 50,
+      opacity: 0,
+      stagger: 0.15,
+      ease: "power2.out",
+    });
+
+    // Animation 4: Review Cards Slide In with Rotation
+    gsap.from(".review-card", {
+      scrollTrigger: {
+        trigger: ".reviews-section",
+        start: "top 85%",
+        toggleActions: "play none none reverse",
+      },
+      duration: 0.7,
+      x: -100,
+      rotation: -5,
+      opacity: 0,
+      stagger: 0.1,
+      ease: "back.out(1.2)",
+    });
+
+    console.log("GSAP animations initialized");
+  }
+
+  // Enhanced hover animations for interactive elements
+  function initHoverAnimations() {
+    // News card hover effects
+    gsap.utils.toArray(".news-card").forEach((card) => {
+      card.addEventListener("mouseenter", () => {
+        gsap.to(card, {
+          duration: 0.3,
+          y: -10,
+          scale: 1.02,
+          boxShadow: "0 15px 30px rgba(0,0,0,0.2)",
+          ease: "power2.out",
+        });
+      });
+
+      card.addEventListener("mouseleave", () => {
+        gsap.to(card, {
+          duration: 0.3,
+          y: 0,
+          scale: 1,
+          boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+          ease: "power2.out",
+        });
+      });
+    });
+
+    // Review card hover effects
+    gsap.utils.toArray(".review-card").forEach((card) => {
+      card.addEventListener("mouseenter", () => {
+        gsap.to(card, {
+          duration: 0.3,
+          y: -8,
+          rotation: 1,
+          boxShadow: "0 12px 25px rgba(0,0,0,0.15)",
+          ease: "power2.out",
+        });
+
+        // Pulse animation for the genre tag
+        gsap.to(card.querySelector(".genre"), {
+          duration: 0.4,
+          scale: 1.1,
+          backgroundColor: "#000",
+          color: "#ff0",
+          ease: "power2.out",
+        });
+      });
+
+      card.addEventListener("mouseleave", () => {
+        gsap.to(card, {
+          duration: 0.3,
+          y: 0,
+          rotation: 0,
+          boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+          ease: "power2.out",
+        });
+
+        // Reset genre tag
+        gsap.to(card.querySelector(".genre"), {
+          duration: 0.4,
+          scale: 1,
+          backgroundColor: "#ff0",
+          color: "#000",
+          ease: "power2.out",
+        });
+      });
+    });
+
+    // Tab hover animations
+    gsap.utils.toArray(".tab").forEach((tab) => {
+      tab.addEventListener("mouseenter", () => {
+        if (!tab.classList.contains("active")) {
+          gsap.to(tab, {
+            duration: 0.2,
+            scale: 1.05,
+            color: "#000",
+            ease: "power2.out",
+          });
+        }
+      });
+
+      tab.addEventListener("mouseleave", () => {
+        if (!tab.classList.contains("active")) {
+          gsap.to(tab, {
+            duration: 0.2,
+            scale: 1,
+            color: "#666",
+            ease: "power2.out",
+          });
+        }
+      });
+    });
+
+    // Featured news image hover effects
+    gsap.utils
+      .toArray(".featured-main img, .featured-side-item img")
+      .forEach((img) => {
+        img.addEventListener("mouseenter", () => {
+          gsap.to(img, {
+            duration: 0.4,
+            scale: 1.05,
+            filter: "brightness(1.1)",
+            ease: "power2.out",
+          });
+        });
+
+        img.addEventListener("mouseleave", () => {
+          gsap.to(img, {
+            duration: 0.4,
+            scale: 1,
+            filter: "brightness(1)",
+            ease: "power2.out",
+          });
+        });
+      });
+  }
+
+  // Animate content when it's dynamically loaded
+  function animateDynamicContent(container, type = "news") {
+    if (!container || container.children.length === 0) return;
+
+    const elements = Array.from(container.children);
+
+    switch (type) {
+      case "news":
+        gsap.fromTo(
+          elements,
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "power2.out",
+          }
+        );
+        break;
+
+      case "reviews":
+        gsap.fromTo(
+          elements,
+          { x: -50, rotation: -3, opacity: 0 },
+          {
+            x: 0,
+            rotation: 0,
+            opacity: 1,
+            duration: 0.7,
+            stagger: 0.1,
+            ease: "back.out(1.2)",
+          }
+        );
+        break;
+
+      case "featured":
+        if (elements[0]) {
+          // Main featured
+          gsap.fromTo(
+            elements[0],
+            { scale: 0.95, opacity: 0 },
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 1,
+              ease: "power2.out",
+            }
+          );
+        }
+        if (elements[1]) {
+          // Sidebar
+          gsap.fromTo(
+            Array.from(elements[1].children),
+            { x: -30, opacity: 0 },
+            {
+              x: 0,
+              opacity: 1,
+              duration: 0.8,
+              stagger: 0.2,
+              ease: "power2.out",
+            }
+          );
+        }
+        break;
+    }
+  }
+
   // Tab switching functionality
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-      tabs.forEach((t) => t.classList.remove("active"));
-      tab.classList.add("active");
+      console.log("Tab clicked:", tab.textContent);
 
-      const category = tab.textContent.toLowerCase();
+      // Animate tab switch
+      gsap.to(tab, {
+        duration: 0.3,
+        scale: 0.95,
+        ease: "power2.out",
+        onComplete: () => {
+          tabs.forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
 
-      if (category === "new") {
-        displayMusicNews();
-        fetchRealReviews("new");
-      } else {
-        fetchRealReviews(category);
-        // Hide news for other tabs
-        document.getElementById("news-section").style.display = "none";
-        document.getElementById("reviews-section").style.display = "block";
-        featuredSection.style.display = "none";
-      }
+          gsap.to(tab, {
+            duration: 0.3,
+            scale: 1,
+            ease: "power2.out",
+          });
+
+          const category = tab.textContent.toLowerCase();
+
+          if (category === "new") {
+            console.log("Loading news section");
+            displayMusicNews();
+            fetchRealReviews("new");
+          } else {
+            console.log("Loading category:", category);
+            fetchRealReviews(category);
+            // Hide news for other tabs
+            if (newsSection) {
+              gsap.to(newsSection, {
+                duration: 0.5,
+                opacity: 0,
+                y: 20,
+                onComplete: () => {
+                  newsSection.style.display = "none";
+                },
+              });
+            }
+            if (reviewsSection) reviewsSection.style.display = "block";
+            if (featuredSection) {
+              gsap.to(featuredSection, {
+                duration: 0.5,
+                opacity: 0,
+                y: 20,
+                onComplete: () => {
+                  featuredSection.style.display = "none";
+                },
+              });
+            }
+          }
+        },
+      });
     });
   });
 
   // Create featured news section (Rolling Stone style)
   function createFeaturedNews(articles) {
-    if (!articles || articles.length === 0) return;
+    console.log("Creating featured news with", articles?.length, "articles");
+
+    if (!featuredSection) {
+      console.error("Featured section element not found!");
+      return;
+    }
+
+    if (!articles || articles.length === 0) {
+      console.warn("No articles provided for featured news");
+      featuredSection.innerHTML = `
+        <div class="error">
+          <i class="fas fa-exclamation-circle"></i>
+          <p>No featured news available at the moment.</p>
+        </div>
+      `;
+      return;
+    }
 
     const mainArticle = articles[0];
     const sideArticles = articles.slice(1, 4);
@@ -80,21 +425,163 @@ document.addEventListener("DOMContentLoaded", () => {
           .join("")}
       </div>
     `;
+
+    // Animate the featured content after creation
+    setTimeout(() => {
+      animateDynamicContent(featuredSection, "featured");
+    }, 100);
+
+    console.log("Featured news created successfully");
   }
 
-  // Display music news (using curated content for now)
-  function displayMusicNews() {
-    document.getElementById("news-section").style.display = "block";
-    document.getElementById("reviews-section").style.display = "block";
-    featuredSection.style.display = "grid";
+  // Fetch real music news from Guardian API
+  async function fetchGuardianMusicNews() {
+    console.log("Fetching music news from Guardian API");
 
-    const musicNews = getCuratedMusicNews();
-    createFeaturedNews(musicNews.slice(0, 4)); // First 4 articles for featured section
-    renderNews(musicNews.slice(4)); // Remaining articles for the grid
+    if (!newsContainer) {
+      console.error("News container element not found!");
+      return getCuratedMusicNews(); // Fallback to curated news
+    }
+
+    // Show loading state
+    newsContainer.innerHTML = `
+      <div class="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        Loading latest music news from The Guardian...
+      </div>
+    `;
+
+    try {
+      const url = `${GUARDIAN_BASE_URL}?section=music&show-fields=thumbnail,trailText&page-size=20&api-key=${GUARDIAN_API_KEY}&order-by=newest`;
+
+      console.log("Fetching from:", url);
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(
+          `Guardian API error: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+      console.log("Guardian API response:", data);
+
+      if (
+        data.response &&
+        data.response.results &&
+        data.response.results.length > 0
+      ) {
+        const articles = transformGuardianArticles(data.response.results);
+        console.log("Transformed articles:", articles);
+        return articles;
+      } else {
+        console.warn("No articles found in Guardian API response");
+        return getCuratedMusicNews(); // Fallback to curated news
+      }
+    } catch (error) {
+      console.error("Error fetching from Guardian API:", error);
+      return getCuratedMusicNews(); // Fallback to curated news
+    }
   }
 
-  // Curated music news from major publications
+  // Transform Guardian API response to our format
+  function transformGuardianArticles(guardianArticles) {
+    return guardianArticles.map((article) => {
+      // Get a music-related placeholder image based on the title
+      const getMusicImage = (title) => {
+        const musicKeywords = {
+          album: "FF0000",
+          song: "0000FF",
+          concert: "00FF00",
+          festival: "FF00FF",
+          artist: "FFFF00",
+          music: "FF6B6B",
+          award: "4ECDC4",
+          chart: "FFA500",
+          release: "9B59B6",
+        };
+
+        let color = "000000";
+        const lowerTitle = title.toLowerCase();
+
+        for (const [keyword, hexColor] of Object.entries(musicKeywords)) {
+          if (lowerTitle.includes(keyword)) {
+            color = hexColor;
+            break;
+          }
+        }
+
+        return `https://via.placeholder.com/350x220/${color}/FFFFFF?text=Music+News`;
+      };
+
+      return {
+        title: article.webTitle,
+        description:
+          article.fields?.trailText ||
+          "Latest music news and updates from The Guardian.",
+        image: article.fields?.thumbnail || getMusicImage(article.webTitle),
+        url: article.webUrl,
+        source: "The Guardian",
+        date: formatGuardianDate(article.webPublicationDate),
+      };
+    });
+  }
+
+  // Format Guardian date to readable format
+  function formatGuardianDate(dateString) {
+    try {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffTime = Math.abs(now - date);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 1) return "Yesterday";
+      if (diffDays < 7) return `${diffDays} days ago`;
+      if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch (error) {
+      return "Recent";
+    }
+  }
+
+  // Display music news
+  async function displayMusicNews() {
+    console.log("Displaying music news");
+
+    if (newsSection) newsSection.style.display = "block";
+    if (reviewsSection) reviewsSection.style.display = "block";
+    if (featuredSection) featuredSection.style.display = "grid";
+
+    try {
+      const musicNews = await fetchGuardianMusicNews();
+      console.log("Retrieved", musicNews.length, "news articles");
+
+      if (musicNews.length >= 4) {
+        createFeaturedNews(musicNews.slice(0, 4)); // First 4 articles for featured section
+        renderNews(musicNews.slice(4)); // Remaining articles for the grid
+      } else {
+        // If we don't have enough articles, use what we have
+        createFeaturedNews(musicNews.slice(0, Math.min(4, musicNews.length)));
+        renderNews(musicNews.slice(Math.min(4, musicNews.length)));
+      }
+    } catch (error) {
+      console.error("Error displaying music news:", error);
+      // Fallback to curated news
+      const musicNews = getCuratedMusicNews();
+      createFeaturedNews(musicNews.slice(0, 4));
+      renderNews(musicNews.slice(4));
+    }
+  }
+
+  // Curated music news fallback
   function getCuratedMusicNews() {
+    console.log("Using curated music news fallback");
     return [
       {
         title: "Rolling Stone: The 50 Best Albums of 2024",
@@ -156,41 +643,38 @@ document.addEventListener("DOMContentLoaded", () => {
         source: "Consequence",
         date: "Recent",
       },
-      {
-        title: "The Fader: Emerging Artists Spotlight",
-        description:
-          "Meet the next generation of music stars breaking through with innovative sounds and fresh perspectives.",
-        image:
-          "https://via.placeholder.com/350x220/FF6B6B/FFFFFF?text=Fader+Spotlight",
-        url: "#",
-        source: "The Fader",
-        date: "This Month",
-      },
-      {
-        title: "Complex: Hip-Hop Culture Update",
-        description:
-          "Latest news from the world of hip-hop including new releases, collaborations, and cultural moments.",
-        image:
-          "https://via.placeholder.com/350x220/4ECDC4/000000?text=Complex+HipHop",
-        url: "#",
-        source: "Complex",
-        date: "Weekly",
-      },
     ];
   }
 
   // Render news articles
   function renderNews(articles) {
+    console.log("Rendering", articles?.length, "news articles");
+
+    if (!newsContainer) {
+      console.error("News container element not found!");
+      return;
+    }
+
+    if (!articles || articles.length === 0) {
+      newsContainer.innerHTML = `
+        <div class="error">
+          <i class="fas fa-exclamation-circle"></i>
+          <p>No news articles found at the moment. Please check back later.</p>
+        </div>
+      `;
+      return;
+    }
+
     newsContainer.innerHTML = "";
 
-    articles.forEach((article) => {
+    articles.forEach((article, index) => {
       const newsCard = document.createElement("article");
       newsCard.classList.add("news-card");
 
       newsCard.innerHTML = `
         <img src="${article.image}" 
              alt="${article.title}" 
-             onerror="this.src='https://via.placeholder.com/350x220/002395/FFFFFF?text=Music+News'">
+             onerror="this.src='https://via.placeholder.com/350x220/000000/FFFFFF?text=Music+News'">
         <div class="news-card-content">
           <h3>${article.title}</h3>
           <p>${article.description}</p>
@@ -204,10 +688,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
       newsContainer.appendChild(newsCard);
     });
+
+    // Animate the news cards after rendering
+    setTimeout(() => {
+      animateDynamicContent(newsContainer, "news");
+    }, 100);
+
+    console.log("News articles rendered successfully");
   }
 
-  // Your existing review functions
+  // Review functions
   async function fetchRealReviews(category = "new") {
+    console.log("Fetching reviews for category:", category);
+
+    if (!grid) {
+      console.error("Reviews grid element not found!");
+      return;
+    }
+
     grid.innerHTML = `
       <div class="loading">
         <i class="fas fa-spinner fa-spin"></i>
@@ -368,6 +866,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function displayReviews(reviews) {
+    if (!grid) {
+      console.error("Reviews grid element not found!");
+      return;
+    }
+
     grid.innerHTML = "";
 
     if (reviews.length === 0) {
@@ -409,6 +912,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       grid.appendChild(card);
     });
+
+    // Animate the review cards after rendering
+    setTimeout(() => {
+      animateDynamicContent(grid, "reviews");
+    }, 100);
+
+    console.log("Displayed", reviews.length, "reviews");
   }
 
   function generateStars(rating) {
@@ -438,42 +948,46 @@ document.addEventListener("DOMContentLoaded", () => {
   let allReviews = [];
   let allNews = [];
 
-  searchBar.addEventListener("input", (e) => {
-    const searchTerm = e.target.value.toLowerCase();
+  if (searchBar) {
+    searchBar.addEventListener("input", (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      console.log("Searching for:", searchTerm);
 
-    if (searchTerm.length < 2) {
-      displayReviews(allReviews);
+      if (searchTerm.length < 2) {
+        displayReviews(allReviews);
+        if (
+          document.querySelector(".tab.active").textContent.toLowerCase() ===
+          "new"
+        ) {
+          // Reload fresh news when search is cleared
+          displayMusicNews();
+        }
+        return;
+      }
+
+      const filteredReviews = allReviews.filter(
+        (review) =>
+          review.title.toLowerCase().includes(searchTerm) ||
+          review.artist.toLowerCase().includes(searchTerm) ||
+          review.genre.toLowerCase().includes(searchTerm)
+      );
+
       if (
         document.querySelector(".tab.active").textContent.toLowerCase() ===
         "new"
       ) {
-        renderNews(allNews.slice(4)); // Skip featured articles
-        createFeaturedNews(allNews.slice(0, 4)); // Restore featured section
+        const filteredNews = allNews.filter(
+          (article) =>
+            article.title.toLowerCase().includes(searchTerm) ||
+            article.description.toLowerCase().includes(searchTerm)
+        );
+        if (featuredSection) featuredSection.style.display = "none";
+        renderNews(filteredNews);
       }
-      return;
-    }
 
-    const filteredReviews = allReviews.filter(
-      (review) =>
-        review.title.toLowerCase().includes(searchTerm) ||
-        review.artist.toLowerCase().includes(searchTerm) ||
-        review.genre.toLowerCase().includes(searchTerm)
-    );
-
-    if (
-      document.querySelector(".tab.active").textContent.toLowerCase() === "new"
-    ) {
-      const filteredNews = allNews.filter(
-        (article) =>
-          article.title.toLowerCase().includes(searchTerm) ||
-          article.description.toLowerCase().includes(searchTerm)
-      );
-      featuredSection.style.display = "none"; // Hide featured section during search
-      renderNews(filteredNews);
-    }
-
-    displayReviews(filteredReviews);
-  });
+      displayReviews(filteredReviews);
+    });
+  }
 
   // Store data for search functionality
   const originalDisplayReviews = displayReviews;
@@ -483,9 +997,17 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Store news data
-  allNews = getCuratedMusicNews();
+  allNews = getCuratedMusicNews(); // Initial fallback
 
   // Initial load
+  console.log("Starting initial load...");
+
+  // Initialize animations first
+  initGSAPAnimations();
+  initHoverAnimations();
+
+  // Then load content
   displayMusicNews();
   fetchRealReviews("new");
+  console.log("Initial load complete");
 });
