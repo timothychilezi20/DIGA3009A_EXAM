@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -9,14 +9,15 @@
       name="description"
       content="This is a website dedicated to giving updates about the music industry in South Africa, as well as being the official archive for classic South African music."
     />
-    <link rel="stylesheet" href="main/Normalize.css" />
-    <link rel="stylesheet" href="main/main.css" />
+    <link rel="stylesheet" href="Main/Normalize.css" />
+    <link rel="stylesheet" href="Main/main.css" />
     <link rel="stylesheet" href="Homepage.css" />
+
     <script
       src="https://kit.fontawesome.com/dddfa338de.js"
       crossorigin="anonymous"
     ></script>
-    <!-- GSAP SCRIPTS REMOVED -->
+
     <script src="Homepage.js" defer></script>
     <script src="Main/main.js" defer></script>
   </head>
@@ -64,7 +65,6 @@
         </div>
       </header>
 
-      <!-- Navigation -->
       <nav class="main-nav">
         <ul>
           <li><a href="index.html" class="active">Home</a></li>
@@ -75,114 +75,6 @@
           <li><a href="contactpage/contact.html">Contact Us</a></li>
         </ul>
       </nav>
-
-      <!-- Content -->
-      <div class="content-grid">
-        <aside class="left-sidebar sidebar">
-          <!-- Content will be loaded by JavaScript -->
-        </aside>
-
-        <!-- Exclusive Section -->
-        <main class="hero-feature">
-          <section class="exclusive">
-            <div class="exclusive-container">
-              <!-- Content will be loaded by JavaScript -->
-            </div>
-          </section>
-        </main>
-
-        <aside class="right-sidebar sidebar">
-          <!-- Content will be loaded by JavaScript -->
-        </aside>
-      </div>
-
-      <!-- The Latest Section -->
-      <section class="the-latest">
-        <h2 class="section-heading">THE LATEST</h2>
-        <div class="latest-layout">
-          <article class="featured-latest">
-            <!-- Content will be loaded by JavaScript -->
-          </article>
-
-          <div class="latest-side-list">
-            <!-- Content will be loaded by JavaScript -->
-          </div>
-        </div>
-      </section>
-
-      <!-- South African Charts Section -->
-      <section class="the-latest">
-        <h2 class="section-heading">SOUTH AFRICAN TOP CHARTS</h2>
-        <div class="charts-container">
-          <div class="chart-header">
-            <span>Rank</span>
-            <span>Track</span>
-            <span>Platform</span>
-          </div>
-          <div class="chart-list" id="saCharts">
-            <!-- Charts will be loaded here by JavaScript -->
-          </div>
-        </div>
-      </section>
-
-      <!-- Upcoming Events Section -->
-      <section class="the-latest">
-        <h2 class="section-heading">UPCOMING EVENTS</h2>
-        <div id="eventsList" class="latest-side-list">
-          <!-- Events will be loaded here by JavaScript -->
-        </div>
-      </section>
-
-      <!-- New Releases Section -->
-      <section class="spotify-releases">
-        <h2 class="section-heading">NEW SOUTH AFRICAN RELEASES</h2>
-        <div id="spotifyReleases" class="releases-grid">
-          <!-- Releases will be loaded here by JavaScript -->
-        </div>
-      </section>
-
-      <!-- Bottom Scroll -->
-      <section class="bottom-scroll">
-        <!-- Content will be loaded by JavaScript -->
-      </section>
-
-      <!-- LOGIN MODAL -->
-      <div id="loginModal" class="modal">
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <h2>Login</h2>
-          <form id="loginForm">
-            <input type="text" id="username" placeholder="Username" required />
-            <input
-              type="password"
-              id="password"
-              placeholder="Password"
-              required
-            />
-            <button type="submit">Login</button>
-          </form>
-          <p class="login-message"></p>
-        </div>
-      </div>
-
-      <!-- Floating Feedback Button -->
-      <button id="feedbackButton" class="feedback-button">
-        <i class="fas fa-comment-alt"></i> Feedback
-      </button>
-
-      <!-- Feedback Form Modal -->
-      <div id="feedbackModal" class="feedback-modal">
-        <div class="feedback-modal-content">
-          <span id="closeFeedback" class="close">&times;</span>
-          <h3>Send us your feedback</h3>
-          <textarea
-            id="feedbackText"
-            placeholder="Tell us what you think..."
-          ></textarea>
-          <button id="sendFeedback">Send</button>
-          <p id="feedbackMessage"></p>
-        </div>
-      </div>
     </div>
   </body>
 </html>

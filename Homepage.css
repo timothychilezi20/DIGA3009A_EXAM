@@ -1,4 +1,6 @@
-/* Basic main styles */
+#websiteLoader {
+  display: none !important;
+}
 * {
   box-sizing: border-box;
 }
@@ -649,7 +651,9 @@ blockquote,
   height: auto;
   border: 2px solid #000;
   margin-bottom: 10px;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
 .sidebar-story:hover img {
@@ -676,7 +680,9 @@ blockquote,
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 12px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
   cursor: pointer;
 }
@@ -857,7 +863,9 @@ blockquote,
   object-fit: cover;
   border: 3px solid #000;
   border-radius: 4px;
-  transition: transform 0.4s ease, opacity 0.4s ease;
+  transition:
+    transform 0.4s ease,
+    opacity 0.4s ease;
 }
 
 .featured-latest:hover img {
@@ -1111,7 +1119,9 @@ blockquote,
   background: white;
   border-radius: 10px;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   opacity: 1 !important;
@@ -1594,7 +1604,9 @@ blockquote,
   border: 2px solid #000;
   border-radius: 4px;
   margin-bottom: 10px;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
 }
 
 .latest-article:hover img {
